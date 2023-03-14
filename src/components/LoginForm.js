@@ -1,10 +1,10 @@
 import {View, Text, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
-import CheckBox from '@react-native-community/checkbox';
-import {FormStyles} from '../styles/FormStyles';
 import {GlobalStyles} from '../styles/GlobalStyles';
 import {Input} from './Input';
-import {faEyeSlash, faUser, faAt} from '@fortawesome/free-solid-svg-icons';
+import {faEyeSlash, faUser} from '@fortawesome/free-solid-svg-icons';
+import {COLORS} from '../values/Colors';
+import {FontStyle} from '../values/Font';
 
 export const LoginForm = () => {
   const [loginFormData, setLoginFormData] = useState({});
@@ -18,20 +18,21 @@ export const LoginForm = () => {
     <View style={{marginVertical: '5%'}}>
       <Input
         placeholder="E-mail"
-        backgroundColor="#128C7E"
-        color="#F7F6FB"
-        placeholderTextColor="#F7F6FB"
-        iconColor="#eae2b7"
+        style={{borderRadius: 9, backgroundColor: COLORS.secondary}}
+        color={COLORS.textSecondary}
+        placeholderTextColor={COLORS.textSecondary}
+        iconColor={COLORS.icon}
         icon={faUser}
         onChangeText={text => handleChange(text, 'email')}
       />
       <Input
         placeholder="Password"
-        backgroundColor="#128C7E"
-        color="#F7F6FB"
-        placeholderTextColor="#F7F6FB"
+        style={{borderRadius: 9, backgroundColor: COLORS.secondary}}
+        secureTextEntry={true}
+        color={COLORS.textSecondary}
+        placeholderTextColor={COLORS.textSecondary}
         icon={faEyeSlash}
-        iconColor="#eae2b7"
+        iconColor={COLORS.icon}
         onChangeText={text => handleChange(text, 'password')}
       />
       <View
@@ -39,22 +40,10 @@ export const LoginForm = () => {
           GlobalStyles.row,
           {marginVertical: '2%', justifyContent: 'space-between'},
         ]}>
-        <View style={GlobalStyles.row}>
-          <CheckBox
-            tintColors={{true: '158c7e', false: '158c7e'}}
-            tintColor="158c7e"
-            onFillColor="158c7e"
-            onTintColor="158c7e"
-            onCheckColor="#fafaec"
-            animationDuration={0.5}
-            disabled={false}
-            value={loginFormData.toggleCheckBox}
-            onValueChange={newValue => handleChange(newValue, 'toggleCheckBox')}
-          />
-          <Text style={GlobalStyles.bodySmall}>Remember me</Text>
-        </View>
-        <TouchableOpacity>
-          <Text style={GlobalStyles.bodySmall}>Forgot Password?</Text>
+        <TouchableOpacity style={{marginLeft: 'auto'}}>
+          <Text style={[FontStyle.small, {color: COLORS.textPrimary}]}>
+            Forgot Password?
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

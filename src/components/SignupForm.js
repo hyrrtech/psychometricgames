@@ -1,6 +1,7 @@
 import {View, Text} from 'react-native';
 import React, {useState} from 'react';
 import {faEyeSlash, faUser, faAt} from '@fortawesome/free-solid-svg-icons';
+import {COLORS} from '../values/Colors';
 import {Input} from './Input';
 
 export const SignupForm = () => {
@@ -13,31 +14,33 @@ export const SignupForm = () => {
     <View style={{marginVertical: '5%'}}>
       <Input
         placeholder="Name"
-        backgroundColor="#128C7E"
-        color="#F7F6FB"
-        placeholderTextColor="#F7F6FB"
-        iconColor="#eae2b7"
+        // backgroundColor="#128C7E"
+        style={{borderRadius: 9, backgroundColor: COLORS.secondary}}
+        color={COLORS.textSecondary}
+        placeholderTextColor={COLORS.textSecondary}
+        iconColor={COLORS.icon}
         icon={faUser}
         value={signUpFormData.name}
         onChangeText={text => handleChange(text, 'name')}
       />
       <Input
         placeholder="E-mail"
-        backgroundColor="#128C7E"
-        color="#F7F6FB"
-        placeholderTextColor="#F7F6FB"
+        style={{borderRadius: 9, backgroundColor: COLORS.secondary}}
+        color={COLORS.textSecondary}
+        placeholderTextColor={COLORS.textSecondary}
         icon={faAt}
-        iconColor="#eae2b7"
+        iconColor={COLORS.icon}
         value={signUpFormData.email}
         onChangeText={text => handleChange(text, 'email')}
       />
       <Input
         placeholder="Password"
-        backgroundColor="#128C7E"
-        color="#F7F6FB"
-        placeholderTextColor="#F7F6FB"
+        style={{borderRadius: 9, backgroundColor: COLORS.secondary}}
+        color={COLORS.textSecondary}
+        placeholderTextColor={COLORS.textSecondary}
         icon={faEyeSlash}
-        iconColor="#eae2b7"
+        iconColor={COLORS.icon}
+        secureTextEntry={true}
         value={signUpFormData.password}
         onChangeText={text => handleChange(text, 'password')}
       />

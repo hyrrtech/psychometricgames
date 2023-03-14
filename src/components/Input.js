@@ -1,10 +1,10 @@
 import {View, TextInput, StyleSheet} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {GlobalStyles} from '../styles/GlobalStyles';
+import {FontStyle} from '../values/Font';
 export const Input = props => {
-  const {icon, iconColor, backgroundColor, textColor, ...restProps} = props;
+  const {icon, iconColor, style, textColor, ...restProps} = props;
   return (
-    <View style={[styles.input, {backgroundColor: backgroundColor}]}>
+    <View style={[styles.input, style]}>
       {icon ? (
         <FontAwesomeIcon
           icon={icon}
@@ -13,11 +13,13 @@ export const Input = props => {
         />
       ) : null}
       <TextInput
-        style={{
-          color: textColor,
-          fontSize: GlobalStyles.body.fontSize,
-          width: '100%',
-        }}
+        style={[
+          FontStyle.p,
+          {
+            color: textColor,
+            width: '100%',
+          },
+        ]}
         {...restProps}
       />
     </View>
@@ -28,11 +30,9 @@ const styles = StyleSheet.create({
   input: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 9,
     marginVertical: '1%',
-    color: '#2A2740',
-    fontFamily: 'Montaga',
     paddingHorizontal: '5%',
     paddingVertical: '1.2%',
+    overflow: 'hidden',
   },
 });

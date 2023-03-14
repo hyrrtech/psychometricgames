@@ -1,39 +1,47 @@
 import {Button} from '../components/Button';
 import {View, Text} from 'react-native';
-import {Wrapper} from '../components/Wrapper';
 import {GlobalStyles} from '../styles/GlobalStyles';
 import {Logo} from '../components/Logo';
 import Constants from '../constants/Constants';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 import {BackgroundWrapper} from '../components/BackgroundWrapper';
 import bg1 from '../assets/bg1.png';
+import {FontStyle} from '../values/Font';
+import {COLORS} from '../values/Colors';
 const GetStarted = ({navigation, route}) => {
   return (
     <BackgroundWrapper imageURL={bg1}>
       <KeyboardAwareScrollView
         contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
         style={GlobalStyles.mainContainer}>
-        <Wrapper>
+        <View style={GlobalStyles.wrapper}>
           <View style={{marginVertical: '10%'}}>
             <Logo />
           </View>
-          <Text style={GlobalStyles.header}>{Constants.title}</Text>
-          <Text style={GlobalStyles.subHeader}>{Constants.description}</Text>
+
+          <Text style={[FontStyle.h1, {color: COLORS.textPrimary}]}>
+            {Constants.title}
+          </Text>
 
           <View style={GlobalStyles.buttonContainer}>
             <Button
               title="Sign up"
-              style={{backgroundColor: '#075E54'}}
-              color="#F7F6FB"
+              style={{backgroundColor: COLORS.primary, borderRadius: 10}}
+              color={COLORS.textSecondary}
               onPress={() => navigation.navigate('Signup')}
             />
             <Button
               title="Log in"
-              style={{borderWidth: 1, borderColor: '#075E54'}}
+              style={{
+                borderWidth: 1,
+                borderColor: COLORS.primary,
+                borderRadius: 10,
+              }}
+              color={COLORS.primary}
               onPress={() => navigation.navigate('Login')}
             />
           </View>
-        </Wrapper>
+        </View>
       </KeyboardAwareScrollView>
     </BackgroundWrapper>
   );
