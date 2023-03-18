@@ -5,7 +5,6 @@ export const GlobalStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(127, 238, 255,0.2)',
     padding: '5%',
-    fontFamily: 'Montaga',
   },
 
   buttonContainer: {marginVertical: '5%', width: '100%'},

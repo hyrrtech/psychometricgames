@@ -6,4 +6,5 @@ export const COLORS = {
   background: 'rgb(84, 214, 234)',
   icon: '#eae2b7',
   gradient: ['rgba(255, 255, 255, 0.1)', 'rgb(84, 214, 234)'],
+  balloonBGGradient: ['#128C7E', '#54D6EA'],
 };

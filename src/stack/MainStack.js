@@ -9,6 +9,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from '../screens/Login';
 import Signup from '../screens/Signup';
 import GetStarted from '../screens/GetStarted';
+import AnimatedBalloon from '../screens/AnimationBalloon';
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
 
@@ -20,6 +21,11 @@ function MainStack() {
       //   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       // }}
       >
+        <Stack.Screen
+          name="Balloon"
+          component={AnimatedBalloon}
+          options={screenOptions}
+        />
         <Stack.Screen
           name="GetStarted"
           component={GetStarted}
