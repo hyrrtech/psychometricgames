@@ -18,16 +18,18 @@ const GetStarted = ({navigation, route}) => {
           <View style={{marginVertical: '10%'}}>
             <Logo />
           </View>
-
           <Text style={[FontStyle.h1, {color: COLORS.textPrimary}]}>
             {Constants.title}
           </Text>
-
           <View style={GlobalStyles.buttonContainer}>
             <Button
               title="Sign up"
-              style={{backgroundColor: COLORS.primary, borderRadius: 10}}
-              color={COLORS.textSecondary}
+              style={{
+                backgroundColor: COLORS.primary,
+                borderRadius: 10,
+                paddingVertical: '5%',
+                color: COLORS.textSecondary,
+              }}
               onPress={() => navigation.navigate('Signup')}
             />
             <Button
@@ -36,8 +38,9 @@ const GetStarted = ({navigation, route}) => {
                 borderWidth: 1,
                 borderColor: COLORS.primary,
                 borderRadius: 10,
+                paddingVertical: '5%',
+                color: COLORS.primary,
               }}
-              color={COLORS.primary}
               onPress={() => navigation.navigate('Login')}
             />
           </View>

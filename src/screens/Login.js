@@ -31,8 +31,12 @@ const Login = ({navigation, route}) => {
           <View style={GlobalStyles.buttonContainer}>
             <Button
               title="Login"
-              style={{backgroundColor: COLORS.primary, borderRadius: 10}}
-              color={COLORS.textSecondary}
+              style={{
+                backgroundColor: COLORS.primary,
+                borderRadius: 10,
+                paddingVertical: '5%',
+                color: COLORS.textSecondary,
+              }}
             />
             <Button
               icon={google}
@@ -41,8 +45,9 @@ const Login = ({navigation, route}) => {
                 borderWidth: 1,
                 borderColor: COLORS.primary,
                 borderRadius: 10,
+                paddingVertical: '5%',
+                color: COLORS.primary,
               }}
-              color={COLORS.primary}
             />
           </View>
         </View>
