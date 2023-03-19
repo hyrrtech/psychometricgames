@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "998672992934",
+    "project_id": "hyra-720a2",
+    "storage_bucket": "hyra-720a2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:998672992934:android:b6b920aafb595f24104267",
+        "android_client_info": {
+          "package_name": "com.hyra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "998672992934-q0erdvpim3i5ku28jgnqf9n83858ist6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSvmn3A4A2coE0cHh2w9OMmCAs_XDYT5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "998672992934-mht3qgjqndqdnufmtjf30tss5ggv6ai2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

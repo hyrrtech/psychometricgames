@@ -22,6 +22,11 @@ function MainStack() {
       // }}
       >
         <Stack.Screen
+          name="Signup"
+          component={Signup}
+          options={screenOptions}
+        />
+        <Stack.Screen
           name="Balloon"
           component={AnimatedBalloon}
           options={screenOptions}
@@ -32,11 +37,6 @@ function MainStack() {
           options={screenOptions}
         />
         <Stack.Screen name="Login" component={Login} options={screenOptions} />
-        <Stack.Screen
-          name="Signup"
-          component={Signup}
-          options={screenOptions}
-        />
       </Stack.Navigator>
     </NavigationContainer>
   );
