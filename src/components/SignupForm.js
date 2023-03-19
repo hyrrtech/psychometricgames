@@ -1,6 +1,6 @@
 import {View, Text} from 'react-native';
 import React, {useState} from 'react';
-import {faEyeSlash, faUser, faAt} from '@fortawesome/free-solid-svg-icons';
+import {faUser, faAt} from '@fortawesome/free-solid-svg-icons';
 import {COLORS} from '../values/Colors';
 import {Input} from './Input';
 
@@ -14,7 +14,6 @@ export const SignupForm = () => {
     <View style={{marginVertical: '5%'}}>
       <Input
         placeholder="Name"
-        // backgroundColor="#128C7E"
         style={{borderRadius: 9, backgroundColor: COLORS.secondary}}
         color={COLORS.textSecondary}
         placeholderTextColor={COLORS.textSecondary}
@@ -26,7 +25,7 @@ export const SignupForm = () => {
       <Input
         placeholder="E-mail"
         style={{borderRadius: 9, backgroundColor: COLORS.secondary}}
-        color={COLORS.textSecondary}
+        textColor={COLORS.textSecondary}
         placeholderTextColor={COLORS.textSecondary}
         icon={faAt}
         iconColor={COLORS.icon}
@@ -36,9 +35,8 @@ export const SignupForm = () => {
       <Input
         placeholder="Password"
         style={{borderRadius: 9, backgroundColor: COLORS.secondary}}
-        color={COLORS.textSecondary}
+        textColor={COLORS.textSecondary}
         placeholderTextColor={COLORS.textSecondary}
-        icon={faEyeSlash}
         iconColor={COLORS.icon}
         secureTextEntry={true}
         value={signUpFormData.password}
