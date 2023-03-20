@@ -1,3 +1,4 @@
+import React, {useState, useContext} from 'react';
 import {Button} from '../components/Button';
 import {View, Text} from 'react-native';
 import {GlobalStyles} from '../styles/GlobalStyles';
@@ -9,8 +10,18 @@ import {BackgroundWrapper} from '../components/BackgroundWrapper';
 import bg3 from '../assets/bg3.png';
 import {FontStyle} from '../values/Font';
 import {COLORS} from '../values/Colors';
+import {AuthContext} from '../providers/AuthProvider';
 
 const Signup = ({navigation, route}) => {
+  const [formData, setFormData] = useState({});
+  const {signup, signin_with_google} = useContext(AuthContext);
+
+  const handleSignup = () => {
+    signup(formData.email, formData.password);
+  };
+  const handleSignupWithGoogle = () => {
+    signin_with_google();
+  };
   return (
     <BackgroundWrapper imageURL={bg3}>
       <KeyboardAwareScrollView
@@ -23,9 +34,10 @@ const Signup = ({navigation, route}) => {
           <Text style={[FontStyle.h3, {color: COLORS.textPrimary}]}>
             Create New acount
           </Text>
-          <SignupForm />
+          <SignupForm formData={formData} setFormData={setFormData} />
           <View style={GlobalStyles.buttonContainer}>
             <Button
+              onPressIn={handleSignup}
               title="Sign up"
               style={{
                 backgroundColor: COLORS.primary,
@@ -35,6 +47,7 @@ const Signup = ({navigation, route}) => {
               }}
             />
             <Button
+              onPressIn={handleSignupWithGoogle}
               icon={google}
               title="Sign up with google"
               style={{

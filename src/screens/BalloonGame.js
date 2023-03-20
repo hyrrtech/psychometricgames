@@ -8,6 +8,15 @@ import {COLORS} from '../values/Colors';
 import balloonBG from '../assets/balloonBG.png';
 import {Button} from '../components/Button';
 import {InfoLabel} from '../components/InfoLabel';
+import balloon_pump from '../assets/sounds/balloon_pump.mp3';
+import Sound from 'react-native-sound';
+import {PlaySound} from '../utilities/PlaySound';
+const sound = new Sound(PlaySound, error => {
+  if (error) {
+    console.log(error);
+    return;
+  }
+});
 
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 const windowHeight = Dimensions.get('window').height;
@@ -29,14 +38,19 @@ const BalloonGame = props => {
     if (sizeAnimation._value >= heightLimit) {
       console.log('height exeeded');
       setGameOver(true);
+      return;
     }
 
-    Animated.spring(sizeAnimation, {
-      toValue: sizeAnimation._value + scalingFactor,
-      bounciness: 20,
-      speed: 2,
-      useNativeDriver: false,
-    }).start();
+    PlaySound(balloon_pump);
+
+    Animated.sequence([
+      Animated.delay(400),
+      Animated.spring(sizeAnimation, {
+        toValue: sizeAnimation._value + scalingFactor,
+        bounciness: 20,
+        useNativeDriver: false,
+      }),
+    ]).start();
   };
 
   return (

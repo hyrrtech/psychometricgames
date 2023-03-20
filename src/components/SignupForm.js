@@ -1,14 +1,12 @@
-import {View, Text} from 'react-native';
-import React, {useState} from 'react';
+import {View} from 'react-native';
+import React from 'react';
 import {faUser, faAt} from '@fortawesome/free-solid-svg-icons';
 import {COLORS} from '../values/Colors';
 import {Input} from './Input';
 
-export const SignupForm = () => {
-  const [signUpFormData, setSignUpFormData] = useState({});
-
+export const SignupForm = ({formData, setFormData}) => {
   const handleChange = (text, fieldName) => {
-    setSignUpFormData({...signUpFormData, [fieldName]: text});
+    setFormData({...formData, [fieldName]: text});
   };
   return (
     <View style={{marginVertical: '5%'}}>
@@ -19,7 +17,7 @@ export const SignupForm = () => {
         placeholderTextColor={COLORS.textSecondary}
         iconColor={COLORS.icon}
         icon={faUser}
-        value={signUpFormData.name}
+        value={formData.name}
         onChangeText={text => handleChange(text, 'name')}
       />
       <Input
@@ -29,7 +27,7 @@ export const SignupForm = () => {
         placeholderTextColor={COLORS.textSecondary}
         icon={faAt}
         iconColor={COLORS.icon}
-        value={signUpFormData.email}
+        value={formData.email}
         onChangeText={text => handleChange(text, 'email')}
       />
       <Input
@@ -39,7 +37,7 @@ export const SignupForm = () => {
         placeholderTextColor={COLORS.textSecondary}
         iconColor={COLORS.icon}
         secureTextEntry={true}
-        value={signUpFormData.password}
+        value={formData.password}
         onChangeText={text => handleChange(text, 'password')}
       />
     </View>

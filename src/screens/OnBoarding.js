@@ -8,7 +8,7 @@ import {BackgroundWrapper} from '../components/BackgroundWrapper';
 import bg1 from '../assets/bg1.png';
 import {FontStyle} from '../values/Font';
 import {COLORS} from '../values/Colors';
-const GetStarted = ({navigation, route}) => {
+const OnBoarding = ({navigation, route}) => {
   return (
     <BackgroundWrapper imageURL={bg1}>
       <KeyboardAwareScrollView
@@ -50,4 +50,4 @@ const GetStarted = ({navigation, route}) => {
   );
 };
 
-export default GetStarted;
+export default OnBoarding;
