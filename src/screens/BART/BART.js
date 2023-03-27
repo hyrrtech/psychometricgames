@@ -49,7 +49,6 @@ const BART = ({route, navigation}) => {
   const [completedPopup, setCompletedPopup] = useState(false);
   const sizeAnimation = useRef(new Animated.Value(scalingFactor * 15)).current;
   const flyAwayAnimation = useRef(new Animated.Value(0)).current;
-
   console.log(state);
   useEffect(() => {
     BARTRef.once('value', snapshot => {

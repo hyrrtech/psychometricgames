@@ -41,31 +41,35 @@ export function reducer(state, action) {
       return {...state, showPopped: true};
 
     case ACTIONS.NEXT_LEVEL:
+      const newState = {
+        ...state,
+        level: state.level + 1,
+        curr_score: 0,
+        pumpCount: 0,
+        pop_point: balloonPopPoint(HIGH_RISK_POINT + 2, NUMBER_OF_WEIGHTS),
+        showPopped: false,
+      };
+      if (newState.level === newState.totalLevels) {
+        newState.status = 'COMPLETED';
+      }
+
       if (state.pumpCount + 1 !== state.pop_point) {
-        const newState = {
-          ...state,
-          // ...getNewState(),
+        const newState1 = {
+          ...newState,
           totalScore: state.totalScore + state.curr_score,
-          level: state.level + 1,
-          curr_score: 0,
-          pumpCount: 0,
-          pop_point: balloonPopPoint(HIGH_RISK_POINT + 2, NUMBER_OF_WEIGHTS), //remove this after using getNewState
         };
         if (
           action.payload.level &&
           action.payload.totalScore &&
           action.payload.score_range
         ) {
-          newState.score_range = action.payload.score_range;
-          newState.totalScore = action.payload.totalScore;
-          newState.level = action.payload.level + 1; //db only stores the last completed level so continue from next level
-        }
-        if (newState.level === newState.totalLevels) {
-          newState.status = 'COMPLETED';
+          newState1.score_range = action.payload.score_range;
+          newState1.totalScore = action.payload.totalScore;
+          newState1.level = action.payload.level + 1; //db only stores the last completed level so continue from next level
         }
         updateBartData(
           {
-            ...newState,
+            ...newState1,
             pop_point: state.pop_point,
             pumpCount: state.pumpCount,
             level: state.level,
@@ -73,19 +77,7 @@ export function reducer(state, action) {
           },
           action.payload.uid,
         );
-        return newState;
-      }
-      const newState = {
-        ...state,
-        // ...getNewState(),
-        level: state.level + 1,
-        curr_score: 0,
-        pumpCount: 0,
-        showPopped: false,
-        pop_point: balloonPopPoint(HIGH_RISK_POINT + 2, NUMBER_OF_WEIGHTS), //remove this after using getNewState
-      };
-      if (newState.level === newState.totalLevels) {
-        newState.status = 'COMPLETED';
+        return newState1;
       }
       updateBartData(
         {

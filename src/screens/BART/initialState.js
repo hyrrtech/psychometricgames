@@ -4,8 +4,8 @@ import {
   balloonPopPoint,
   randomPoint,
 } from '../../utilities/BART';
-const BALLOON_PUMP_ANIMATION_TIME = 500;
-const BALLOON_FLYAWAY_ANIMATION_TIME = 2000;
+const BALLOON_PUMP_ANIMATION_TIME = 700;
+const BALLOON_FLYAWAY_ANIMATION_TIME = 1500;
 
 //pivot point
 const HIGH_RISK_START_POINT = 4;
