@@ -56,14 +56,19 @@ const BART = ({route, navigation}) => {
       const exists = snapshot.exists();
       if (exists) {
         const data = snapshot.val();
-        const {level, totalScore, status} = data;
+        const {level, totalScore, status, score_range} = data;
         if (status === 'COMPLETED') {
           setCompletedPopup(true);
           return;
         }
         dispatch({
           type: ACTIONS.NEXT_LEVEL,
-          payload: {level: level, totalScore: totalScore, uid: user.uid},
+          payload: {
+            level: level,
+            totalScore: totalScore,
+            score_range: score_range,
+            uid: user.uid,
+          },
         });
         setLoading(false);
       } else {

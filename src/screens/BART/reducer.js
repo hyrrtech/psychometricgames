@@ -51,7 +51,12 @@ export function reducer(state, action) {
           pumpCount: 0,
           pop_point: balloonPopPoint(HIGH_RISK_POINT + 2, NUMBER_OF_WEIGHTS), //remove this after using getNewState
         };
-        if (action.payload.level && action.payload.totalScore) {
+        if (
+          action.payload.level &&
+          action.payload.totalScore &&
+          action.payload.score_range
+        ) {
+          newState.score_range = action.payload.score_range;
           newState.totalScore = action.payload.totalScore;
           newState.level = action.payload.level + 1; //db only stores the last completed level so continue from next level
         }
@@ -61,6 +66,7 @@ export function reducer(state, action) {
         updateBartData(
           {
             ...newState,
+            pop_point: state.pop_point,
             pumpCount: state.pumpCount,
             level: state.level,
             curr_score: state.curr_score,
@@ -84,6 +90,7 @@ export function reducer(state, action) {
       updateBartData(
         {
           ...newState,
+          pop_point: state.pop_point,
           pumpCount: state.pumpCount + 1,
           level: state.level,
         },
