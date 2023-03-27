@@ -2,7 +2,7 @@ import balloon_pump from '../../assets/sounds/balloon_pump.wav';
 import {PlaySound} from '../../utilities/PlaySound';
 import {HIGH_RISK_POINT, NUMBER_OF_WEIGHTS} from './initialState';
 import {balloonPopPoint} from '../../utilities/BART';
-import {BARTRef} from '../../firebase/database';
+import db from '../../firebase/database';
 
 export const ACTIONS = {
   PUMP: 'pump',
@@ -10,7 +10,8 @@ export const ACTIONS = {
   NEXT_LEVEL: 'next_level',
 };
 
-const updateBartData = state => {
+const updateBartData = (state, uid) => {
+  const BARTRef = db.ref(`/users/${uid}/BART/`);
   const newAttempt = {
     score: state.curr_score,
     pumpCount: state.pumpCount,
@@ -50,19 +51,22 @@ export function reducer(state, action) {
           pumpCount: 0,
           pop_point: balloonPopPoint(HIGH_RISK_POINT + 2, NUMBER_OF_WEIGHTS), //remove this after using getNewState
         };
-        if (action.payload) {
+        if (action.payload.level && action.payload.totalScore) {
           newState.totalScore = action.payload.totalScore;
           newState.level = action.payload.level + 1; //db only stores the last completed level so continue from next level
         }
         if (newState.level === newState.totalLevels) {
           newState.status = 'COMPLETED';
         }
-        updateBartData({
-          ...newState,
-          pumpCount: state.pumpCount,
-          level: state.level,
-          score: state.curr_score,
-        });
+        updateBartData(
+          {
+            ...newState,
+            pumpCount: state.pumpCount,
+            level: state.level,
+            curr_score: state.curr_score,
+          },
+          action.payload.uid,
+        );
         return newState;
       }
       const newState = {
@@ -77,11 +81,14 @@ export function reducer(state, action) {
       if (newState.level === newState.totalLevels) {
         newState.status = 'COMPLETED';
       }
-      updateBartData({
-        ...newState,
-        pumpCount: state.pumpCount + 1,
-        level: state.level,
-      });
+      updateBartData(
+        {
+          ...newState,
+          pumpCount: state.pumpCount + 1,
+          level: state.level,
+        },
+        action.payload.uid,
+      );
       return newState;
 
     default:

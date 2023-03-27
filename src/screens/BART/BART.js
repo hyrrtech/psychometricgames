@@ -24,7 +24,7 @@ import {
   BALLOON_FLYAWAY_ANIMATION_TIME,
 } from './initialState';
 import {reducer, ACTIONS} from './reducer';
-import {BARTRef} from '../../firebase/database';
+import db from '../../firebase/database';
 import {AuthContext} from '../../providers/AuthProvider';
 // wrap into 1
 import {GameWrapper} from '../../components/GameWrapper';
@@ -43,45 +43,47 @@ const scalingFactor =
 
 const BART = ({route, navigation}) => {
   const {user} = useContext(AuthContext);
+  const BARTRef = db.ref(`/users/${user.uid}/BART/`);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [loading, setLoading] = useState(true);
   const [completedPopup, setCompletedPopup] = useState(false);
   const sizeAnimation = useRef(new Animated.Value(scalingFactor * 15)).current;
   const flyAwayAnimation = useRef(new Animated.Value(0)).current;
 
+  console.log(state);
   useEffect(() => {
-    BARTRef.once('value')
-      .then(snapshot => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const {level, totalScore, status} = data;
-          if (status === 'COMPLETED') {
-            setLoading(false);
-            setCompletedPopup(true);
-            return;
-          }
-          dispatch({
-            type: ACTIONS.NEXT_LEVEL,
-            payload: {level: level, totalScore: totalScore},
-          });
-        } else {
-          BARTRef.set({
-            totalScore: 0,
-            level: 1,
-            totalLevels: state.totalLevels,
-            score_range: state.score_range,
-            max_score_per_level: state.max_score_per_level,
-            attempts: {},
-            status: 'IN_PROGRESS',
-          });
+    BARTRef.once('value', snapshot => {
+      const exists = snapshot.exists();
+      if (exists) {
+        const data = snapshot.val();
+        const {level, totalScore, status} = data;
+        if (status === 'COMPLETED') {
+          setCompletedPopup(true);
+          return;
         }
-      })
+        dispatch({
+          type: ACTIONS.NEXT_LEVEL,
+          payload: {level: level, totalScore: totalScore, uid: user.uid},
+        });
+        setLoading(false);
+      } else {
+        BARTRef.set({
+          totalScore: 0,
+          level: 1,
+          totalLevels: state.totalLevels,
+          score_range: state.score_range,
+          max_score_per_level: state.max_score_per_level,
+          attempts: {},
+          status: 'IN_PROGRESS',
+        });
+      }
+    })
       .then(() => setLoading(false))
       .catch(err => console.log(err));
   }, []);
 
   const onLevelEnd = () => {
-    dispatch({type: ACTIONS.NEXT_LEVEL});
+    dispatch({type: ACTIONS.NEXT_LEVEL, payload: {uid: user.uid}});
     flyAwayAnimation.setValue(0);
     sizeAnimation.setValue(scalingFactor * 15);
     navigation.navigate('Transition', {
