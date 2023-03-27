@@ -7,9 +7,7 @@ export const PlaySound = file => {
       return;
     } else {
       sound.play(success => {
-        if (success) {
-          console.log('Sound playing');
-        } else {
+        if (!success) {
           console.log('Issue playing file');
         }
       });

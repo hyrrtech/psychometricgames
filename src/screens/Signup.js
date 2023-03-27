@@ -17,7 +17,7 @@ const Signup = ({navigation, route}) => {
   const {signup, signin_with_google} = useContext(AuthContext);
 
   const handleSignup = () => {
-    signup(formData.email, formData.password);
+    signup(formData.name, formData.email, formData.password);
   };
   const handleSignupWithGoogle = () => {
     signin_with_google();

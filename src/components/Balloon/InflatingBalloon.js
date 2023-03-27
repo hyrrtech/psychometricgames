@@ -25,12 +25,26 @@ const InflatingBalloon = props => {
     ).start();
   }, []);
 
-  const translateY = position.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, -15],
-  });
+  const transform = [
+    {
+      translateY: position.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, -15],
+      }),
+    },
+    {
+      rotate: position.interpolate({
+        inputRange: [0, 0.5, 1],
+        outputRange: ['-0.5deg', '-1deg', '0.5deg'],
+      }),
+    },
+  ];
+
   return (
-    <AnimatedG style={{transform: [{translateY}]}}>
+    <AnimatedG
+      style={{
+        transform: transform,
+      }}>
       <Path
         d="M142.783 216.04C142.481 214.376 144.74 212.419 148.85 212.359C150.205 212.543 153.022 212.202 153.459 209.373"
         stroke="#6C6C6C"

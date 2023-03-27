@@ -3,7 +3,7 @@ import {FontStyle} from '../values/Font';
 export const Button = ({title, style, icon, ...restProps}) => {
   return (
     <TouchableOpacity
-      activeOpacity={1}
+      activeOpacity={0.8}
       style={[style, styles.buttonContainer]}
       {...restProps}>
       {icon ? <Image source={icon} style={styles.icon} /> : null}

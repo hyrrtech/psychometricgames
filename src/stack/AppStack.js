@@ -4,26 +4,21 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 //   CardStyleInterpolators,
 //   createStackNavigator,
 // } from '@react-navigation/stack';
-import BalloonGame from '../screens/BalloonGame';
-import TestScreen from '../screens/TestScreen';
+import BART from '../screens/BART/BART';
+import Transition from '../screens/Transition';
+import Home from '../screens/Home';
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
 
 function MainStack() {
   return (
     <Stack.Navigator
-    // screenOptions={{
-    //   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-    // }}
-    >
+      screenOptions={{headerShown: false, animation: 'slide_from_right'}}>
+      <Stack.Screen name="Home" component={Home} options={screenOptions} />
+      <Stack.Screen name="BART" component={BART} options={screenOptions} />
       <Stack.Screen
-        name="Test"
-        component={TestScreen}
-        options={screenOptions}
-      />
-      <Stack.Screen
-        name="Balloon"
-        component={BalloonGame}
+        name="Transition"
+        component={Transition}
         options={screenOptions}
       />
     </Stack.Navigator>

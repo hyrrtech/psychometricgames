@@ -1,6 +1,14 @@
-import {View, ImageBackground, StyleSheet} from 'react-native';
+import {
+  View,
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {COLORS} from '../values/Colors';
+import {faBars} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {useNavigation} from '@react-navigation/native';
 
 export const GameWrapper = ({
   imageURL,
@@ -10,6 +18,7 @@ export const GameWrapper = ({
   scoreboard,
   level,
 }) => {
+  const navigation = useNavigation();
   return (
     <LinearGradient style={{flex: 1}} colors={backgroundGradient}>
       <ImageBackground
@@ -22,23 +31,22 @@ export const GameWrapper = ({
         source={imageURL}>
         <View style={styles.header}>
           <View style={styles.menu}>
-            <View
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate('Home')}
               style={{
-                height: 30,
-                width: 30,
                 borderRadius: 50,
+                padding: '2%',
                 backgroundColor: COLORS.primary,
-              }}
-            />
+              }}>
+              <FontAwesomeIcon
+                icon={faBars}
+                size={25}
+                style={{color: COLORS.textSecondary}}
+              />
+            </TouchableOpacity>
             {level}
-            <View
-              style={{
-                height: 30,
-                width: 30,
-                borderRadius: 50,
-                backgroundColor: COLORS.primary,
-              }}
-            />
+            <View style={{width: 25}} />
           </View>
           <View style={styles.scoreboard}>{scoreboard?.map(item => item)}</View>
         </View>
