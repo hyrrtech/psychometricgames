@@ -1,4 +1,4 @@
-import React, {createContext, useState, useEffect} from 'react';
+import React, {createContext, useState} from 'react';
 import {
   login,
   signin_with_google,
@@ -10,7 +10,6 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
   const [user, setUser] = useState(null);
-  useEffect(() => {}, []);
 
   return (
     <AuthContext.Provider
