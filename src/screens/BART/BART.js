@@ -49,7 +49,7 @@ const BART = ({route, navigation}) => {
   const [completedPopup, setCompletedPopup] = useState(false);
   const sizeAnimation = useRef(new Animated.Value(scalingFactor * 15)).current;
   const flyAwayAnimation = useRef(new Animated.Value(0)).current;
-  console.log(state);
+
   useEffect(() => {
     BARTRef.once('value', snapshot => {
       const exists = snapshot.exists();
@@ -99,6 +99,7 @@ const BART = ({route, navigation}) => {
 
   const handlePump = useDebounce(() => {
     if (state.pumpCount + 1 === state.pop_point) {
+      dispatch({type: ACTIONS.PUMP});
       dispatch({type: ACTIONS.POP_ON_PUMP});
       setTimeout(() => {
         onLevelEnd();

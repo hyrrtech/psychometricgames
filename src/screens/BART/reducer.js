@@ -53,8 +53,7 @@ export function reducer(state, action) {
         newState.status = 'COMPLETED';
       }
 
-      if (state.pop_point != state.pumpCount + 1) {
-        console.log('pumps:', state.pumpCount, 'pop:', state.pop_point);
+      if (state.pop_point !== state.pumpCount) {
         const newState1 = {
           ...newState,
           totalScore: state.totalScore + state.curr_score,
@@ -66,7 +65,7 @@ export function reducer(state, action) {
         ) {
           newState1.score_range = action.payload.score_range;
           newState1.totalScore = action.payload.totalScore;
-          newState1.level = action.payload.level; //db only stores the last completed level so continue from next level
+          newState1.level = action.payload.level;
         } else {
           updateBartData(
             {
@@ -79,20 +78,17 @@ export function reducer(state, action) {
             action.payload.uid,
           );
         }
-        console.log('total updated');
         return newState1;
       } else {
-        console.log('pumps:', state.pumpCount, 'pop:', state.pop_point);
         updateBartData(
           {
             ...newState,
             pop_point: state.pop_point,
-            pumpCount: state.pumpCount + 1,
+            pumpCount: state.pumpCount,
             level: state.level,
           },
           action.payload.uid,
         );
-        console.log('total not updated');
         return newState;
       }
 
