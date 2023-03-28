@@ -60,15 +60,16 @@ const BART = ({route, navigation}) => {
           setCompletedPopup(true);
           return;
         }
-        dispatch({
-          type: ACTIONS.NEXT_LEVEL,
-          payload: {
-            level: level,
-            totalScore: totalScore,
-            score_range: score_range,
-            uid: user.uid,
-          },
-        });
+        if (level !== 1)
+          dispatch({
+            type: ACTIONS.NEXT_LEVEL,
+            payload: {
+              level: level,
+              totalScore: totalScore,
+              score_range: score_range,
+              uid: user.uid,
+            },
+          });
         setLoading(false);
       } else {
         BARTRef.set({
@@ -113,7 +114,7 @@ const BART = ({route, navigation}) => {
     }).start();
   }, BALLOON_PUMP_ANIMATION_TIME);
 
-  const handleCollect = () => {
+  const handleCollect = useDebounce(() => {
     if (state.pumpCount !== 0) {
       Animated.timing(flyAwayAnimation, {
         toValue: 1,
@@ -121,7 +122,7 @@ const BART = ({route, navigation}) => {
         useNativeDriver: false,
       }).start(() => onLevelEnd());
     }
-  };
+  }, BALLOON_FLYAWAY_ANIMATION_TIME);
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (

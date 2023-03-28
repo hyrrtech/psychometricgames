@@ -20,7 +20,7 @@ const updateBartData = (state, uid) => {
   };
   BARTRef.child('attempts').push(newAttempt);
   BARTRef.update({
-    level: state.level,
+    level: state.level === state.totalLevels ? state.level : state.level + 1,
     totalScore: state.totalScore,
     status: state.status,
   });
@@ -65,18 +65,19 @@ export function reducer(state, action) {
         ) {
           newState1.score_range = action.payload.score_range;
           newState1.totalScore = action.payload.totalScore;
-          newState1.level = action.payload.level + 1; //db only stores the last completed level so continue from next level
+          newState1.level = action.payload.level; //db only stores the last completed level so continue from next level
+        } else {
+          updateBartData(
+            {
+              ...newState1,
+              pop_point: state.pop_point,
+              pumpCount: state.pumpCount,
+              level: state.level,
+              curr_score: state.curr_score,
+            },
+            action.payload.uid,
+          );
         }
-        updateBartData(
-          {
-            ...newState1,
-            pop_point: state.pop_point,
-            pumpCount: state.pumpCount,
-            level: state.level,
-            curr_score: state.curr_score,
-          },
-          action.payload.uid,
-        );
         return newState1;
       }
       updateBartData(

@@ -26,66 +26,80 @@ export const AuthProvider = ({children}) => {
       value={{
         user,
         setUser,
-        login: async (email, password) => {
-          try {
-            await auth().signInWithEmailAndPassword(email, password);
-          } catch (error) {
-            console.log('There was an error logging in: ', error);
-          }
-        },
-        signup: async (name, email, password) => {
-          try {
-            const res = await auth().createUserWithEmailAndPassword(
-              email,
-              password,
-            );
-            const user = res.user;
-
-            db.ref(`/users/${user.uid}`).set({
-              name: name,
-              email: user.email,
-            });
-          } catch (error) {
-            console.log('There was an error signing up: ', error);
-          }
-        },
-        signout: async () => {
-          try {
-            const isSignedIn = await GoogleSignin.isSignedIn();
-            if (isSignedIn) {
-              await GoogleSignin.revokeAccess();
-              await GoogleSignin.signOut();
+        login: (email, password) => {
+          return new Promise(async (resolve, reject) => {
+            try {
+              await auth().signInWithEmailAndPassword(email, password);
+              resolve();
+            } catch (error) {
+              reject(error);
             }
-            await auth().signOut();
-          } catch (error) {
-            console.log('There was an error signing out:', error);
-          }
+          });
         },
-        signin_with_google: async () => {
-          try {
-            await GoogleSignin.hasPlayServices();
-            const {accessToken, idToken} = await GoogleSignin.signIn();
-            const credential = auth.GoogleAuthProvider.credential(
-              idToken,
-              accessToken,
-            );
-            const res = await auth().signInWithCredential(credential);
-            const user = res.user;
-            const onValueChange = db
-              .ref(`/users/${user.uid}`)
-              .on('value', snapshot => {
-                if (!snapshot.exists()) {
-                  db.ref(`/users/${user.uid}`).set({
-                    name: user.displayName,
-                    email: user.email,
-                  });
-                }
-              });
-            return () =>
-              database().ref(`/users/${user.uid}`).off('value', onValueChange);
-          } catch (error) {
-            console.log(error);
-          }
+        signup: (name, email, password) => {
+          return new Promise(async (resolve, reject) => {
+            try {
+              const res = await auth().createUserWithEmailAndPassword(
+                email,
+                password,
+              );
+              const user = res.user;
+              db.ref(`/users/${user.uid}`)
+                .set({
+                  name: name,
+                  email: user.email,
+                })
+                .then(() => {
+                  resolve(user);
+                });
+            } catch (error) {
+              reject(error);
+            }
+          });
+        },
+        signout: () => {
+          return new Promise(async (resolve, reject) => {
+            try {
+              const isSignedIn = await GoogleSignin.isSignedIn();
+              if (isSignedIn) {
+                await GoogleSignin.revokeAccess();
+                await GoogleSignin.signOut();
+              }
+              await auth().signOut();
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
+          });
+        },
+        signin_with_google: () => {
+          return new Promise(async (resolve, reject) => {
+            try {
+              await GoogleSignin.hasPlayServices();
+              const {accessToken, idToken} = await GoogleSignin.signIn();
+              const credential = auth.GoogleAuthProvider.credential(
+                idToken,
+                accessToken,
+              );
+              const res = await auth().signInWithCredential(credential);
+              const user = res.user;
+              const onValueChange = db
+                .ref(`/users/${user.uid}`)
+                .on('value', snapshot => {
+                  if (!snapshot.exists()) {
+                    db.ref(`/users/${user.uid}`).set({
+                      name: user.displayName,
+                      email: user.email,
+                    });
+                  }
+                });
+              const unsubscribe = () =>
+                db.ref(`/users/${user.uid}`).off('value', onValueChange);
+              resolve(unsubscribe);
+            } catch (error) {
+              reject(error);
+            }
+          });
         },
       }}>
       {children}

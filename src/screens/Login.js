@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react';
 import {Button} from '../components/Button';
-import {View, Text} from 'react-native';
+import {View, Text, Alert} from 'react-native';
 import {GlobalStyles} from '../styles/GlobalStyles';
 import {Logo} from '../components/Logo';
 import {BackgroundWrapper} from '../components/BackgroundWrapper';
@@ -15,12 +15,26 @@ import {AuthContext} from '../providers/AuthProvider';
 const Login = ({navigation, route}) => {
   const [formData, setFormData] = useState({});
   const {login, signin_with_google} = useContext(AuthContext);
+  const [loading, setLoading] = useState({login: false, google: false});
 
   const handleLogin = () => {
-    login(formData.email, formData.password);
+    //validation check to be done
+    setLoading({...loading, login: true});
+    login(formData.email, formData.password)
+      .then(() => setLoading({...loading, login: false}))
+      .catch(error => {
+        setLoading({...loading, login: false});
+        Alert.alert('demo error alert', error.message, [{text: 'OK'}]);
+      });
   };
   const handleLoginWithGoogle = () => {
-    signin_with_google();
+    setLoading({...loading, google: true});
+    signin_with_google()
+      .then(() => setLoading({...loading, google: false}))
+      .catch(error => {
+        setLoading({...loading, google: false});
+        Alert.alert('demo error alert', error.message, [{text: 'OK'}]);
+      });
   };
   return (
     <BackgroundWrapper imageURL={bg2}>
@@ -41,7 +55,7 @@ const Login = ({navigation, route}) => {
           <View style={GlobalStyles.buttonContainer}>
             <Button
               onPressIn={handleLogin}
-              title="Login"
+              title={loading.login ? 'Loading...' : 'Login'}
               style={{
                 backgroundColor: COLORS.primary,
                 borderRadius: 10,
@@ -51,8 +65,8 @@ const Login = ({navigation, route}) => {
             />
             <Button
               onPressIn={handleLoginWithGoogle}
-              icon={google}
-              title="Log in with google"
+              icon={!loading.google && google}
+              title={loading.google ? 'Loading...' : 'Log in with google'}
               style={{
                 borderWidth: 1,
                 borderColor: COLORS.primary,
