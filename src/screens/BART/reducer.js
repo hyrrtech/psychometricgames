@@ -49,11 +49,12 @@ export function reducer(state, action) {
         pop_point: balloonPopPoint(HIGH_RISK_POINT + 2, NUMBER_OF_WEIGHTS),
         showPopped: false,
       };
-      if (newState.level === newState.totalLevels) {
+      if (state.level >= state.totalLevels) {
         newState.status = 'COMPLETED';
       }
 
-      if (state.pumpCount + 1 !== state.pop_point) {
+      if (state.pop_point != state.pumpCount + 1) {
+        console.log('pumps:', state.pumpCount, 'pop:', state.pop_point);
         const newState1 = {
           ...newState,
           totalScore: state.totalScore + state.curr_score,
@@ -78,18 +79,22 @@ export function reducer(state, action) {
             action.payload.uid,
           );
         }
+        console.log('total updated');
         return newState1;
+      } else {
+        console.log('pumps:', state.pumpCount, 'pop:', state.pop_point);
+        updateBartData(
+          {
+            ...newState,
+            pop_point: state.pop_point,
+            pumpCount: state.pumpCount + 1,
+            level: state.level,
+          },
+          action.payload.uid,
+        );
+        console.log('total not updated');
+        return newState;
       }
-      updateBartData(
-        {
-          ...newState,
-          pop_point: state.pop_point,
-          pumpCount: state.pumpCount + 1,
-          level: state.level,
-        },
-        action.payload.uid,
-      );
-      return newState;
 
     default:
       return state;
