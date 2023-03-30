@@ -46,6 +46,7 @@ const initialState = {
   DIVIDE_WEIGHTAGE: DIVIDE_WEIGHTAGE,
   pop_point: POP_POINT,
   score_range: SCORE_RANGE,
+  number_of_weights: NUMBER_OF_WEIGHTS,
 };
 
 //generate data as per level (needs changes, rn only generates data randomly and not level wise)

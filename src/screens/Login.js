@@ -11,6 +11,7 @@ import {COLORS} from '../values/Colors';
 import {FontStyle} from '../values/Font';
 import google from '../assets/google.png';
 import {AuthContext} from '../providers/AuthProvider';
+import BackgroundImage from '../values/BackgroundImage';
 
 const Login = ({navigation, route}) => {
   const [formData, setFormData] = useState({});
@@ -37,7 +38,7 @@ const Login = ({navigation, route}) => {
       });
   };
   return (
-    <BackgroundWrapper imageURL={bg2}>
+    <BackgroundWrapper imageURL={BackgroundImage.bg2}>
       <KeyboardAwareScrollView
         contentContainerStyle={{
           flex: 1,

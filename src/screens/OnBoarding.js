@@ -8,9 +8,10 @@ import {BackgroundWrapper} from '../components/BackgroundWrapper';
 import bg1 from '../assets/bg1.png';
 import {FontStyle} from '../values/Font';
 import {COLORS} from '../values/Colors';
+import BackgroundImage from '../values/BackgroundImage';
 const OnBoarding = ({navigation, route}) => {
   return (
-    <BackgroundWrapper imageURL={bg1}>
+    <BackgroundWrapper imageURL={BackgroundImage.bg1}>
       <KeyboardAwareScrollView
         contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
         style={GlobalStyles.mainContainer}>

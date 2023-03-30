@@ -2,21 +2,33 @@ import {Button} from '../components/Button';
 import {GameWrapper} from '../components/GameWrapper';
 import {COLORS} from '../values/Colors';
 import {Text, StyleSheet} from 'react-native';
-import balloonBG from '../assets/balloonBG.png';
+import BackgroundImage from '../values/BackgroundImage';
 import {FontStyle} from '../values/Font';
-
-const values = {
-  BART: {
-    backgroundGradient: COLORS.balloonBGGradient,
-    imageURL: balloonBG,
-  },
-};
 
 const Transition = ({route, navigation}) => {
   const {state, cameFrom} = route.params;
   const currentLevel = state.level;
   const totalLevels = state.totalLevels;
-  const navigateTo = currentLevel === totalLevels ? 'Home' : cameFrom;
+
+  const values = {
+    BART: {
+      backgroundGradient: COLORS.balloonBGGradient,
+      imageURL: BackgroundImage.BART,
+      navigateTo: currentLevel === totalLevels ? 'Home' : 'BART',
+      navigateButtonText: currentLevel === totalLevels ? 'Home' : 'Next Level',
+      text:
+        currentLevel === totalLevels
+          ? 'You have completed the game. Press home to go back to home screen'
+          : `You have completed ${currentLevel}/${totalLevels} part of the game. Press next game to play further`,
+    },
+    SHARK: {
+      backgroundGradient: COLORS.sharkBGGrandient,
+      imageURL: BackgroundImage.SHARK,
+      navigateTo: 'Home',
+      navigateButtonText: 'Home',
+      text: 'You have completed the game. Press home to go back to home screen',
+    },
+  };
 
   return (
     <GameWrapper
@@ -25,10 +37,10 @@ const Transition = ({route, navigation}) => {
       controllerButtons={[
         <Button
           key="next_game"
-          title="Next Game"
+          title={values[cameFrom].navigateButtonText}
           style={styles.button}
           onPressIn={() => {
-            navigation.navigate(navigateTo);
+            navigation.navigate(values[cameFrom].navigateTo);
           }}
         />,
       ]}>
@@ -40,8 +52,7 @@ const Transition = ({route, navigation}) => {
           FontStyle.h4,
           {color: COLORS.textPrimary, textAlign: 'center', marginTop: '5%'},
         ]}>
-        You have completed {currentLevel}/{totalLevels} part of the game. Press
-        next game to play further
+        {values[cameFrom].text}
       </Text>
     </GameWrapper>
   );

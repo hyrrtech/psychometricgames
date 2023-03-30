@@ -14,10 +14,14 @@ import {
 } from 'react-native';
 import Svg from 'react-native-svg';
 import styles from './styles';
-import useDebounce from '../../utilities/useDebounce';
-import {InflatingBalloon, PoppedBalloon} from '../../components/Balloon';
 import {COLORS} from '../../values/Colors';
-import balloonBG from '../../assets/balloonBG.png';
+import BackgroundImage from '../../values/BackgroundImage';
+import useDebounce from '../../utilities/useDebounce';
+import {
+  InflatingBalloon,
+  PoppedBalloon,
+  ScorePopup,
+} from '../../components/Balloon';
 import {
   initialState,
   BALLOON_PUMP_ANIMATION_TIME,
@@ -30,7 +34,6 @@ import {AuthContext} from '../../providers/AuthProvider';
 import {GameWrapper} from '../../components/GameWrapper';
 import {Button} from '../../components/Button';
 import {InfoLabel} from '../../components/InfoLabel';
-import {ScorePopup} from '../../components/ScorePopup';
 import CompletedPopup from '../../components/CompletedPopup';
 
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
@@ -49,13 +52,13 @@ const BART = ({route, navigation}) => {
   const [completedPopup, setCompletedPopup] = useState(false);
   const sizeAnimation = useRef(new Animated.Value(scalingFactor * 15)).current;
   const flyAwayAnimation = useRef(new Animated.Value(0)).current;
-
   useEffect(() => {
     BARTRef.once('value', snapshot => {
       const exists = snapshot.exists();
       if (exists) {
         const data = snapshot.val();
-        const {level, totalScore, status, score_range} = data;
+        const {level, totalScore, status, score_range, number_of_weights} =
+          data;
         if (status === 'COMPLETED') {
           setCompletedPopup(true);
           return;
@@ -65,6 +68,7 @@ const BART = ({route, navigation}) => {
             type: ACTIONS.NEXT_LEVEL,
             payload: {
               level: level,
+              number_of_weights: number_of_weights,
               totalScore: totalScore,
               score_range: score_range,
               uid: user.uid,
@@ -75,6 +79,7 @@ const BART = ({route, navigation}) => {
         BARTRef.set({
           totalScore: 0,
           level: 1,
+          number_of_weights: state.number_of_weights,
           totalLevels: state.totalLevels,
           score_range: state.score_range,
           max_score_per_level: state.max_score_per_level,
@@ -103,7 +108,7 @@ const BART = ({route, navigation}) => {
       dispatch({type: ACTIONS.POP_ON_PUMP});
       setTimeout(() => {
         onLevelEnd();
-      }, 1500);
+      }, 1500); //1500 is popup animation duration
       return;
     }
     dispatch({type: ACTIONS.PUMP});
@@ -116,7 +121,7 @@ const BART = ({route, navigation}) => {
   }, BALLOON_PUMP_ANIMATION_TIME);
 
   const handleCollect = useDebounce(() => {
-    if (state.pumpCount !== 0) {
+    if (state.pumpCount !== 0 && state.showPopped === false) {
       Animated.timing(flyAwayAnimation, {
         toValue: 1,
         duration: BALLOON_FLYAWAY_ANIMATION_TIME,
@@ -124,13 +129,14 @@ const BART = ({route, navigation}) => {
       }).start(() => onLevelEnd());
     }
   }, BALLOON_FLYAWAY_ANIMATION_TIME);
+
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
     <CompletedPopup gameName="BART" />
   ) : (
     <GameWrapper
-      imageURL={balloonBG}
+      imageURL={BackgroundImage.BART}
       backgroundGradient={COLORS.balloonBGGradient}
       scoreboard={[
         <InfoLabel

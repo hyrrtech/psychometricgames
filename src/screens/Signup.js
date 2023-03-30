@@ -11,6 +11,7 @@ import bg3 from '../assets/bg3.png';
 import {FontStyle} from '../values/Font';
 import {COLORS} from '../values/Colors';
 import {AuthContext} from '../providers/AuthProvider';
+import BackgroundImage from '../values/BackgroundImage';
 
 const Signup = ({navigation, route}) => {
   const [formData, setFormData] = useState({});
@@ -37,7 +38,7 @@ const Signup = ({navigation, route}) => {
       });
   };
   return (
-    <BackgroundWrapper imageURL={bg3}>
+    <BackgroundWrapper imageURL={BackgroundImage.bg3}>
       <KeyboardAwareScrollView
         contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
         style={GlobalStyles.mainContainer}>

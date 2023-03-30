@@ -5,6 +5,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 //   createStackNavigator,
 // } from '@react-navigation/stack';
 import BART from '../screens/BART/BART';
+import SHARK from '../screens/SHARK/SHARK';
 import Transition from '../screens/Transition';
 import Home from '../screens/Home';
 const Stack = createNativeStackNavigator();
@@ -16,6 +17,7 @@ function MainStack() {
       screenOptions={{headerShown: false, animation: 'slide_from_right'}}>
       <Stack.Screen name="Home" component={Home} options={screenOptions} />
       <Stack.Screen name="BART" component={BART} options={screenOptions} />
+      <Stack.Screen name="SHARK" component={SHARK} options={screenOptions} />
       <Stack.Screen
         name="Transition"
         component={Transition}

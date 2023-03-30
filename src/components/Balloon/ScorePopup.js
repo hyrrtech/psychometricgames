@@ -1,6 +1,6 @@
 import {useRef, useEffect, useState} from 'react';
 import {Animated, Text, StyleSheet} from 'react-native';
-export const ScorePopup = ({scoreIncrement, pumpCount, POP_POINT}) => {
+const ScorePopup = ({scoreIncrement, pumpCount, POP_POINT}) => {
   const [visible, setVisible] = useState(false);
   const animation = useRef(new Animated.Value(1)).current;
 
@@ -51,3 +51,5 @@ const styles = StyleSheet.create({
     color: 'rgb(252, 186, 40)',
   },
 });
+
+export default ScorePopup;

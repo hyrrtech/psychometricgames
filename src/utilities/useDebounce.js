@@ -3,10 +3,10 @@ import {useState} from 'react';
 function useDebounce(callback, delay) {
   const [isReady, setIsReady] = useState(true);
 
-  function handleClick() {
+  function handleClick(...args) {
     if (isReady) {
       setIsReady(false);
-      callback();
+      callback(...args);
 
       setTimeout(() => {
         setIsReady(true);

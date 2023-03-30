@@ -7,12 +7,17 @@ const TestScreen = ({navigation}) => {
   // console.log(user);
   return (
     <View>
-      <Text>{user.displayName}</Text>
       <Button
         onPress={() => {
           navigation.navigate('BART');
         }}
         title="Balloon"
+      />
+      <Button
+        onPress={() => {
+          navigation.navigate('SHARK');
+        }}
+        title="Shark"
       />
       <Button onPress={signout} title="signout" />
     </View>

@@ -1,6 +1,6 @@
 import balloon_pump from '../../assets/sounds/balloon_pump.wav';
 import {PlaySound} from '../../utilities/PlaySound';
-import {HIGH_RISK_POINT, NUMBER_OF_WEIGHTS} from './initialState';
+import {HIGH_RISK_POINT} from './initialState';
 import {balloonPopPoint} from '../../utilities/BART';
 import db from '../../firebase/database';
 
@@ -46,14 +46,17 @@ export function reducer(state, action) {
         level: state.level + 1,
         curr_score: 0,
         pumpCount: 0,
-        pop_point: balloonPopPoint(HIGH_RISK_POINT + 2, NUMBER_OF_WEIGHTS),
+        pop_point: balloonPopPoint(
+          HIGH_RISK_POINT + 2,
+          state.number_of_weights,
+        ),
         showPopped: false,
       };
       if (state.level >= state.totalLevels) {
         newState.status = 'COMPLETED';
       }
 
-      if (state.pop_point !== state.pumpCount) {
+      if (state.pop_point > state.pumpCount) {
         const newState1 = {
           ...newState,
           totalScore: state.totalScore + state.curr_score,
@@ -61,11 +64,13 @@ export function reducer(state, action) {
         if (
           action.payload.level &&
           action.payload.totalScore &&
-          action.payload.score_range
+          action.payload.score_range &&
+          action.payload.number_of_weights
         ) {
           newState1.score_range = action.payload.score_range;
           newState1.totalScore = action.payload.totalScore;
           newState1.level = action.payload.level;
+          newState1.number_of_weights = action.payload.number_of_weights;
         } else {
           updateBartData(
             {
