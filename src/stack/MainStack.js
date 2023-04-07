@@ -9,7 +9,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Login from '../screens/Login';
 import Signup from '../screens/Signup';
 import GetStarted from '../screens/GetStarted';
-import AnimatedBalloon from '../screens/AnimationBalloon';
+import BalloonGame from '../screens/BalloonGame';
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
 
@@ -28,7 +28,7 @@ function MainStack() {
         />
         <Stack.Screen
           name="Balloon"
-          component={AnimatedBalloon}
+          component={BalloonGame}
           options={screenOptions}
         />
         <Stack.Screen

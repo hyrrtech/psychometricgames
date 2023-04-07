@@ -19,7 +19,7 @@ export const LoginForm = () => {
       <Input
         placeholder="E-mail"
         style={{borderRadius: 9, backgroundColor: COLORS.secondary}}
-        color={COLORS.textSecondary}
+        textColor={COLORS.textSecondary}
         placeholderTextColor={COLORS.textSecondary}
         iconColor={COLORS.icon}
         icon={faUser}
@@ -29,9 +29,8 @@ export const LoginForm = () => {
         placeholder="Password"
         style={{borderRadius: 9, backgroundColor: COLORS.secondary}}
         secureTextEntry={true}
-        color={COLORS.textSecondary}
+        textColor={COLORS.textSecondary}
         placeholderTextColor={COLORS.textSecondary}
-        icon={faEyeSlash}
         iconColor={COLORS.icon}
         onChangeText={text => handleChange(text, 'password')}
       />
