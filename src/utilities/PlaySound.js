@@ -1,5 +1,5 @@
 import Sound from 'react-native-sound';
-export const PlaySound = file => {
+const PlaySound = file => {
   Sound.setCategory('Playback');
   var sound = new Sound(file, error => {
     if (error) {
@@ -7,12 +7,13 @@ export const PlaySound = file => {
       return;
     } else {
       sound.play(success => {
-        if (!success) {
+        if (success) {
+          sound.release();
+        } else {
           console.log('Issue playing file');
         }
       });
     }
   });
-  sound.setVolume(1);
-  sound.release();
 };
+export default PlaySound;

@@ -16,7 +16,7 @@ import Svg from 'react-native-svg';
 import styles from './styles';
 import {COLORS} from '../../values/Colors';
 import BackgroundImage from '../../values/BackgroundImage';
-import useDebounce from '../../utilities/useDebounce';
+import {PlaySound, useDebounce} from '../../utilities';
 import {
   InflatingBalloon,
   PoppedBalloon,
@@ -35,6 +35,7 @@ import {GameWrapper} from '../../components/GameWrapper';
 import {Button} from '../../components/Button';
 import {InfoLabel} from '../../components/InfoLabel';
 import CompletedPopup from '../../components/CompletedPopup';
+import balloon_pump from '../../assets/sounds/balloon_pump.wav';
 
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 const windowHeight = Dimensions.get('window').height;
@@ -46,14 +47,17 @@ const scalingFactor =
 
 const BART = ({route, navigation}) => {
   const {user} = useContext(AuthContext);
-  const BARTRef = db.ref(`/users/${user.uid}/BART/`);
+  const GameRef = db.ref(`/users/${user.uid}/BART/`);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [loading, setLoading] = useState(true);
   const [completedPopup, setCompletedPopup] = useState(false);
+
+  //init animations
   const sizeAnimation = useRef(new Animated.Value(scalingFactor * 15)).current;
   const flyAwayAnimation = useRef(new Animated.Value(0)).current;
+
   useEffect(() => {
-    BARTRef.once('value', snapshot => {
+    GameRef.once('value', snapshot => {
       const exists = snapshot.exists();
       if (exists) {
         const data = snapshot.val();
@@ -65,7 +69,7 @@ const BART = ({route, navigation}) => {
         }
         if (level !== 1)
           dispatch({
-            type: ACTIONS.NEXT_LEVEL,
+            type: ACTIONS.NEXT_LEVEL, //make init_level for this
             payload: {
               level: level,
               number_of_weights: number_of_weights,
@@ -76,7 +80,8 @@ const BART = ({route, navigation}) => {
           });
         setLoading(false);
       } else {
-        BARTRef.set({
+        GameRef.set({
+          //make ACTION for this (INIT_DB)
           totalScore: 0,
           level: 1,
           number_of_weights: state.number_of_weights,
@@ -111,6 +116,7 @@ const BART = ({route, navigation}) => {
       }, 1500); //1500 is popup animation duration
       return;
     }
+    PlaySound(balloon_pump);
     dispatch({type: ACTIONS.PUMP});
     Animated.timing(sizeAnimation, {
       toValue: sizeAnimation._value + scalingFactor,
@@ -144,12 +150,14 @@ const BART = ({route, navigation}) => {
           value={state.totalScore || '0'}
           style={styles.infoLabel}
           key="total_score"
+          showAnimation={true}
         />,
         <InfoLabel
           label={'Score'}
           value={state.curr_score || '0'}
           style={styles.infoLabel}
           key="score"
+          showAnimation={true}
         />,
       ]}
       level={

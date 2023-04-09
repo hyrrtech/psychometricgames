@@ -8,4 +8,6 @@ export const COLORS = {
   gradient: ['rgba(255, 255, 255, 0.1)', 'rgb(84, 214, 234)'],
   balloonBGGradient: ['#128C7E', '#54D6EA'],
   sharkBGGrandient: ['#128C7E', '#54D6EA'],
+  memoryMatrixBGGradient: ['#128C7E', '#54D6EA'],
+  killTheSpiderBGGradient: ['#128C7E', '#54D6EA'],
 };

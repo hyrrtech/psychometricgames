@@ -7,7 +7,6 @@ import {SignupForm} from '../components/SignupForm';
 import google from '../assets/google.png';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 import {BackgroundWrapper} from '../components/BackgroundWrapper';
-import bg3 from '../assets/bg3.png';
 import {FontStyle} from '../values/Font';
 import {COLORS} from '../values/Colors';
 import {AuthContext} from '../providers/AuthProvider';
@@ -38,7 +37,7 @@ const Signup = ({navigation, route}) => {
       });
   };
   return (
-    <BackgroundWrapper imageURL={BackgroundImage.bg3}>
+    <BackgroundWrapper imageURL={BackgroundImage.signup}>
       <KeyboardAwareScrollView
         contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
         style={GlobalStyles.mainContainer}>

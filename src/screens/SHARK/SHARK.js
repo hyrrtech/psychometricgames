@@ -1,5 +1,6 @@
 import React, {useReducer, useEffect, useContext, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
+import {PlaySound, useDebounce} from '../../utilities';
 // import CompletedPopup from '../../components/CompletedPopup';
 import {InfoLabel} from '../../components/InfoLabel';
 import {GameWrapper} from '../../components/GameWrapper';
@@ -14,14 +15,16 @@ import {reducer, ACTIONS} from './reducer';
 import styles from './styles';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
-import {useCountdown} from '../../utilities/SHARK';
+import {useCountdown} from '../../utilities';
 import left_button from '../../assets/left_button.png';
 import right_button from '../../assets/right_button.png';
-import useDebounce from '../../utilities/useDebounce';
+
+import correct_sound from '../../assets/sounds/correct_sound.mp3';
+import wrong_sound from '../../assets/sounds/wrong_sound.mp3';
 
 const SHARK = ({navigation}) => {
   const {user} = useContext(AuthContext);
-  const SHARKRef = db.ref(`/users/${user.uid}/SHARK/`);
+  const GameRef = db.ref(`/users/${user.uid}/SHARK/`);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [loading, setLoading] = useState(true);
   const [completedPopup, setCompletedPopup] = useState(false);
@@ -31,7 +34,7 @@ const SHARK = ({navigation}) => {
   const time = useCountdown(minutes, seconds);
 
   useEffect(() => {
-    SHARKRef.once('value', snapshot => {
+    GameRef.once('value', snapshot => {
       const exists = snapshot.exists();
       if (exists) {
         const data = snapshot.val();
@@ -58,7 +61,7 @@ const SHARK = ({navigation}) => {
         cameFrom: 'SHARK',
       });
     }
-  }, [time]);
+  }, [!completedPopup && time]);
 
   const handlePress = useDebounce(direction => {
     //get middle shark direction
@@ -68,13 +71,15 @@ const SHARK = ({navigation}) => {
     const middleSharkDirection = matrix[middleRow][middleColumn];
 
     //show result
-    middleSharkDirection === direction
+    const checkIfCorrect = middleSharkDirection === direction;
+    checkIfCorrect ? PlaySound(correct_sound) : PlaySound(wrong_sound);
+    checkIfCorrect
       ? setResult({show: true, value: 'correct'})
       : setResult({show: true, value: 'wrong'});
     setTimeout(() => {
       dispatch({
         type: ACTIONS.NEXT_LEVEL,
-        payload: {correct: middleSharkDirection === direction, uid: user.uid},
+        payload: {correct: checkIfCorrect, uid: user.uid},
       });
       setResult({...result, show: false});
     }, ResultAnimationTime * 2);

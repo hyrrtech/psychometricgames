@@ -11,9 +11,11 @@ const ScorePopup = ({scoreIncrement, pumpCount, POP_POINT}) => {
         toValue: 0,
         duration: 500,
         useNativeDriver: true,
-      }).start(() => {
-        setVisible(false);
-        animation.setValue(1);
+      }).start(({finished}) => {
+        if (finished) {
+          setVisible(false);
+          animation.setValue(1);
+        }
       });
     }
   }, [pumpCount]);

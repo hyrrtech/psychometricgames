@@ -1,10 +1,10 @@
 import {generateMatrix} from '../../utilities/SHARK';
 
-export const ResultAnimationTime = 300;
+export const ResultAnimationTime = 350;
 const initialRows = 5;
 const initialCols = 3;
 const initialEmptyProb = 0.5;
-const time = {minutes: 0, seconds: 10};
+const time = {minutes: 1, seconds: 30};
 
 const initialState = {
   rows: initialRows,

@@ -7,9 +7,8 @@ export const ACTIONS = {
 };
 
 const updateDB = (state, uid) => {
-  const SHARKRef = db.ref(`/users/${uid}/SHARK/`);
-  console.log(state.status, 'inside update function');
-  SHARKRef.update({
+  const GameRef = db.ref(`/users/${uid}/SHARK/`);
+  GameRef.update({
     total_rounds_played: state.total_rounds_played,
     correct_guesses: state.correct_guesses,
     wrong_guesses: state.wrong_guesses,

@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {Animated} from 'react-native';
 import {Path, Ellipse, G} from 'react-native-svg';
-import {PlaySound} from '../../utilities/PlaySound';
+import {PlaySound} from '../../utilities/';
 import balloon_pop from '../../assets/sounds/balloon_pop.wav';
 
 const AnimatedG = Animated.createAnimatedComponent(G);

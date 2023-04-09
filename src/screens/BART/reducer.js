@@ -1,5 +1,3 @@
-import balloon_pump from '../../assets/sounds/balloon_pump.wav';
-import {PlaySound} from '../../utilities/PlaySound';
 import {HIGH_RISK_POINT} from './initialState';
 import {balloonPopPoint} from '../../utilities/BART';
 import db from '../../firebase/database';
@@ -11,15 +9,15 @@ export const ACTIONS = {
 };
 
 const updateBartData = (state, uid) => {
-  const BARTRef = db.ref(`/users/${uid}/BART/`);
+  const GameRef = db.ref(`/users/${uid}/BART/`);
   const newAttempt = {
     score: state.curr_score,
     pumpCount: state.pumpCount,
     level: state.level,
     pop_point: state.pop_point,
   };
-  BARTRef.child('attempts').push(newAttempt);
-  BARTRef.update({
+  GameRef.child('attempts').push(newAttempt);
+  GameRef.update({
     level: state.level === state.totalLevels ? state.level : state.level + 1,
     totalScore: state.totalScore,
     status: state.status,
@@ -29,7 +27,6 @@ const updateBartData = (state, uid) => {
 export function reducer(state, action) {
   switch (action.type) {
     case ACTIONS.PUMP:
-      PlaySound(balloon_pump);
       return {
         ...state,
         pumpCount: state.pumpCount + 1,
@@ -38,9 +35,9 @@ export function reducer(state, action) {
       };
 
     case ACTIONS.POP_ON_PUMP:
-      return {...state, showPopped: true};
+      return {...state, showPopped: true}; //test changing curr_score=0
 
-    case ACTIONS.NEXT_LEVEL:
+    case ACTIONS.NEXT_LEVEL: //old implementation
       const newState = {
         ...state,
         level: state.level + 1,

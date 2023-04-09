@@ -6,7 +6,6 @@ import {Logo} from '../components/Logo';
 import {BackgroundWrapper} from '../components/BackgroundWrapper';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 import {LoginForm} from '../components/LoginForm';
-import bg2 from '../assets/bg2.png';
 import {COLORS} from '../values/Colors';
 import {FontStyle} from '../values/Font';
 import google from '../assets/google.png';
@@ -38,7 +37,7 @@ const Login = ({navigation, route}) => {
       });
   };
   return (
-    <BackgroundWrapper imageURL={BackgroundImage.bg2}>
+    <BackgroundWrapper imageURL={BackgroundImage.login}>
       <KeyboardAwareScrollView
         contentContainerStyle={{
           flex: 1,

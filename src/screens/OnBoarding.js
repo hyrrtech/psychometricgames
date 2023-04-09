@@ -5,13 +5,12 @@ import {Logo} from '../components/Logo';
 import Constants from '../constants/Constants';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 import {BackgroundWrapper} from '../components/BackgroundWrapper';
-import bg1 from '../assets/bg1.png';
 import {FontStyle} from '../values/Font';
 import {COLORS} from '../values/Colors';
 import BackgroundImage from '../values/BackgroundImage';
 const OnBoarding = ({navigation, route}) => {
   return (
-    <BackgroundWrapper imageURL={BackgroundImage.bg1}>
+    <BackgroundWrapper imageURL={BackgroundImage.onboarding}>
       <KeyboardAwareScrollView
         contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
         style={GlobalStyles.mainContainer}>

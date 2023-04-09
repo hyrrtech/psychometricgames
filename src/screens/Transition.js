@@ -1,20 +1,22 @@
+import {useEffect} from 'react';
 import {Button} from '../components/Button';
 import {GameWrapper} from '../components/GameWrapper';
 import {COLORS} from '../values/Colors';
-import {Text, StyleSheet} from 'react-native';
+import {Text, StyleSheet, BackHandler} from 'react-native';
 import BackgroundImage from '../values/BackgroundImage';
 import {FontStyle} from '../values/Font';
 
 const Transition = ({route, navigation}) => {
   const {state, cameFrom} = route.params;
-  const currentLevel = state.level;
-  const totalLevels = state.totalLevels;
+  const currentLevel = state?.level;
+  const totalLevels = state?.totalLevels;
 
   const values = {
     BART: {
       backgroundGradient: COLORS.balloonBGGradient,
       imageURL: BackgroundImage.BART,
       navigateTo: currentLevel === totalLevels ? 'Home' : 'BART',
+
       navigateButtonText: currentLevel === totalLevels ? 'Home' : 'Next Level',
       text:
         currentLevel === totalLevels
@@ -28,8 +30,32 @@ const Transition = ({route, navigation}) => {
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press home to go back to home screen',
     },
+    MemoryMatrix: {
+      backgroundGradient: COLORS.memoryMatrixBGGradient,
+      imageURL: BackgroundImage.MemoryMatrix,
+      navigateTo: 'Home',
+      navigateButtonText: 'Home',
+      text: 'You have completed the game. Press Home to go back to home screen',
+    },
+    KillTheSpider: {
+      backgroundGradient: COLORS.killTheSpiderBGGradient,
+      imageURL: BackgroundImage.KillTheSpider,
+      navigateTo: 'Home',
+      navigateButtonText: 'Home',
+      text: 'You have completed the game. Press Home to go back to home screen',
+    },
   };
-
+  //prevent navigation to gamescreen when back button is pressed if the game is over
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        navigation.navigate(values[cameFrom].navigateTo);
+        return true;
+      },
+    );
+    return () => backHandler.remove();
+  }, []);
   return (
     <GameWrapper
       imageURL={values[cameFrom].imageURL}
@@ -44,13 +70,17 @@ const Transition = ({route, navigation}) => {
           }}
         />,
       ]}>
-      <Text style={[FontStyle.h3, {color: COLORS.textPrimary}]}>
+      <Text style={[FontStyle.h3, {color: COLORS.textSecondary}]}>
         CONGRATULATIONS
       </Text>
       <Text
         style={[
           FontStyle.h4,
-          {color: COLORS.textPrimary, textAlign: 'center', marginTop: '5%'},
+          {
+            color: COLORS.textSecondary,
+            textAlign: 'center',
+            marginTop: '5%',
+          },
         ]}>
         {values[cameFrom].text}
       </Text>
@@ -61,10 +91,10 @@ const Transition = ({route, navigation}) => {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: COLORS.primary,
-    color: COLORS.textSecondary,
     borderRadius: 10,
     paddingHorizontal: '10%',
     paddingVertical: '5%',
+    color: COLORS.textSecondary,
   },
 });
 export default Transition;
