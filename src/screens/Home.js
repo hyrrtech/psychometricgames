@@ -38,9 +38,9 @@ const TestScreen = ({navigation}) => {
       />
       <Button
         onPress={() => {
-          navigation.navigate('Test');
+          navigation.navigate('TrainOfThoughts');
         }}
-        title="Test"
+        title="TrainOfThoughts"
         style={styles.button}
       />
       <Button onPress={signout} title="signout" />

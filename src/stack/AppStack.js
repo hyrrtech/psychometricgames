@@ -1,16 +1,13 @@
 import * as React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-// import {
-//   CardStyleInterpolators,
-//   createStackNavigator,
-// } from '@react-navigation/stack';
+
 import Home from '../screens/Home';
 import BART from '../screens/BART/BART';
 import SHARK from '../screens/SHARK/SHARK';
 import MemoryMatrix from '../screens/Memory Matrix/MemoryMatrix';
 import Transition from '../screens/Transition';
 import KillTheSpider from '../screens/Kill The Spider/KillTheSpider';
-import Test from '../screens/Test';
+import TrainOfThoughts from '../screens/Train of Thoughts';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
@@ -32,7 +29,11 @@ function MainStack() {
         component={KillTheSpider}
         options={screenOptions}
       />
-      <Stack.Screen name="Test" component={Test} options={screenOptions} />
+      <Stack.Screen
+        name="TrainOfThoughts"
+        component={TrainOfThoughts}
+        options={screenOptions}
+      />
       <Stack.Screen
         name="Transition"
         component={Transition}
