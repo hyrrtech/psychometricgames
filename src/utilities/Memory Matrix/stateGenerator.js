@@ -1,4 +1,4 @@
-import {gameRoundData, generateMatrix} from '.';
+import {gameRoundData, generateMatrix, generateEmptyMatrix} from '.';
 
 const stateGenerator = level => {
   return {
@@ -14,6 +14,7 @@ const stateGenerator = level => {
       gameRoundData[level - 1].nTile,
       gameRoundData[level - 1].correctTileCount,
     ),
+    userMatrix: generateEmptyMatrix(gameRoundData[level - 1].nTile),
   };
 };
 

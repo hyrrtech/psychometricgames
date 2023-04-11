@@ -19,6 +19,7 @@ const updateLevelPass = (state, uid) => {
   const newAttempt = {
     level: state.level,
     matrix: state.matrix,
+    userMatrix: state.userMatrix,
     status: 'PASSED',
   };
   GameRef.child('attempts').push(newAttempt);
@@ -32,6 +33,7 @@ const updateLevelFail = (state, uid) => {
   const newAttempt = {
     level: state.level,
     matrix: state.matrix,
+    userMatrix: state.userMatrix,
     status: 'FAILED',
   };
   GameRef.child('attempts').push(newAttempt);
@@ -66,6 +68,12 @@ export function reducer(state, action) {
       tile.isSelected = true;
 
       let newState = {...state};
+
+      //update user matrix
+      newState.userMatrix[rowIndex][colIndex] =
+        gameRoundData[state.level - 1].correctTileCount -
+        newState.remainingClickCount +
+        1;
 
       newState.remainingClickCount--;
 
