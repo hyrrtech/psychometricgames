@@ -50,6 +50,30 @@ const TrainOfThoughts = () => {
     state.duration.minutes,
     state.duration.seconds,
   );
+  useEffect(() => {
+    GameRef.once('value', snapshot => {
+      const exists = snapshot.exists();
+      if (exists) {
+        const data = snapshot.val();
+        let {level, status, score} = data;
+        level = level ? level : 1;
+
+        if (status === 'COMPLETED') {
+          setCompletedPopup(true);
+          return;
+        }
+        dispatch({
+          type: ACTIONS.INIT_LEVEL,
+          payload: {
+            level: level,
+            score: score,
+          },
+        });
+      }
+    })
+      .then(() => setLoading(false))
+      .catch(err => console.log(err));
+  }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -91,10 +115,7 @@ const TrainOfThoughts = () => {
         cameFrom: 'TrainOfThoughts',
       });
     }
-  }, [
-    // !completedPopup &&
-    TIME,
-  ]);
+  }, [!completedPopup && TIME]);
 
   const renderMap = switchObj => {
     let elements = [];
@@ -139,7 +160,11 @@ const TrainOfThoughts = () => {
   };
 
   const curveCoordinates = adjustCoordinates({x: 370, y: 626});
-  return (
+  return loading ? (
+    <ActivityIndicator size="large" color="#0000ff" />
+  ) : completedPopup ? (
+    <CompletedPopup gameName="MemoryMatrix" />
+  ) : (
     <GameWrapper
       imageURL={BackgroundImage.TrainofThoughts}
       backgroundGradient={COLORS.trainOfThoughtsBGGradient}

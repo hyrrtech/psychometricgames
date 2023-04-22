@@ -1,11 +1,11 @@
 import db from '../../firebase/database';
 import {gameRoundData, stateGenerator} from '../../utilities/Train of Thoughts';
-// import {stateGenerator, time} from '../../utilities/Kill the Spider';
 
 export const ACTIONS = {
   ON_REACH_STATION: 'on_reach_station',
   ON_TIME_UP: 'on_time_up',
   NEXT_LEVEL: 'next_level',
+  INIT_LEVEL: 'init_level',
 };
 
 const updateDB = (state, uid) => {
@@ -28,6 +28,12 @@ const updateDB = (state, uid) => {
 
 export function reducer(state, action) {
   switch (action.type) {
+    case ACTIONS.INIT_LEVEL:
+      const {level, score} = action.payload;
+      var newState = stateGenerator(level);
+      newState.score = score;
+      return newState;
+
     case ACTIONS.ON_REACH_STATION:
       const {intendedStation, stationReached} = action.payload;
       var newState = {...state};
