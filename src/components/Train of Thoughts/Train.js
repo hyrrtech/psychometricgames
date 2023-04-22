@@ -1,80 +1,171 @@
 import {useEffect, useState, useRef, useContext} from 'react';
-import {View, Text, Animated, Easing} from 'react-native';
+import {Animated, Easing} from 'react-native';
+import TrainSvg from './SVG/TrainSvg';
 import {TrainOfThoughtsContext} from '../../providers/TrainOfThoughts.Provider';
-const offsetX = 10;
-const offsetY = 10;
-const speed = 150;
+import {
+  adjustCoordinates,
+  fillSwitchesPassed,
+  getSegmentLength,
+  getLastSwitchChanged,
+} from '../../utilities/Train of Thoughts';
 
-export const Train = ({id}) => {
-  const {setTrains, path, trains} = useContext(TrainOfThoughtsContext);
-  const currentIndex = useRef(1);
-  const trainPosition = useRef(
-    new Animated.ValueXY({x: path[0].x - offsetX, y: path[0].y - offsetY}),
-  ).current;
-  const [trainPositionState, setTrainPositionState] = useState({
-    x: path[0].x,
-    y: path[0].y,
-  });
-  const getSegmentLength = (start, end) => {
-    const dx = end.x - start.x;
-    const dy = end.y - start.y;
-    return Math.sqrt(dx ** 2 + dy ** 2);
+const initialSegment = [
+  adjustCoordinates({x: 375, y: 850}),
+  adjustCoordinates({x: 375, y: 637.5}),
+];
+
+const Train = ({color, id, setTrains, dispatch}) => {
+  const {path, trainSize, switchSize, speed, switchDirections} = useContext(
+    TrainOfThoughtsContext,
+  );
+  const prevSwitchDirections = useRef([]);
+  const switchesPassed = useRef([]);
+  let segmentStartTime = useRef(Date.now());
+  const [trainDirection, setTrainDirection] = useState([{rotate: '0rad'}]);
+
+  const generatePath = switchObj => {
+    let path = [];
+    const id = switchObj.id;
+    const currentDirection = switchDirections[id - 1];
+    const switchPath = switchObj[currentDirection];
+
+    path.push(
+      adjustCoordinates({
+        x: switchObj.x + switchSize / 2,
+        y: switchObj.y + switchSize / 2,
+        id: id,
+      }),
+    );
+
+    if (switchPath?.switch) {
+      path = path.concat(generatePath(switchPath.switch));
+    } else if (switchPath?.destination) {
+      const destination = adjustCoordinates({
+        x: switchPath.destination.x + switchSize / 2,
+        y: switchPath.destination.y + switchSize / 2,
+        color: switchPath.destination.color,
+      });
+      path.push(destination);
+    }
+    return path;
   };
 
-  // function remove1stTrain(trains) {
-  //   const newTrains = [...trains];
-  //   console.log(newTrains, 'newTrains before splice');
-  //   newTrains.splice(0, 1);
-  //   console.log(newTrains, 'newTrains after splice');
-  //   setTrains(newTrains);
-  // }
+  const [PATH, setPATH] = useState([
+    ...initialSegment,
+    ...generatePath(path.switch),
+  ]);
 
-  const moveTrain = PATH => {
+  var offsetX = 0;
+  var offsetY = trainSize / 2;
+  const currentIndex = useRef(1);
+  const trainPosition = useRef(
+    new Animated.ValueXY({x: PATH[0].x - offsetX, y: PATH[0].y - offsetY}),
+  ).current;
+
+  useEffect(() => {
+    const changedSwitchIndex = getLastSwitchChanged(
+      prevSwitchDirections.current,
+      switchDirections,
+    );
+    prevSwitchDirections.current = switchDirections;
+    if (switchesPassed.current.includes(changedSwitchIndex)) {
+      return;
+    }
+    setPATH([...initialSegment, ...generatePath(path.switch)]);
+  }, [switchDirections]);
+
+  const moveTrain = async PATH => {
     let index = currentIndex.current;
-
     if (index < PATH.length) {
       const segmentLength = getSegmentLength(PATH[index - 1], PATH[index]);
-      const duration = segmentLength * (1000 / speed); // adjust speed as desired
+      const duration = segmentLength * (1000 / speed);
+      const startTime = segmentStartTime.current || Date.now();
+      const elapsedTime = Date.now() - startTime;
+      const remainingDuration = duration - elapsedTime;
+
+      const nextPoint = PATH[index];
+      const deltaX = nextPoint.x - PATH[index - 1].x;
+      const deltaY = nextPoint.y - PATH[index - 1].y;
+      const direction = Math.atan2(deltaY, deltaX);
+      const directionInDegrees = Math.ceil((direction * 180) / Math.PI);
+
+      let trainDirectionProps = [{rotate: `${directionInDegrees}deg`}];
+
+      if (directionInDegrees === 180) {
+        trainDirectionProps = [{rotate: `${0}deg`}, {scaleX: -1}];
+      } else if (directionInDegrees === -90) {
+        trainDirectionProps = [{rotate: `${90}deg`}, {scaleX: -1}];
+      } else if (directionInDegrees <= 0) {
+        trainDirectionProps = [{rotate: `${0}deg`}, {scaleX: -1}];
+      } else {
+        trainDirectionProps = [{rotate: `${directionInDegrees}deg`}];
+      }
+
+      setTrainDirection(trainDirectionProps);
+      if (PATH[index]?.id) {
+        switchesPassed.current = Array.from(
+          new Set([
+            ...switchesPassed.current,
+            ...fillSwitchesPassed(PATH[index].id),
+          ]),
+        );
+      }
       Animated.timing(trainPosition, {
         toValue: {x: PATH[index].x - offsetX, y: PATH[index].y - offsetY},
-        duration,
+        duration: remainingDuration,
         easing: Easing.linear,
         useNativeDriver: true,
       }).start(({finished}) => {
-        if (finished && index < PATH.length - 1) {
-          currentIndex.current = index + 1;
+        if (finished && index < PATH.length) {
+          if (PATH[index]?.id) {
+            switchesPassed.current = Array.from(
+              new Set([...switchesPassed.current, PATH[index].id]),
+            );
+          }
+          if (PATH[index]?.color) {
+            if (PATH[index].color === color) {
+              // console.log('reached correct station, trainColor:', color);
+            } else {
+              // console.log('reached wrong station trainColor:', color);
+            }
+            setTrains(prev => {
+              const newTrains = [...prev];
+              const trainIndex = newTrains.findIndex(
+                train => train.trainId === id,
+              );
+              newTrains.splice(trainIndex, 1);
+              return newTrains;
+            });
+          }
+
+          ++currentIndex.current;
+          segmentStartTime.current = Date.now();
           moveTrain(PATH);
         }
-      });
-      setTrainPositionState({
-        x: PATH[index].x,
-        y: PATH[index].y,
       });
     }
   };
 
   useEffect(() => {
-    moveTrain(path);
-  }, [path]);
+    moveTrain(PATH);
+  }, [PATH]);
 
   return (
     <Animated.View
       style={[
-        {
-          left: 0,
-          top: 0,
-          height: 40,
-          width: 40,
-          borderWidth: 1,
-          borderColor: 'black',
-          position: 'absolute',
-          backgroundColor: 'white',
-        },
         trainPosition.getTranslateTransform(),
+        {left: 0, top: 0, position: 'absolute', zIndex: 20},
       ]}>
-      <Text>{`x=${Math.floor(trainPositionState.x)} y=${Math.floor(
-        trainPositionState.y,
-      )}`}</Text>
+      <TrainSvg
+        height={trainSize}
+        width={trainSize}
+        color={color}
+        styles={{
+          transform: trainDirection,
+        }}
+      />
     </Animated.View>
   );
 };
+
+export default Train;

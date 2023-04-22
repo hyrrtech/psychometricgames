@@ -1,49 +1,57 @@
-import React, {createContext, useState, useEffect} from 'react';
+import React, {createContext, useState, useEffect, useMemo} from 'react';
 import {Dimensions} from 'react-native';
-
+import path from '../screens/Train of Thoughts/PATH';
+import {getColors} from '../utilities/Train of Thoughts';
 export const TrainOfThoughtsContext = createContext();
 
 export const TrainOfThoughtsProvider = ({children}) => {
-  const [trains, setTrains] = useState([0]);
-  const adjustPathCoordinates = path => {
-    const {width, height} = Dimensions.get('window');
-    const scaleX = width / 1000;
-    const scaleY = height / 1000;
+  const {width, height} = Dimensions.get('window');
+  const trainSize = width * 0.1;
+  const pathSize = width * 0.06;
+  const curveSize = pathSize + 5;
+  const switchSize = width * 0.12;
+  const stationSize = width * 0.15;
+  const speed = 50;
 
-    return path.map(point => ({
-      x: point.x * scaleX,
-      y: point.y * scaleY,
-    }));
+  const trainColors = useMemo(() => getColors(path(switchSize, pathSize)), []);
+
+  const originalSwitchDirections = {
+    1: ['horizontal_left', 'horizontal'],
+    2: ['horizontal', 'horizontal_right'],
+    3: ['vertical_left_down', 'vertical'],
+    4: ['horizontal', 'horizontal_left'],
+    5: ['vertical_left_down', 'vertical'],
+    6: ['vertical', 'vertical_right'],
+    7: ['horizontal', 'horizontal_left_up'],
+    8: ['vertical_right', 'vertical'],
+    9: ['vertical_right', 'vertical'],
+    10: ['vertical_left', 'vertical'],
+    11: ['horizontal_left', 'horizontal'],
+    12: ['vertical', 'vertical_left'],
+    13: ['horizontal_right', 'horizontal'],
   };
 
-  const [path, setPath] = useState(
-    adjustPathCoordinates([
-      {x: 50, y: 50},
-      {x: 50, y: 700},
-      {x: 400, y: 700},
-      {x: 900, y: 50},
-      {x: 50, y: 50},
-    ]),
+  const switchDirectionArray = Object.values(originalSwitchDirections).map(
+    switchDirection => switchDirection[0],
   );
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      //colors can be used to differentiate trains
-      setTrains([...trains, trains[trains.length - 1] + 1]);
-    }, 2000);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [trains]);
+  const [switchDirections, setSwitchDirections] =
+    useState(switchDirectionArray);
 
   return (
     <TrainOfThoughtsContext.Provider
       value={{
-        trains,
-        setTrains,
-        path,
-        setPath,
+        trainColors,
+        path: path(50, 26),
+        trainSize,
+        pathSize,
+        switchSize,
+        stationSize,
+        curveSize,
+        speed,
+        switchDirections,
+        setSwitchDirections,
+        originalSwitchDirections,
       }}>
       {children}
     </TrainOfThoughtsContext.Provider>

@@ -10,4 +10,5 @@ export const COLORS = {
   sharkBGGrandient: ['#128C7E', '#54D6EA'],
   memoryMatrixBGGradient: ['#128C7E', '#54D6EA'],
   killTheSpiderBGGradient: ['#128C7E', '#54D6EA'],
+  trainOfThoughtsBGGradient: ['#128C7E', '#54D6EA'],
 };
