@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext, useReducer} from 'react';
-import {View} from 'react-native';
+import {View, ActivityIndicator} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
@@ -27,6 +27,7 @@ import {
 import CurveSVG from '../../components/Train of Thoughts/SVG/CurveSVG';
 
 const TrainOfThoughts = () => {
+  const navigation = useNavigation();
   const {
     trainColors,
     path,
@@ -35,28 +36,27 @@ const TrainOfThoughts = () => {
     stationSize,
     originalSwitchDirections,
   } = useContext(TrainOfThoughtsContext);
-  const navigation = useNavigation();
   const {user} = useContext(AuthContext);
   const GameRef = db.ref(`/users/${user.uid}/TrainOfThoughts/`);
+
   const [state, dispatch] = useReducer(reducer, stateGenerator(1));
   const [loading, setLoading] = useState(true);
   const [completedPopup, setCompletedPopup] = useState(false);
-
   const [trains, setTrains] = useState([
     {color: getRandomColor(trainColors), trainId: 0},
   ]);
-
   const {TIME, togglePause} = useCountdown(
     state.duration.minutes,
     state.duration.seconds,
   );
+
   useEffect(() => {
     GameRef.once('value', snapshot => {
       const exists = snapshot.exists();
       if (exists) {
         const data = snapshot.val();
         let {level, status, score} = data;
-        level = level ? level : 1;
+        level = level + 1 || 1;
 
         if (status === 'COMPLETED') {
           setCompletedPopup(true);
@@ -82,7 +82,7 @@ const TrainOfThoughts = () => {
     });
 
     return unsubscribe;
-  }, [navigation, state.level]);
+  }, [navigation]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -106,7 +106,7 @@ const TrainOfThoughts = () => {
     if (TIME === '00:00') {
       dispatch({type: ACTIONS.ON_TIME_UP, payload: {uid: user.uid}});
 
-      if (state.level !== state.totalLevels) {
+      if (state.level < state.totalLevels) {
         dispatch({type: ACTIONS.NEXT_LEVEL});
       }
       togglePause(true);
@@ -180,6 +180,13 @@ const TrainOfThoughts = () => {
           value={state.score.toString()}
           style={styles.infoLabel}
           key="score"
+          showAnimation={true}
+        />,
+        <InfoLabel
+          label={'Level'}
+          value={state.level.toString()}
+          style={styles.infoLabel}
+          key="level"
           showAnimation={true}
         />,
       ]}>

@@ -49,9 +49,12 @@ export function reducer(state, action) {
     case ACTIONS.ON_TIME_UP:
       const {uid} = action.payload;
       updateDB(state, uid);
+      return state;
 
     case ACTIONS.NEXT_LEVEL:
+      console.log(state.level);
       var newState = stateGenerator(state.level + 1);
+      console.log(newState);
       newState.score = state.score;
       return newState;
 
