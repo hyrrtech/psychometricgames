@@ -44,6 +44,17 @@ const Transition = ({route, navigation}) => {
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press Home to go back to home screen',
     },
+    TrainOfThoughts: {
+      backgroundGradient: COLORS.trainOfThoughtsBGGradient,
+      imageURL: BackgroundImage.TrainofThoughts,
+      navigateTo: currentLevel === totalLevels ? 'Home' : 'TrainOfThoughts',
+
+      navigateButtonText: currentLevel === totalLevels ? 'Home' : 'Next Level',
+      text:
+        currentLevel === totalLevels
+          ? 'You have completed the game. Press home to go back to home screen'
+          : `You have completed ${currentLevel}/${totalLevels} part of the game. Press next game to play further`,
+    },
   };
   //prevent navigation to gamescreen when back button is pressed if the game is over
   useEffect(() => {
@@ -56,6 +67,7 @@ const Transition = ({route, navigation}) => {
     );
     return () => backHandler.remove();
   }, []);
+
   return (
     <GameWrapper
       imageURL={values[cameFrom].imageURL}

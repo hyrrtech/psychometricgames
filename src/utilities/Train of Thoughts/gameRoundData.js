@@ -1,7 +1,7 @@
 const gameRoundData = [
   {
     level: 1,
-    duration: {minutes: 2, seconds: 0},
+    duration: {minutes: 0, seconds: 10},
     spawnSpeed: 5000,
   },
   {

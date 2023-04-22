@@ -1,36 +1,54 @@
 import db from '../../firebase/database';
-import {stateGenerator, time} from '../../utilities/Kill the Spider';
+import {gameRoundData, stateGenerator} from '../../utilities/Train of Thoughts';
+// import {stateGenerator, time} from '../../utilities/Kill the Spider';
 
 export const ACTIONS = {
-  ON_TAP: 'on_tap',
-  ON_TIME_UP: 'time_up',
-  ON_BUTTERFLY_TAP: 'butterfly_tap',
+  ON_REACH_STATION: 'on_reach_station',
+  ON_TIME_UP: 'on_time_up',
+  NEXT_LEVEL: 'next_level',
 };
 
-const updateDB = (state, uid, status) => {
-  const GameRef = db.ref(`/users/${uid}/KillTheSpider/`);
+const updateDB = (state, uid) => {
+  const GameRef = db.ref(`/users/${uid}/TrainOfThoughts/`);
+  const level = {
+    level: state.level,
+    correctStations: state.correctStations,
+    incorrectStations: state.incorrectStations,
+  };
+  GameRef.child('levels').push(level);
   GameRef.update({
-    time: time,
     score: state.score,
-    killCount: state.killCount,
-    status: status,
+    level: state.level,
+    status:
+      state.level === gameRoundData[gameRoundData.length - 1].level
+        ? 'COMPLETED'
+        : 'IN_PROGRESS',
   });
 };
 
 export function reducer(state, action) {
   switch (action.type) {
-    case ACTIONS.ON_TAP:
-      const score = state.score + 100;
-      const killCount = state.killCount + 1;
-      return {...stateGenerator(), score: score, killCount: killCount};
+    case ACTIONS.ON_REACH_STATION:
+      const {intendedStation, stationReached} = action.payload;
+      var newState = {...state};
+      if (intendedStation === stationReached) {
+        newState.correctStations += 1;
+        newState.score += 50;
+      } else {
+        newState.incorrectStations += 1;
+        newState.score -= 50;
+      }
+      return newState;
 
     case ACTIONS.ON_TIME_UP:
-      updateDB(state, action.payload.uid, 'TIME_UP');
-      return state;
+      const {uid} = action.payload;
+      updateDB(state, uid);
 
-    case ACTIONS.ON_BUTTERFLY_TAP:
-      updateDB(state, action.payload.uid, 'BUTTERFLY_KILLED');
-      return state;
+    case ACTIONS.NEXT_LEVEL:
+      var newState = stateGenerator(state.level + 1);
+      newState.score = state.score;
+      return newState;
+
     default:
       return state;
   }

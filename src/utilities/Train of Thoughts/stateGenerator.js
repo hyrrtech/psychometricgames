@@ -5,10 +5,11 @@ const stateGenerator = level => {
     score: 0,
     status: 'IN_PROGRESS',
     level: gameRoundData[level - 1].level,
+    totalLevels: gameRoundData.length,
     duration: gameRoundData[level - 1].duration,
     spawnSpeed: gameRoundData[level - 1].spawnSpeed,
-    correctDestinations: 0,
-    incorrectDestinations: 0,
+    correctStations: 0,
+    incorrectStations: 0,
   };
 };
 

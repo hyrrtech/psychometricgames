@@ -14,7 +14,7 @@ const initialSegment = [
   adjustCoordinates({x: 375, y: 637.5}),
 ];
 
-const Train = ({color, id, setTrains, dispatch}) => {
+const Train = ({color, id, setTrains, dispatch, ACTIONS}) => {
   const {path, trainSize, switchSize, speed, switchDirections} = useContext(
     TrainOfThoughtsContext,
   );
@@ -123,11 +123,14 @@ const Train = ({color, id, setTrains, dispatch}) => {
             );
           }
           if (PATH[index]?.color) {
-            if (PATH[index].color === color) {
-              // console.log('reached correct station, trainColor:', color);
-            } else {
-              // console.log('reached wrong station trainColor:', color);
-            }
+            dispatch({
+              type: ACTIONS.ON_REACH_STATION,
+              payload: {
+                intendedStation: color,
+                stationReached: PATH[index].color,
+              },
+            });
+
             setTrains(prev => {
               const newTrains = [...prev];
               const trainIndex = newTrains.findIndex(

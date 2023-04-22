@@ -42,7 +42,7 @@ const KillTheSpider = ({navigation}) => {
 
   const [disabled, setDisabled] = useState(true);
   const opacityAnim = useRef(new Animated.Value(1)).current;
-  const TIME = useCountdown(time.minutes, time.seconds);
+  const {TIME} = useCountdown(time.minutes, time.seconds);
 
   useEffect(() => {
     GameRef.once('value', snapshot => {

@@ -31,7 +31,7 @@ const SHARK = ({navigation}) => {
   const [result, setResult] = useState({show: false, value: 'correct'});
   const minutes = state.time.minutes;
   const seconds = state.time.seconds;
-  const time = useCountdown(minutes, seconds);
+  const {TIME} = useCountdown(minutes, seconds);
 
   useEffect(() => {
     GameRef.once('value', snapshot => {
@@ -49,7 +49,7 @@ const SHARK = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    if (time === '00:00') {
+    if (TIME === '00:00') {
       if (state.total_rounds_played === 0) {
         navigation.navigate('Home');
         return;
@@ -61,7 +61,7 @@ const SHARK = ({navigation}) => {
         cameFrom: 'SHARK',
       });
     }
-  }, [!completedPopup && time]);
+  }, [!completedPopup && TIME]);
 
   const handlePress = useDebounce(direction => {
     //get middle shark direction
@@ -96,7 +96,7 @@ const SHARK = ({navigation}) => {
       scoreboard={[
         <InfoLabel
           label={'Time'}
-          value={time}
+          value={TIME}
           style={styles.infoLabel}
           key="time"
         />,

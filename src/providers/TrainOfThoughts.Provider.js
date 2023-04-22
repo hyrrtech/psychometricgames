@@ -5,7 +5,7 @@ import {getColors} from '../utilities/Train of Thoughts';
 export const TrainOfThoughtsContext = createContext();
 
 export const TrainOfThoughtsProvider = ({children}) => {
-  const {width, height} = Dimensions.get('window');
+  const {width} = Dimensions.get('window');
   const trainSize = width * 0.1;
   const pathSize = width * 0.06;
   const curveSize = pathSize + 5;

@@ -1,24 +1,29 @@
 import React, {useState, useEffect, useContext, useReducer} from 'react';
 import {View} from 'react-native';
-// import CompletedPopup from '../../components/CompletedPopup';
+import {useNavigation} from '@react-navigation/native';
+import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
 import {InfoLabel} from '../../components/InfoLabel';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
 import styles from './styles';
 import {TrainOfThoughtsContext} from '../../providers/TrainOfThoughts.Provider';
-// import {AuthContext} from '../../providers/AuthProvider';
-// import db from '../../firebase/database';
+import {AuthContext} from '../../providers/AuthProvider';
+import db from '../../firebase/database';
 import {ACTIONS, reducer} from './reducer';
 import {
   adjustCoordinates,
   getRandomColor,
+  stateGenerator,
 } from '../../utilities/Train of Thoughts';
 import {useCountdown} from '../../utilities';
-import Train from '../../components/Train of Thoughts/Train';
-import Switch from '../../components/Train of Thoughts/Switch';
-import Station from '../../components/Train of Thoughts/Station';
-import Track from '../../components/Train of Thoughts/Track';
+import {
+  Train,
+  Switch,
+  Station,
+  Track,
+} from '../../components/Train of Thoughts/';
+
 import CurveSVG from '../../components/Train of Thoughts/SVG/CurveSVG';
 
 const TrainOfThoughts = () => {
@@ -30,20 +35,33 @@ const TrainOfThoughts = () => {
     stationSize,
     originalSwitchDirections,
   } = useContext(TrainOfThoughtsContext);
-  // const {user} = useContext(AuthContext);
-  // const GameRef = db.ref(`/users/${user.uid}/TrainOfThoughts/`);
+  const navigation = useNavigation();
+  const {user} = useContext(AuthContext);
+  const GameRef = db.ref(`/users/${user.uid}/TrainOfThoughts/`);
   const [state, dispatch] = useReducer(reducer, stateGenerator(1));
-  // const [loading, setLoading] = useState(true);
-  // const [completedPopup, setCompletedPopup] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [completedPopup, setCompletedPopup] = useState(false);
 
   const [trains, setTrains] = useState([
     {color: getRandomColor(trainColors), trainId: 0},
   ]);
-  const TIME = useCountdown(state.time.minutes, state.time.seconds);
+
+  const {TIME, togglePause} = useCountdown(
+    state.duration.minutes,
+    state.duration.seconds,
+  );
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setTrains([{color: getRandomColor(trainColors), trainId: 0}]);
+      togglePause(false);
+    });
+
+    return unsubscribe;
+  }, [navigation, state.level]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      //colors can be used to differentiate trains
       const lastIndex = trains.length === 0 ? 0 : trains.length - 1;
       const newTrain =
         trains.length === 0
@@ -53,12 +71,30 @@ const TrainOfThoughts = () => {
               trainId: trains[lastIndex].trainId + 1,
             };
       setTrains([...trains, newTrain]);
-    }, state.duration);
+    }, state.spawnSpeed);
 
     return () => {
       clearInterval(intervalId);
     };
   }, [trains]);
+
+  useEffect(() => {
+    if (TIME === '00:00') {
+      dispatch({type: ACTIONS.ON_TIME_UP, payload: {uid: user.uid}});
+
+      if (state.level !== state.totalLevels) {
+        dispatch({type: ACTIONS.NEXT_LEVEL});
+      }
+      togglePause(true);
+      navigation.navigate('Transition', {
+        state: state,
+        cameFrom: 'TrainOfThoughts',
+      });
+    }
+  }, [
+    // !completedPopup &&
+    TIME,
+  ]);
 
   const renderMap = switchObj => {
     let elements = [];
@@ -114,13 +150,13 @@ const TrainOfThoughts = () => {
           style={styles.infoLabel}
           key="time"
         />,
-        // <InfoLabel
-        //   label={'Score'}
-        //   value={300}
-        //   style={styles.infoLabel}
-        //   key="score"
-        //   showAnimation={true}
-        // />,
+        <InfoLabel
+          label={'Score'}
+          value={state.score.toString()}
+          style={styles.infoLabel}
+          key="score"
+          showAnimation={true}
+        />,
       ]}>
       {[
         Track([
@@ -151,6 +187,7 @@ const TrainOfThoughts = () => {
           color={train.color}
           setTrains={setTrains}
           dispatch={dispatch}
+          ACTIONS={ACTIONS}
         />
       ))}
     </GameWrapper>
