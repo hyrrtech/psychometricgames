@@ -26,14 +26,15 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
 
   const [trainDirection, setTrainDirection] = useState([{rotate: '0rad'}]);
 
-  const switchesPassedExclusive = id => {
-    if (id === 1 && switchDirections[id] === 'horizontal') return [3];
-    if (id === 7 && switchDirections[id] === 'horizontal') return [8, 9];
-    if (id === 8 && switchDirections[id] === 'vertical_right') return [9];
-    if (id === 12 && switchDirections[id] === 'vertical_left') return [13];
-    if (id === 4 && switchDirections[id] === 'horizontal') return [5];
-    return [];
-  };
+  // const switchesPassedExclusive = id => {
+  //   //might not be needed
+  //   if (id === 1 && switchDirections[id] === 'horizontal') return [3];
+  //   if (id === 7 && switchDirections[id] === 'horizontal') return [8, 9];
+  //   if (id === 8 && switchDirections[id] === 'vertical_right') return [9];
+  //   if (id === 12 && switchDirections[id] === 'vertical_left') return [13];
+  //   if (id === 4 && switchDirections[id] === 'horizontal') return [5];
+  //   return [];
+  // };
 
   const generatePath = switchObj => {
     let path = [];
@@ -126,7 +127,7 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
         switchesPassed.current = [
           ...switchesPassed.current,
           ...fillSwitchesPassed(PATH[index].id),
-          ...switchesPassedExclusive(PATH[index].id),
+          // ...switchesPassedExclusive(PATH[index].id),
         ];
       }
 
@@ -144,7 +145,8 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
             ];
           }
 
-          if (PATH[index]?.color) {
+          if (PATH[index]?.color && TIME !== '00:00') {
+            //other way could be to empty the trains array
             let pathFollowed = PATH.slice(2);
             dispatch({
               type: ACTIONS.ON_REACH_STATION,

@@ -45,7 +45,7 @@ const TrainOfThoughts = () => {
   const {user} = useContext(AuthContext);
   const GameRef = db.ref(`/users/${user.uid}/TrainOfThoughts/`);
   const [spawnSpeed, setSpawnSpeed] = useState(3000);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [completedPopup, setCompletedPopup] = useState(false);
   const [trains, setTrains] = useState([
     {color: getRandomColor(trainColors), trainId: 0, departureTime: TIME},
