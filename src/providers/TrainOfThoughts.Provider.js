@@ -2,6 +2,7 @@ import React, {createContext, useState, useEffect, useMemo} from 'react';
 import {Dimensions} from 'react-native';
 import path from '../screens/Train of Thoughts/PATH';
 import {getColors} from '../utilities/Train of Thoughts';
+import {useCountdown} from '../utilities';
 export const TrainOfThoughtsContext = createContext();
 
 export const TrainOfThoughtsProvider = ({children}) => {
@@ -12,7 +13,8 @@ export const TrainOfThoughtsProvider = ({children}) => {
   const switchSize = width * 0.12;
   const stationSize = width * 0.15;
   const speed = 50;
-
+  const spawnSpeed = 4000;
+  const {TIME} = useCountdown(1, 0); //1 minute
   const trainColors = useMemo(() => getColors(path(switchSize, pathSize)), []);
 
   const originalSwitchDirections = {
@@ -52,6 +54,8 @@ export const TrainOfThoughtsProvider = ({children}) => {
         switchDirections,
         setSwitchDirections,
         originalSwitchDirections,
+        spawnSpeed,
+        TIME,
       }}>
       {children}
     </TrainOfThoughtsContext.Provider>

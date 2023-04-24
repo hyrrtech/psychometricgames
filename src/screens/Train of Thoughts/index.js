@@ -2,10 +2,10 @@ import React from 'react';
 import {TrainOfThoughtsProvider} from '../../providers/TrainOfThoughts.Provider';
 import TrainOfThoughts from './TrainOfThoughts';
 
-const Provider = () => {
+const Provider = ({navigation}) => {
   return (
     <TrainOfThoughtsProvider>
-      <TrainOfThoughts />
+      <TrainOfThoughts navigation={navigation} />
     </TrainOfThoughtsProvider>
   );
 };

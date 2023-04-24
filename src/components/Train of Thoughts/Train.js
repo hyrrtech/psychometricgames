@@ -2,6 +2,7 @@ import {useEffect, useState, useRef, useContext} from 'react';
 import {Animated, Easing} from 'react-native';
 import TrainSvg from './SVG/TrainSvg';
 import {TrainOfThoughtsContext} from '../../providers/TrainOfThoughts.Provider';
+import {AuthContext} from '../../providers/AuthProvider';
 import {
   adjustCoordinates,
   fillSwitchesPassed,
@@ -14,19 +15,30 @@ const initialSegment = [
   adjustCoordinates({x: 375, y: 637.5}),
 ];
 
-const Train = ({color, id, setTrains, dispatch, ACTIONS}) => {
-  const {path, trainSize, switchSize, speed, switchDirections} = useContext(
-    TrainOfThoughtsContext,
-  );
-  const prevSwitchDirections = useRef([]);
+const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
+  const {path, trainSize, switchSize, speed, switchDirections, TIME} =
+    useContext(TrainOfThoughtsContext);
+  const {user} = useContext(AuthContext);
+  const SwitchDirections = useRef(switchDirections);
   const switchesPassed = useRef([]);
+  const changedSwitches = useRef([]);
   let segmentStartTime = useRef(Date.now());
+
   const [trainDirection, setTrainDirection] = useState([{rotate: '0rad'}]);
+
+  const switchesPassedExclusive = id => {
+    if (id === 1 && switchDirections[id] === 'horizontal') return [3];
+    if (id === 7 && switchDirections[id] === 'horizontal') return [8, 9];
+    if (id === 8 && switchDirections[id] === 'vertical_right') return [9];
+    if (id === 12 && switchDirections[id] === 'vertical_left') return [13];
+    if (id === 4 && switchDirections[id] === 'horizontal') return [5];
+    return [];
+  };
 
   const generatePath = switchObj => {
     let path = [];
     const id = switchObj.id;
-    const currentDirection = switchDirections[id - 1];
+    const currentDirection = SwitchDirections.current[id - 1];
     const switchPath = switchObj[currentDirection];
 
     path.push(
@@ -64,17 +76,25 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS}) => {
 
   useEffect(() => {
     const changedSwitchIndex = getLastSwitchChanged(
-      prevSwitchDirections.current,
+      SwitchDirections.current,
       switchDirections,
     );
-    prevSwitchDirections.current = switchDirections;
-    if (switchesPassed.current.includes(changedSwitchIndex)) {
-      return;
+    if (switchesPassed.current.includes(changedSwitchIndex))
+      changedSwitches.current.push(changedSwitchIndex);
+
+    changedSwitches.current = Array.from(
+      new Set([...changedSwitches.current, ...switchesPassed.current]),
+    );
+
+    if (!changedSwitches.current.includes(changedSwitchIndex)) {
+      SwitchDirections.current[changedSwitchIndex - 1] =
+        switchDirections[changedSwitchIndex - 1];
+
+      setPATH([...initialSegment, ...generatePath(path.switch)]);
     }
-    setPATH([...initialSegment, ...generatePath(path.switch)]);
   }, [switchDirections]);
 
-  const moveTrain = async PATH => {
+  const moveTrain = (PATH, TIME) => {
     let index = currentIndex.current;
     if (index < PATH.length) {
       const segmentLength = getSegmentLength(PATH[index - 1], PATH[index]);
@@ -103,13 +123,13 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS}) => {
 
       setTrainDirection(trainDirectionProps);
       if (PATH[index]?.id) {
-        switchesPassed.current = Array.from(
-          new Set([
-            ...switchesPassed.current,
-            ...fillSwitchesPassed(PATH[index].id),
-          ]),
-        );
+        switchesPassed.current = [
+          ...switchesPassed.current,
+          ...fillSwitchesPassed(PATH[index].id),
+          ...switchesPassedExclusive(PATH[index].id),
+        ];
       }
+
       Animated.timing(trainPosition, {
         toValue: {x: PATH[index].x - offsetX, y: PATH[index].y - offsetY},
         duration: remainingDuration,
@@ -118,16 +138,23 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS}) => {
       }).start(({finished}) => {
         if (finished && index < PATH.length) {
           if (PATH[index]?.id) {
-            switchesPassed.current = Array.from(
-              new Set([...switchesPassed.current, PATH[index].id]),
-            );
+            switchesPassed.current = [
+              ...switchesPassed.current,
+              PATH[index].id,
+            ];
           }
+
           if (PATH[index]?.color) {
+            let pathFollowed = PATH.slice(2);
             dispatch({
               type: ACTIONS.ON_REACH_STATION,
               payload: {
                 intendedStation: color,
                 stationReached: PATH[index].color,
+                departureTime: departureTime,
+                arrivalTime: TIME,
+                pathFollowed: pathFollowed,
+                uid: user.uid,
               },
             });
 
@@ -150,8 +177,8 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS}) => {
   };
 
   useEffect(() => {
-    moveTrain(PATH);
-  }, [PATH]);
+    moveTrain(PATH, TIME);
+  }, [PATH, TIME]);
 
   return (
     <Animated.View

@@ -9,7 +9,7 @@ const fillSwitchesPassed = switchId => {
     11: [12, 13],
     12: [11],
   };
-  return switches[switchId] || [];
+  return switches[switchId] ? switches[switchId] : [];
 };
 
 export default fillSwitchesPassed;

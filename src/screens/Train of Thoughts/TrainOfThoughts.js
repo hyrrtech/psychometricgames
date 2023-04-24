@@ -1,4 +1,11 @@
-import React, {useState, useEffect, useContext, useReducer} from 'react';
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useReducer,
+  useRef,
+  useMemo,
+} from 'react';
 import {View, ActivityIndicator} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import CompletedPopup from '../../components/CompletedPopup';
@@ -14,9 +21,7 @@ import {ACTIONS, reducer} from './reducer';
 import {
   adjustCoordinates,
   getRandomColor,
-  stateGenerator,
 } from '../../utilities/Train of Thoughts';
-import {useCountdown} from '../../utilities';
 import {
   Train,
   Switch,
@@ -25,7 +30,7 @@ import {
 } from '../../components/Train of Thoughts/';
 
 import CurveSVG from '../../components/Train of Thoughts/SVG/CurveSVG';
-
+import initialState from './initialState';
 const TrainOfThoughts = () => {
   const navigation = useNavigation();
   const {
@@ -35,40 +40,37 @@ const TrainOfThoughts = () => {
     switchSize,
     stationSize,
     originalSwitchDirections,
+    TIME,
   } = useContext(TrainOfThoughtsContext);
   const {user} = useContext(AuthContext);
   const GameRef = db.ref(`/users/${user.uid}/TrainOfThoughts/`);
-
-  const [state, dispatch] = useReducer(reducer, stateGenerator(1));
-  const [loading, setLoading] = useState(true);
+  const [spawnSpeed, setSpawnSpeed] = useState(3000);
+  const [loading, setLoading] = useState(false);
   const [completedPopup, setCompletedPopup] = useState(false);
   const [trains, setTrains] = useState([
-    {color: getRandomColor(trainColors), trainId: 0},
+    {color: getRandomColor(trainColors), trainId: 0, departureTime: TIME},
   ]);
-  const {TIME, togglePause} = useCountdown(
-    state.duration.minutes,
-    state.duration.seconds,
-  );
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  useEffect(() => {
+  let trainCount = useRef(0);
+
+  useMemo(() => {
     GameRef.once('value', snapshot => {
       const exists = snapshot.exists();
       if (exists) {
         const data = snapshot.val();
-        let {level, status, score} = data;
-        level = level + 1 || 1;
+        let {status} = data;
 
         if (status === 'COMPLETED') {
           setCompletedPopup(true);
-          return;
+        } else {
+          GameRef.set({
+            status: 'IN_PROGRESS',
+          });
+          dispatch({
+            type: ACTIONS.INIT_LEVEL,
+          });
         }
-        dispatch({
-          type: ACTIONS.INIT_LEVEL,
-          payload: {
-            level: level,
-            score: score,
-          },
-        });
       }
     })
       .then(() => setLoading(false))
@@ -76,46 +78,41 @@ const TrainOfThoughts = () => {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      setTrains([{color: getRandomColor(trainColors), trainId: 0}]);
-      togglePause(false);
-    });
-
-    return unsubscribe;
-  }, [navigation]);
-
-  useEffect(() => {
     const intervalId = setInterval(() => {
-      const lastIndex = trains.length === 0 ? 0 : trains.length - 1;
-      const newTrain =
-        trains.length === 0
-          ? {color: getRandomColor(trainColors), trainId: 0}
-          : {
-              color: getRandomColor(trainColors),
-              trainId: trains[lastIndex].trainId + 1,
-            };
-      setTrains([...trains, newTrain]);
-    }, state.spawnSpeed);
+      const departureTime = TIME;
+      const newTrain = {
+        color: getRandomColor(trainColors),
+        trainId: ++trainCount.current,
+        departureTime: departureTime,
+      };
+      setTrains(prevTrains => [...prevTrains, newTrain]);
+    }, spawnSpeed);
 
     return () => {
       clearInterval(intervalId);
     };
-  }, [trains]);
+  }, [trainCount.current]);
+
+  useEffect(() => {
+    if (spawnSpeed > 2000) {
+      const decreaseIntervalId = setInterval(() => {
+        setSpawnSpeed(prevSpeed => prevSpeed - 300);
+      }, 5000);
+      return () => {
+        clearInterval(decreaseIntervalId);
+      };
+    }
+  }, [spawnSpeed]);
 
   useEffect(() => {
     if (TIME === '00:00') {
       dispatch({type: ACTIONS.ON_TIME_UP, payload: {uid: user.uid}});
-
-      if (state.level < state.totalLevels) {
-        dispatch({type: ACTIONS.NEXT_LEVEL});
-      }
-      togglePause(true);
       navigation.navigate('Transition', {
         state: state,
         cameFrom: 'TrainOfThoughts',
       });
     }
-  }, [!completedPopup && TIME]);
+  }, [TIME]);
 
   const renderMap = switchObj => {
     let elements = [];
@@ -158,8 +155,8 @@ const TrainOfThoughts = () => {
     }
     return elements;
   };
-
   const curveCoordinates = adjustCoordinates({x: 370, y: 626});
+
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
@@ -180,13 +177,6 @@ const TrainOfThoughts = () => {
           value={state.score.toString()}
           style={styles.infoLabel}
           key="score"
-          showAnimation={true}
-        />,
-        <InfoLabel
-          label={'Level'}
-          value={state.level.toString()}
-          style={styles.infoLabel}
-          key="level"
           showAnimation={true}
         />,
       ]}>
@@ -220,6 +210,7 @@ const TrainOfThoughts = () => {
           setTrains={setTrains}
           dispatch={dispatch}
           ACTIONS={ACTIONS}
+          departureTime={train.departureTime}
         />
       ))}
     </GameWrapper>
