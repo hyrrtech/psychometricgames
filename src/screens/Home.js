@@ -38,6 +38,13 @@ const TestScreen = ({navigation}) => {
       />
       <Button
         onPress={() => {
+          navigation.navigate('CarGame');
+        }}
+        title="Car Game"
+        style={styles.button}
+      />
+      <Button
+        onPress={() => {
           navigation.navigate('TrainOfThoughts');
         }}
         title="TrainOfThoughts"
@@ -49,8 +56,8 @@ const TestScreen = ({navigation}) => {
 };
 const styles = StyleSheet.create({
   button: {
-    borderWidth: 1,
-    margibottom: 10,
+    borderWidth: 2,
+    margibottom: 15,
   },
 });
 export default TestScreen;

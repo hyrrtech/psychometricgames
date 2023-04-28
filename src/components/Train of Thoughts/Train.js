@@ -8,22 +8,25 @@ import {
   fillSwitchesPassed,
   getSegmentLength,
   getLastSwitchChanged,
+  getCorrectPath,
+  constants,
+  path,
 } from '../../utilities/Train of Thoughts';
 
 const initialSegment = [
-  adjustCoordinates({x: 375, y: 850}),
-  adjustCoordinates({x: 375, y: 637.5}),
+  adjustCoordinates({x: 375 + 15, y: 850}),
+  adjustCoordinates({x: 375 + 15, y: 637.5}),
 ];
 
+const {trainSize, switchSize, speed} = constants;
 const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
-  const {path, trainSize, switchSize, speed, switchDirections, TIME} =
-    useContext(TrainOfThoughtsContext);
+  const {switchDirections, TIME} = useContext(TrainOfThoughtsContext);
   const {user} = useContext(AuthContext);
   const SwitchDirections = useRef(switchDirections);
   const switchesPassed = useRef([]);
   const changedSwitches = useRef([]);
   let segmentStartTime = useRef(Date.now());
-
+  const pathFollowed = useRef([]);
   const [trainDirection, setTrainDirection] = useState([{rotate: '0rad'}]);
 
   // const switchesPassedExclusive = id => {
@@ -139,6 +142,7 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
       }).start(({finished}) => {
         if (finished && index < PATH.length) {
           if (PATH[index]?.id) {
+            pathFollowed.current = [...pathFollowed.current, PATH[index].id];
             switchesPassed.current = [
               ...switchesPassed.current,
               PATH[index].id,
@@ -146,16 +150,15 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
           }
 
           if (PATH[index]?.color && TIME !== '00:00') {
-            //other way could be to empty the trains array
-            let pathFollowed = PATH.slice(2);
+            const correctPath = getCorrectPath(color);
+
             dispatch({
               type: ACTIONS.ON_REACH_STATION,
               payload: {
-                intendedStation: color,
-                stationReached: PATH[index].color,
                 departureTime: departureTime,
                 arrivalTime: TIME,
-                pathFollowed: pathFollowed,
+                correctPath: [...correctPath, color],
+                pathFollowed: [...pathFollowed.current, PATH[index].color],
                 uid: user.uid,
               },
             });

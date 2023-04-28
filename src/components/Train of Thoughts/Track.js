@@ -1,11 +1,9 @@
-import {useContext} from 'react';
-import {TrainOfThoughtsContext} from '../../providers/TrainOfThoughts.Provider';
 import TrackSvg from './SVG/TrackSvg';
 import {View} from 'react-native';
-import {adjustCoordinates} from '../../utilities/Train of Thoughts';
+import {adjustCoordinates, constants} from '../../utilities/Train of Thoughts';
 
 const Track = path => {
-  const {pathSize} = useContext(TrainOfThoughtsContext);
+  const {pathSize} = constants;
   //renders a segment of track
   const track = path.map((point, index) => {
     if (index === path.length - 1) {

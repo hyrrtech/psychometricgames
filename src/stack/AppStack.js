@@ -7,7 +7,8 @@ import SHARK from '../screens/SHARK/SHARK';
 import MemoryMatrix from '../screens/Memory Matrix/MemoryMatrix';
 import Transition from '../screens/Transition';
 import KillTheSpider from '../screens/Kill The Spider/KillTheSpider';
-import TrainOfThoughts from '../screens/Train of Thoughts';
+import TrainOfThoughts from '../screens/Train of Thoughts/';
+import CarGame from '../screens/Car/CarGame';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
@@ -19,6 +20,11 @@ function MainStack() {
       <Stack.Screen name="Home" component={Home} options={screenOptions} />
       <Stack.Screen name="BART" component={BART} options={screenOptions} />
       <Stack.Screen name="SHARK" component={SHARK} options={screenOptions} />
+      <Stack.Screen
+        name="CarGame"
+        component={CarGame}
+        options={screenOptions}
+      />
       <Stack.Screen
         name="MemoryMatrix"
         component={MemoryMatrix}
@@ -34,6 +40,7 @@ function MainStack() {
         component={TrainOfThoughts}
         options={screenOptions}
       />
+
       <Stack.Screen
         name="Transition"
         component={Transition}
