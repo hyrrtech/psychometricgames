@@ -12,9 +12,9 @@ const CarGame = () => {
   const roadLineHeight = height * 0.15;
 
   const linePositions = [
-    // {position: 100, color: 'white'},
-    // {position: 400, color: 'white'},
-    {position: 700, color: 'white'},
+    {position: 100, color: 'white'},
+    {position: 400, color: 'white'},
+    // {position: 700, color: 'white'},
   ];
 
   return (

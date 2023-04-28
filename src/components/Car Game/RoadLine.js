@@ -20,29 +20,42 @@ const RoadLine = ({position, color, delay}) => {
   const duration1to2 = (distance12 / totalDistance) * 2000;
 
   useEffect(() => {
-    console.log(lineAnimation);
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(lineAnimation, {
-          toValue: 0,
-          duration: 0,
-          easing: Easing.linear,
-          useNativeDriver: false,
-        }),
-        Animated.timing(lineAnimation, {
-          toValue: 1,
-          duration: duration0to1,
-          easing: Easing.linear,
-          useNativeDriver: false,
-        }),
-        Animated.timing(lineAnimation, {
-          toValue: 2,
-          duration: duration1to2,
-          easing: Easing.linear,
-          useNativeDriver: false,
-        }),
-      ]),
-    ).start();
+    Animated.sequence([
+      Animated.timing(lineAnimation, {
+        toValue: 1,
+        duration: duration0to1,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }),
+      Animated.timing(lineAnimation, {
+        toValue: 2,
+        duration: duration1to2,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }),
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(lineAnimation, {
+            toValue: 0,
+            duration: 0,
+            easing: Easing.linear,
+            useNativeDriver: false,
+          }),
+          Animated.timing(lineAnimation, {
+            toValue: 1,
+            duration: duration0to1,
+            easing: Easing.linear,
+            useNativeDriver: false,
+          }),
+          Animated.timing(lineAnimation, {
+            toValue: 2,
+            duration: duration1to2,
+            easing: Easing.linear,
+            useNativeDriver: false,
+          }),
+        ]),
+      ),
+    ]).start();
   }, []);
 
   return (
