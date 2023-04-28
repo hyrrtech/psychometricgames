@@ -6,15 +6,15 @@ import RoadLine from '../../components/Car Game/RoadLine';
 import {Animated, Dimensions, ScrollView, StyleSheet, View} from 'react-native';
 const CarGame = () => {
   const {height, width} = Dimensions.get('window');
-  // const roadHeight = height + height * 0.75;
-  const roadHeight = height * 0.75;
+  const roadHeight = height;
+  // const roadHeight = height * 0.75;
   const roadWidth = width * 0.6;
   const roadLineHeight = height * 0.15;
 
   const linePositions = [
-    {position: roadLineHeight, color: 'rgba(0,0,255,0.1)', delay: 0},
-    {position: roadLineHeight * 2, color: 'rgba(255,0,0,0.1)', delay: 1000},
-    // {position: roadLineHeight * 3},
+    // {position: 100, color: 'white'},
+    // {position: 400, color: 'white'},
+    {position: 700, color: 'white'},
   ];
 
   return (
@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    backgroundColor: 'green',
   },
 });
 export default CarGame;

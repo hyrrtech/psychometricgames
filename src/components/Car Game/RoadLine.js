@@ -2,9 +2,9 @@ import {useRef, useEffect, useState} from 'react';
 import {View, StyleSheet, Dimensions, Animated, Easing} from 'react-native';
 const RoadLine = ({position, color, delay}) => {
   const {height, width} = Dimensions.get('window');
-  const roadLineHeight = height * 0.15;
+  const roadLineHeight = height * 0.1;
   const roadLineWidth = width * 0.05;
-  const roadHeight = height * 0.75;
+  const roadHeight = height;
 
   const lineAnimation = useRef(new Animated.Value(1)).current;
   const distanceFromTop = lineAnimation.interpolate({
@@ -12,14 +12,15 @@ const RoadLine = ({position, color, delay}) => {
     outputRange: [-roadLineHeight, position, roadHeight + roadLineHeight],
   });
   //adjust duration according to distance  between animated values 0 to 1 and 1 to 2
-  const distance01 = Math.abs(position - -roadLineHeight);
+  const distance01 = Math.abs(position + roadLineHeight);
   const distance12 = Math.abs(roadHeight + roadLineHeight - position);
-  const distanceTotal = distance01 + distance12;
 
-  const duration0to1 = (distance01 / distanceTotal) * 3000; // adjust 3000 according to desired animation speed
-  const duration1to2 = (distance12 / distanceTotal) * 3000;
+  const totalDistance = roadHeight + 2 * roadLineHeight + position;
+  const duration0to1 = (distance01 / totalDistance) * 2000;
+  const duration1to2 = (distance12 / totalDistance) * 2000;
 
   useEffect(() => {
+    console.log(lineAnimation);
     Animated.loop(
       Animated.sequence([
         Animated.timing(lineAnimation, {
@@ -48,21 +49,24 @@ const RoadLine = ({position, color, delay}) => {
     <Animated.View
       style={{
         position: 'absolute',
-        top: distanceFromTop,
+
+        transform: [{translateY: distanceFromTop}],
         width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-evenly',
+        height: roadLineHeight,
+        backgroundColor: '#606060',
       }}>
       <View
         style={{
-          height: roadLineHeight,
+          height: '100%',
           width: roadLineWidth,
           backgroundColor: color,
         }}
       />
       <View
         style={{
-          height: roadLineHeight,
+          height: '100%',
           width: roadLineWidth,
           backgroundColor: color,
         }}

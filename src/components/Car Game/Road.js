@@ -7,11 +7,15 @@ const Road = ({roadHeight, roadWidth, children}) => {
   return (
     <View
       style={{
-        // top: -roadHeight * 0.33,
+        // top: -roadHeight * 0.43,
         width: roadWidth,
         height: roadHeight,
         backgroundColor: 'gray',
-        // transform: [{rotateX: '60deg'}],
+        // transform: [{rotateX: '75deg'}],
+        borderRightColor: 'white',
+        borderRightWidth: width * 0.05,
+        borderLeftColor: 'white',
+        borderLeftWidth: width * 0.05,
       }}>
       {children}
     </View>

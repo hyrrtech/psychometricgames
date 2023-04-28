@@ -6,7 +6,7 @@ const Sky = () => {
   return (
     <View
       style={{
-        backgroundColor: 'rgba(0, 0, 255, 0.1)',
+        backgroundColor: 'blue',
         height: skyHeight,
         width: '100%',
         zIndex: 10,
