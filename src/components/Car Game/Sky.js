@@ -1,12 +1,9 @@
 import {View, Dimensions} from 'react-native';
-const Sky = () => {
-  const {height} = Dimensions.get('window');
-  const skyHeight = (height * 25) / 100;
-
+const Sky = ({skyHeight}) => {
   return (
     <View
       style={{
-        backgroundColor: 'blue',
+        backgroundColor: '#c4f8db',
         height: skyHeight,
         width: '100%',
         zIndex: 10,

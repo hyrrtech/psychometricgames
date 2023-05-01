@@ -1,6 +1,7 @@
 import {useEffect, useState, useRef, useContext} from 'react';
 import {Animated, Easing} from 'react-native';
-import TrainSvg from './SVG/TrainSvg';
+import TrainVerticalSvg from './SVG/TrainVerticalSvg';
+import TrainHorizontalSvg from './SVG/TrainHorizontalSvg';
 import {TrainOfThoughtsContext} from '../../providers/TrainOfThoughts.Provider';
 import {AuthContext} from '../../providers/AuthProvider';
 import {
@@ -12,6 +13,7 @@ import {
   constants,
   path,
 } from '../../utilities/Train of Thoughts';
+import {pathSize} from '../../utilities/Train of Thoughts/constants';
 
 const initialSegment = [
   adjustCoordinates({x: 375 + 15, y: 850}),
@@ -27,7 +29,7 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
   const changedSwitches = useRef([]);
   let segmentStartTime = useRef(Date.now());
   const pathFollowed = useRef([]);
-  const [trainDirection, setTrainDirection] = useState([{rotate: '0rad'}]);
+  const [trainDirection, setTrainDirection] = useState('0rad');
 
   // const switchesPassedExclusive = id => {
   //   //might not be needed
@@ -71,11 +73,9 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
     ...generatePath(path.switch),
   ]);
 
-  var offsetX = 0;
-  var offsetY = trainSize / 2;
   const currentIndex = useRef(1);
   const trainPosition = useRef(
-    new Animated.ValueXY({x: PATH[0].x - offsetX, y: PATH[0].y - offsetY}),
+    new Animated.ValueXY({x: PATH[0].x, y: PATH[0].y}),
   ).current;
 
   useEffect(() => {
@@ -113,18 +113,17 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
       const direction = Math.atan2(deltaY, deltaX);
       const directionInDegrees = Math.ceil((direction * 180) / Math.PI);
 
-      let trainDirectionProps = [{rotate: `${directionInDegrees}deg`}];
+      let trainDirectionProps = `${directionInDegrees}deg`;
 
-      if (directionInDegrees === 180) {
-        trainDirectionProps = [{rotate: `${0}deg`}, {scaleX: -1}];
-      } else if (directionInDegrees === -90) {
-        trainDirectionProps = [{rotate: `${90}deg`}, {scaleX: -1}];
-      } else if (directionInDegrees <= 0) {
-        trainDirectionProps = [{rotate: `${0}deg`}, {scaleX: -1}];
-      } else {
-        trainDirectionProps = [{rotate: `${directionInDegrees}deg`}];
-      }
-
+      // if (directionInDegrees === 180) {
+      //   trainDirectionProps = [{rotate: `${0}deg`}, {scaleX: -1}];
+      // } else if (directionInDegrees === -90) {
+      //   trainDirectionProps = [{rotate: `${90}deg`}, {scaleX: -1}];
+      // } else if (directionInDegrees <= 0) {
+      //   trainDirectionProps = [{rotate: `${0}deg`}, {scaleX: -1}];
+      // } else {
+      //   trainDirectionProps = [{rotate: `${directionInDegrees}deg`}];
+      // }
       setTrainDirection(trainDirectionProps);
       if (PATH[index]?.id) {
         switchesPassed.current = [
@@ -135,7 +134,7 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
       }
 
       Animated.timing(trainPosition, {
-        toValue: {x: PATH[index].x - offsetX, y: PATH[index].y - offsetY},
+        toValue: {x: PATH[index].x, y: PATH[index].y},
         duration: remainingDuration,
         easing: Easing.linear,
         useNativeDriver: true,
@@ -184,21 +183,26 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
   useEffect(() => {
     moveTrain(PATH, TIME);
   }, [PATH, TIME]);
-
+  console.log(trainDirection);
   return (
     <Animated.View
       style={[
         trainPosition.getTranslateTransform(),
-        {left: 0, top: 0, position: 'absolute', zIndex: 20},
+        {
+          left: -trainSize / 2,
+          top: 0,
+          position: 'absolute',
+          zIndex: 20,
+        },
       ]}>
-      <TrainSvg
-        height={trainSize}
-        width={trainSize}
-        color={color}
-        styles={{
-          transform: trainDirection,
-        }}
-      />
+      {trainDirection === '-90deg' && (
+        <TrainVerticalSvg
+          height={trainSize}
+          width={trainSize}
+          color={color}
+          styles={{}}
+        />
+      )}
     </Animated.View>
   );
 };
