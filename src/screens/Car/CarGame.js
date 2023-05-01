@@ -36,7 +36,7 @@ const carYPosition = ROAD_HEIGHT - OBSTACLE_HEIGHT;
 const CarGame = () => {
   const [roadLines, setRoadLines] = useState([0]);
   const [objects, setObjects] = useState([0]);
-  console.log(objects);
+
   const [carPosition, setCarPoisiton] = useState('center');
 
   const carPositionRef = useRef(
@@ -121,7 +121,7 @@ const CarGame = () => {
         roadHeight={ROAD_HEIGHT}
         roadWidth={ROAD_WIDTH}
         roadLineWidth={ROAD_LINE_WIDTH}>
-        {roadLines.map(roadLine => (
+        {/* {roadLines.map(roadLine => (
           <AnimatedDrop
             key={roadLine}
             id={roadLine}
@@ -135,7 +135,7 @@ const CarGame = () => {
               roadLineWidth={ROAD_LINE_WIDTH}
             />
           </AnimatedDrop>
-        ))}
+        ))} */}
         {objects.map(object => (
           <AnimatedDrop
             key={object}
