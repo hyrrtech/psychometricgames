@@ -13,6 +13,7 @@ import Road from '../../components/Car Game/Road';
 import RoadLine from '../../components/Car Game/RoadLine';
 import Obstacle from '../../components/Car Game/Object';
 import AnimatedDrop from '../../components/Helper';
+import ComponentGenerator from '../../utilities/ComponentGenerator';
 const {width: WINDOW_WIDTH, height: WINDOW_HEIGHT} = Dimensions.get('window');
 
 const SKY_HEIGHT = WINDOW_HEIGHT * 0.25;
@@ -33,9 +34,11 @@ const carLeftXPosition = ROAD_LINE_WIDTH / 5;
 const carRightXPosition = ROAD_WIDTH - CAR_WIDTH - 3 * ROAD_LINE_WIDTH;
 const carYPosition = ROAD_HEIGHT - OBSTACLE_HEIGHT;
 
+const componentGenerator = new ComponentGenerator();
+
 const CarGame = () => {
   const [roadLines, setRoadLines] = useState([0]);
-  const [objects, setObjects] = useState([0]);
+  const [objects, setObjects] = useState(new Set());
 
   const [carPosition, setCarPoisiton] = useState('center');
 
@@ -85,34 +88,36 @@ const CarGame = () => {
     });
   };
 
-  const destoryObject = () => {
-    setObjects(prevObjects => {
-      if (prevObjects.length > 1) {
-        const newObjects = [...prevObjects];
-        newObjects.shift();
-        return newObjects;
-      }
-      return prevObjects;
-    });
+  const destoryObject = (id) => {
+    componentGenerator.destroy(id)
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setObjects(objects => [...objects, objects[objects.length - 1] + 1]);
-      setRoadLines(roadLines => [
-        ...roadLines,
-        roadLines[roadLines.length - 1] + 1,
-      ]);
+      const uuid = componentGenerator.generateNew(<AnimatedDrop
+        currentCarPosition={carPositionRef.__getValue()}
+        roadHeight={ROAD_HEIGHT}
+        duration={2000}
+        objectHeight={OBSTACLE_HEIGHT}
+        destroy={destoryObject}>
+        <Obstacle
+          positionHorizontal={'right'}
+          obstacleHeight={OBSTACLE_HEIGHT}
+          obstacleWidth={OBSTACLE_WIDTH}
+        />
+      </AnimatedDrop>);
+      setObjects(prev => new Set(prev).add(uuid));
     }, 1900);
     return () => clearInterval(interval);
   }, []);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-
-  //   }, 1000);
-  //   return () => clearInterval(interval);
-  // }, []);
+  const renderObjects = () => {
+    const components = [];
+    for (var it = objects.values(), val= null; val=it.next().value; ) {
+      components.push(componentGenerator.get(val));
+    }
+    return components;
+  }
 
   return (
     <View style={styles.background}>
@@ -121,37 +126,8 @@ const CarGame = () => {
         roadHeight={ROAD_HEIGHT}
         roadWidth={ROAD_WIDTH}
         roadLineWidth={ROAD_LINE_WIDTH}>
-        {/* {roadLines.map(roadLine => (
-          <AnimatedDrop
-            key={roadLine}
-            id={roadLine}
-            currentCarPosition={carPositionRef.__getValue()}
-            roadHeight={ROAD_HEIGHT}
-            duration={2000}
-            objectHeight={ROAD_LINE_HEIGHT}
-            destroy={destoryLine}>
-            <RoadLine
-              roadLineHeight={ROAD_LINE_HEIGHT}
-              roadLineWidth={ROAD_LINE_WIDTH}
-            />
-          </AnimatedDrop>
-        ))} */}
-        {objects.map(object => (
-          <AnimatedDrop
-            key={object}
-            id={object}
-            currentCarPosition={carPositionRef.__getValue()}
-            roadHeight={ROAD_HEIGHT}
-            duration={2000}
-            objectHeight={OBSTACLE_HEIGHT}
-            destroy={destoryObject}>
-            <Obstacle
-              positionHorizontal={'right'}
-              obstacleHeight={OBSTACLE_HEIGHT}
-              obstacleWidth={OBSTACLE_WIDTH}
-            />
-          </AnimatedDrop>
-        ))}
+        
+        {renderObjects()}
 
         <Animated.View
           style={[

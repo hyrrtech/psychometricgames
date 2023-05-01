@@ -20,7 +20,7 @@ const AnimatedDrop = ({
 
   useEffect(() => {
     distanceFromTop.addListener(({value}) => {
-      console.log(value, id);
+      // console.log(value, id);
     });
 
     Animated.sequence([
@@ -30,10 +30,11 @@ const AnimatedDrop = ({
         easing: Easing.linear,
         useNativeDriver: true,
       }),
-    ]).start(({finished}) => destroy());
+    ]).start(({finished}) => destroy(id));
 
     return () => {
       distanceFromTop.removeAllListeners();
+      destroy(id);
     };
   }, []);
 
