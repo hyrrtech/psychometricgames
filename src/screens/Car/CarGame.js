@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useMemo, useRef} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {
   View,
   StyleSheet,
@@ -14,40 +14,36 @@ import RoadLine from '../../components/Car Game/RoadLine';
 import Obstacle from '../../components/Car Game/Object';
 import AnimatedDrop from '../../components/Helper';
 import ComponentGenerator from '../../utilities/ComponentGenerator';
-const {width: WINDOW_WIDTH, height: WINDOW_HEIGHT} = Dimensions.get('window');
+import {CarGameContext} from '../../providers/CarGame.Provider';
+import {
+  constants,
+  generateRandomObstaclePosition,
+} from '../../utilities/CarGame';
 
-const SKY_HEIGHT = WINDOW_HEIGHT * 0.25;
-const ROAD_HEIGHT = WINDOW_HEIGHT * 2.42;
-const ROAD_WIDTH = WINDOW_WIDTH * 0.3;
-const ROAD_LINE_HEIGHT = WINDOW_HEIGHT * 0.55;
-const ROAD_LINE_WIDTH = ROAD_WIDTH * 0.05;
+const {
+  carCenterXPosition,
+  carYPosition,
+  carLeftXPosition,
+  carRightXPosition,
+  CAR_WIDTH,
+  CAR_HEIGHT,
+  OBSTACLE_HEIGHT,
+  OBSTACLE_WIDTH,
+  ROAD_HEIGHT,
+  ROAD_LINE_HEIGHT,
+  ROAD_LINE_WIDTH,
+  ROAD_WIDTH,
+  SKY_HEIGHT,
+} = constants;
 
-const OBSTACLE_HEIGHT = WINDOW_HEIGHT * 0.2;
-const OBSTACLE_WIDTH = WINDOW_WIDTH * 0.07;
-
-const CAR_HEIGHT = WINDOW_HEIGHT * 0.2;
-const CAR_WIDTH = ROAD_WIDTH * 0.24;
-
-//car positions
-const carCenterXPosition = ROAD_WIDTH / 2 - CAR_WIDTH + ROAD_LINE_WIDTH;
-const carLeftXPosition = ROAD_LINE_WIDTH / 5;
-const carRightXPosition = ROAD_WIDTH - CAR_WIDTH - 3 * ROAD_LINE_WIDTH;
-const carYPosition = ROAD_HEIGHT - OBSTACLE_HEIGHT;
-
-const componentGenerator = new ComponentGenerator();
+const obstacleGenerator = new ComponentGenerator();
+const roadLineGenerator = new ComponentGenerator();
 
 const CarGame = () => {
-  const [roadLines, setRoadLines] = useState([0]);
+  const {carPosition, setCarPosition, carPositionRef} =
+    useContext(CarGameContext);
+  const [roadLines, setRoadLines] = useState(new Set());
   const [objects, setObjects] = useState(new Set());
-
-  const [carPosition, setCarPoisiton] = useState('center');
-
-  const carPositionRef = useRef(
-    new Animated.ValueXY({
-      x: carCenterXPosition,
-      y: carYPosition,
-    }),
-  ).current;
 
   const handlPress = to => {
     const translateX = (carPosition, to) => {
@@ -71,53 +67,68 @@ const CarGame = () => {
           x: translateValue,
           y: carYPosition,
         },
-        duration: 200,
+        duration: 150,
         useNativeDriver: true,
-      }).start(() => setCarPoisiton(newPosition));
+      }).start(() => setCarPosition(newPosition));
     }
   };
 
-  const destoryLine = () => {
-    setRoadLines(prevRoadLines => {
-      if (prevRoadLines.length > 1) {
-        const newRoadLines = [...prevRoadLines];
-        newRoadLines.shift();
-        return newRoadLines;
-      }
-      return prevRoadLines;
-    });
+  const destroyLine = id => {
+    roadLineGenerator.destroy(id);
   };
-
-  const destoryObject = (id) => {
-    componentGenerator.destroy(id)
+  const destoryObject = id => {
+    obstacleGenerator.destroy(id);
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const uuid = componentGenerator.generateNew(<AnimatedDrop
-        currentCarPosition={carPositionRef.__getValue()}
-        roadHeight={ROAD_HEIGHT}
-        duration={2000}
-        objectHeight={OBSTACLE_HEIGHT}
-        destroy={destoryObject}>
-        <Obstacle
-          positionHorizontal={'right'}
-          obstacleHeight={OBSTACLE_HEIGHT}
-          obstacleWidth={OBSTACLE_WIDTH}
-        />
-      </AnimatedDrop>);
-      setObjects(prev => new Set(prev).add(uuid));
-    }, 1900);
+      const obstacle_uuid = obstacleGenerator.generateNew(
+        <AnimatedDrop
+          objectType={'obstacle'}
+          duration={3200}
+          objectHeight={OBSTACLE_HEIGHT}
+          lanePosition={generateRandomObstaclePosition()}
+          destroy={destoryObject}>
+          <Obstacle
+            positionHorizontal={'left'}
+            obstacleHeight={OBSTACLE_HEIGHT}
+            obstacleWidth={OBSTACLE_WIDTH}
+          />
+        </AnimatedDrop>,
+      );
+      const roadLine_uuid = roadLineGenerator.generateNew(
+        <AnimatedDrop
+          objectType={'roadLine'}
+          duration={3200}
+          objectHeight={ROAD_LINE_HEIGHT}
+          destroy={destroyLine}>
+          <RoadLine
+            roadLineHeight={ROAD_LINE_HEIGHT}
+            roadLineWidth={ROAD_LINE_WIDTH}
+          />
+        </AnimatedDrop>,
+      );
+      setRoadLines(prev => new Set(prev).add(roadLine_uuid));
+      setObjects(prev => new Set(prev).add(obstacle_uuid));
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
   const renderObjects = () => {
     const components = [];
-    for (var it = objects.values(), val= null; val=it.next().value; ) {
-      components.push(componentGenerator.get(val));
+    for (var it = objects.values(), val = null; (val = it.next().value); ) {
+      components.push(obstacleGenerator.get(val));
     }
     return components;
-  }
+  };
+
+  const renderLines = () => {
+    const components = [];
+    for (var it = roadLines.values(), val = null; (val = it.next().value); ) {
+      components.push(roadLineGenerator.get(val));
+    }
+    return components;
+  };
 
   return (
     <View style={styles.background}>
@@ -126,7 +137,7 @@ const CarGame = () => {
         roadHeight={ROAD_HEIGHT}
         roadWidth={ROAD_WIDTH}
         roadLineWidth={ROAD_LINE_WIDTH}>
-        
+        {renderLines()}
         {renderObjects()}
 
         <Animated.View
@@ -160,7 +171,7 @@ const CarGame = () => {
             width: '50%',
             alignItems: 'center',
             justifyContent: 'center',
-            height: WINDOW_HEIGHT * 0.05,
+            height: 50,
             backgroundColor: 'white',
           }}>
           <Text>LEFT</Text>
@@ -171,7 +182,7 @@ const CarGame = () => {
             width: '50%',
             alignItems: 'center',
             justifyContent: 'center',
-            height: WINDOW_HEIGHT * 0.05,
+            height: 50,
             backgroundColor: 'white',
           }}>
           <Text>RIGHT</Text>

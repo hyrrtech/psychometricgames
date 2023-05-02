@@ -1,5 +1,4 @@
-import {useRef, useEffect, useState} from 'react';
-import {View, StyleSheet, Animated, Easing} from 'react-native';
+import {View} from 'react-native';
 const RoadLine = ({roadLineHeight, roadLineWidth}) => {
   return (
     <View

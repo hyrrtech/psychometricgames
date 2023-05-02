@@ -1,28 +1,43 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useContext} from 'react';
 import {Animated, Easing} from 'react-native';
+import {CarGameContext} from '../providers/CarGame.Provider';
+import {constants} from '../utilities/CarGame';
 const AnimatedDrop = ({
   children,
   duration,
-  roadHeight,
   objectHeight,
   destroy,
+  objectType,
+  lanePosition,
   id,
 }) => {
+  const {carPosition} = useContext(CarGameContext);
+  const {carYPosition, ROAD_HEIGHT} = constants;
   const animation = useRef(new Animated.Value(0)).current;
   const distanceFromTop = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: [-objectHeight, roadHeight + objectHeight],
+    outputRange: [-objectHeight, ROAD_HEIGHT + objectHeight],
   });
 
-  const [position, setPosition] = useState({x: 0, y: 0});
-
-  const checkCollision = () => {};
+  useEffect(() => {
+    if (objectType === 'obstacle')
+      distanceFromTop.addListener(({value}) => {
+        //check collision
+        if (
+          value >= carYPosition &&
+          value < ROAD_HEIGHT &&
+          lanePosition.position === carPosition
+        ) {
+          console.log('collide', carPosition, lanePosition.position, id);
+          destroy(id);
+        }
+      });
+    return () => {
+      distanceFromTop.removeAllListeners();
+    };
+  }, [carPosition]);
 
   useEffect(() => {
-    distanceFromTop.addListener(({value}) => {
-      // console.log(value, id);
-    });
-
     Animated.sequence([
       Animated.timing(animation, {
         toValue: 1,
@@ -30,16 +45,17 @@ const AnimatedDrop = ({
         easing: Easing.linear,
         useNativeDriver: true,
       }),
-    ]).start(({finished}) => destroy(id));
-
-    return () => {
-      distanceFromTop.removeAllListeners();
-      destroy(id);
-    };
+    ]).start();
   }, []);
 
   return (
-    <Animated.View style={{transform: [{translateY: distanceFromTop}]}}>
+    <Animated.View
+      style={{
+        transform: [
+          {translateY: distanceFromTop},
+          {translateX: objectType === 'obstacle' ? lanePosition.x : 0},
+        ],
+      }}>
       {children}
     </Animated.View>
   );

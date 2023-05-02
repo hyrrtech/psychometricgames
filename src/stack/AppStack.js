@@ -8,7 +8,7 @@ import MemoryMatrix from '../screens/Memory Matrix/MemoryMatrix';
 import Transition from '../screens/Transition';
 import KillTheSpider from '../screens/Kill The Spider/KillTheSpider';
 import TrainOfThoughts from '../screens/Train of Thoughts/';
-import CarGame from '../screens/Car/CarGame';
+import CarGame from '../screens/Car/';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
