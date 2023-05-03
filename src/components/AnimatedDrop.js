@@ -2,17 +2,18 @@ import {useEffect, useRef, useContext} from 'react';
 import {Animated, Easing} from 'react-native';
 import {CarGameContext} from '../providers/CarGame.Provider';
 import {constants} from '../utilities/CarGame';
+
 const AnimatedDrop = ({
   children,
-  duration,
   objectHeight,
   destroy,
   objectType,
   lanePosition,
   id,
+  invincibleEffect,
 }) => {
-  const {carPosition} = useContext(CarGameContext);
-  const {carYPosition, ROAD_HEIGHT} = constants;
+  const {carPosition, setDuration, duration} = useContext(CarGameContext);
+  const {carYPosition, ROAD_HEIGHT, DURATION} = constants;
   const animation = useRef(new Animated.Value(0)).current;
   const distanceFromTop = animation.interpolate({
     inputRange: [0, 1],
@@ -22,14 +23,13 @@ const AnimatedDrop = ({
   useEffect(() => {
     if (objectType === 'obstacle')
       distanceFromTop.addListener(({value}) => {
-        //check collision
         if (
-          value >= carYPosition &&
+          value >= carYPosition - objectHeight &&
           value < ROAD_HEIGHT &&
           lanePosition.position === carPosition
         ) {
-          console.log('collide', carPosition, lanePosition.position, id);
-          destroy(id);
+          invincibleEffect();
+          setDuration(DURATION + 1000);
         }
       });
     return () => {
@@ -45,8 +45,8 @@ const AnimatedDrop = ({
         easing: Easing.linear,
         useNativeDriver: true,
       }),
-    ]).start();
-  }, []);
+    ]).start(({finished}) => finished && destroy(id));
+  }, [duration]);
 
   return (
     <Animated.View
