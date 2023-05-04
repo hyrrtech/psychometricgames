@@ -12,7 +12,7 @@ export const CarGameProvider = ({children}) => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setDuration(DURATION);
-    }, 2000);
+    }, DURATION * 3);
 
     return () => {
       clearTimeout(timeoutId);
@@ -31,19 +31,22 @@ export const CarGameProvider = ({children}) => {
     Animated.sequence([
       Animated.timing(invinclibeAnimation, {
         toValue: 0,
-        duration: 50,
+        duration: 0,
         useNativeDriver: true,
       }),
+      Animated.delay(100),
       Animated.timing(invinclibeAnimation, {
         toValue: 1,
         duration: 0,
         useNativeDriver: true,
       }),
+      Animated.delay(100),
       Animated.timing(invinclibeAnimation, {
         toValue: 0,
-        duration: 50,
+        duration: 0,
         useNativeDriver: true,
       }),
+      Animated.delay(100),
       Animated.timing(invinclibeAnimation, {
         toValue: 1,
         duration: 0,

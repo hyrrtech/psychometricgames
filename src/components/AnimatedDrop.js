@@ -1,7 +1,9 @@
-import {useEffect, useRef, useContext, useMemo} from 'react';
+import {useEffect, useRef, useState, useContext, useMemo} from 'react';
 import {Animated, Easing} from 'react-native';
 import {CarGameContext} from '../providers/CarGame.Provider';
 import {constants} from '../utilities/CarGame';
+
+const {carYPosition, ROAD_HEIGHT, DURATION} = constants;
 
 const AnimatedDrop = ({
   children,
@@ -13,7 +15,7 @@ const AnimatedDrop = ({
 }) => {
   const {carPosition, setDuration, duration, invincibleEffect} =
     useContext(CarGameContext);
-  const {carYPosition, ROAD_HEIGHT, DURATION} = constants;
+  const [hasCollided, setHasCollided] = useState(false);
   const animation = useRef(new Animated.Value(0)).current;
 
   const interPolateObjectHeight = useMemo(() => {
@@ -29,23 +31,25 @@ const AnimatedDrop = ({
       ROAD_HEIGHT + interPolateObjectHeight,
     ],
   });
-
   useEffect(() => {
     if (objectType === 'obstacle')
       distanceFromTop.addListener(({value}) => {
         if (
+          !hasCollided &&
           value >= carYPosition - objectHeight &&
           value < ROAD_HEIGHT &&
           lanePosition.position === carPosition
         ) {
+          setHasCollided(true);
           invincibleEffect();
           setDuration(DURATION * 1.5);
         }
       });
     return () => {
       distanceFromTop.removeAllListeners();
+      setHasCollided(false);
     };
-  }, [carPosition]);
+  }, [carPosition, duration]);
 
   const startTime = Date.now();
   useEffect(() => {

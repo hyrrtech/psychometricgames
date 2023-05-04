@@ -27,7 +27,7 @@ const obstacleLeftXPosition = ROAD_LINE_WIDTH / 5;
 const obstacleRightXPosition =
   ROAD_WIDTH - OBSTACLE_WIDTH - 3 * ROAD_LINE_WIDTH;
 
-const DURATION = 1500;
+const DURATION = 1200;
 
 export default {
   WINDOW_WIDTH,
