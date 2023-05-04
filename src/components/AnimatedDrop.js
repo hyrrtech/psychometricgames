@@ -1,4 +1,4 @@
-import {useEffect, useRef, useContext} from 'react';
+import {useEffect, useRef, useContext, useMemo} from 'react';
 import {Animated, Easing} from 'react-native';
 import {CarGameContext} from '../providers/CarGame.Provider';
 import {constants} from '../utilities/CarGame';
@@ -10,14 +10,24 @@ const AnimatedDrop = ({
   objectType,
   lanePosition,
   id,
-  invincibleEffect,
 }) => {
-  const {carPosition, setDuration, duration} = useContext(CarGameContext);
+  const {carPosition, setDuration, duration, invincibleEffect} =
+    useContext(CarGameContext);
   const {carYPosition, ROAD_HEIGHT, DURATION} = constants;
   const animation = useRef(new Animated.Value(0)).current;
+
+  const interPolateObjectHeight = useMemo(() => {
+    if (objectType === 'obstacle')
+      return objectHeight + Math.random() * ROAD_HEIGHT * 0.2;
+    return objectHeight;
+  }, [objectType]);
+
   const distanceFromTop = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: [-objectHeight, ROAD_HEIGHT + objectHeight],
+    outputRange: [
+      -interPolateObjectHeight,
+      ROAD_HEIGHT + interPolateObjectHeight,
+    ],
   });
 
   useEffect(() => {
@@ -29,7 +39,7 @@ const AnimatedDrop = ({
           lanePosition.position === carPosition
         ) {
           invincibleEffect();
-          setDuration(DURATION + 1000);
+          setDuration(DURATION * 1.5);
         }
       });
     return () => {
@@ -37,11 +47,14 @@ const AnimatedDrop = ({
     };
   }, [carPosition]);
 
+  const startTime = Date.now();
   useEffect(() => {
+    const elapsedTime = Date.now() - startTime;
+    const remainingDuration = duration - elapsedTime * 10;
     Animated.sequence([
       Animated.timing(animation, {
         toValue: 1,
-        duration: duration,
+        duration: remainingDuration,
         easing: Easing.linear,
         useNativeDriver: true,
       }),

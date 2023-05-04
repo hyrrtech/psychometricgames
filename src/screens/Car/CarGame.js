@@ -37,9 +37,13 @@ const obstacleGenerator = new ComponentGenerator();
 const roadLineGenerator = new ComponentGenerator();
 
 const CarGame = () => {
-  const {carPosition, setCarPosition, carPositionRef, duration} =
-    useContext(CarGameContext);
-  const invinclibeAnimation = useRef(new Animated.Value(1)).current;
+  const {
+    carPosition,
+    setCarPosition,
+    invinclibeAnimation,
+    carPositionRef,
+    duration,
+  } = useContext(CarGameContext);
   const [roadLines, setRoadLines] = useState(new Set());
   const [objects, setObjects] = useState(new Set());
   const [loading, setLoading] = useState(false);
@@ -53,31 +57,6 @@ const CarGame = () => {
     inputRange: [0, 1],
     outputRange: [0, 1],
   });
-
-  const invincibleEffect = () => {
-    Animated.sequence([
-      Animated.timing(invinclibeAnimation, {
-        toValue: 0,
-        duration: 50,
-        useNativeDriver: true,
-      }),
-      Animated.timing(invinclibeAnimation, {
-        toValue: 1,
-        duration: 0,
-        useNativeDriver: true,
-      }),
-      Animated.timing(invinclibeAnimation, {
-        toValue: 0,
-        duration: 50,
-        useNativeDriver: true,
-      }),
-      Animated.timing(invinclibeAnimation, {
-        toValue: 1,
-        duration: 0,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
 
   const handlPress = to => {
     if (carPosition !== to) {
@@ -102,20 +81,6 @@ const CarGame = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const obstacle_uuid = obstacleGenerator.generateNew(
-        <AnimatedDrop
-          objectType={'obstacle'}
-          objectHeight={OBSTACLE_HEIGHT}
-          lanePosition={generateRandomObstaclePosition()}
-          destroy={destoryObject}
-          invincibleEffect={invincibleEffect}>
-          <Obstacle
-            positionHorizontal={'left'}
-            obstacleHeight={OBSTACLE_HEIGHT}
-            obstacleWidth={OBSTACLE_WIDTH}
-          />
-        </AnimatedDrop>,
-      );
       const roadLine_uuid = roadLineGenerator.generateNew(
         <AnimatedDrop
           objectType={'roadLine'}
@@ -128,8 +93,27 @@ const CarGame = () => {
         </AnimatedDrop>,
       );
       setRoadLines(prev => new Set(prev).add(roadLine_uuid));
+    }, duration / 2);
+    return () => clearInterval(interval);
+  }, [duration]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const obstacle_uuid = obstacleGenerator.generateNew(
+        <AnimatedDrop
+          objectType={'obstacle'}
+          objectHeight={OBSTACLE_HEIGHT}
+          lanePosition={generateRandomObstaclePosition()}
+          destroy={destoryObject}>
+          <Obstacle
+            positionHorizontal={'left'}
+            obstacleHeight={OBSTACLE_HEIGHT}
+            obstacleWidth={OBSTACLE_WIDTH}
+          />
+        </AnimatedDrop>,
+      );
       setObjects(prev => new Set(prev).add(obstacle_uuid));
-    }, duration - 1200);
+    }, duration / 2);
     return () => clearInterval(interval);
   }, [duration]);
 

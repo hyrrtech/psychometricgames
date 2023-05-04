@@ -12,7 +12,7 @@ export const CarGameProvider = ({children}) => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setDuration(DURATION);
-    }, 500);
+    }, 2000);
 
     return () => {
       clearTimeout(timeoutId);
@@ -25,6 +25,32 @@ export const CarGameProvider = ({children}) => {
       y: carYPosition,
     }),
   ).current;
+  const invinclibeAnimation = useRef(new Animated.Value(1)).current;
+
+  const invincibleEffect = () => {
+    Animated.sequence([
+      Animated.timing(invinclibeAnimation, {
+        toValue: 0,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+      Animated.timing(invinclibeAnimation, {
+        toValue: 1,
+        duration: 0,
+        useNativeDriver: true,
+      }),
+      Animated.timing(invinclibeAnimation, {
+        toValue: 0,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+      Animated.timing(invinclibeAnimation, {
+        toValue: 1,
+        duration: 0,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
 
   return (
     <CarGameContext.Provider
@@ -34,6 +60,8 @@ export const CarGameProvider = ({children}) => {
         carPositionRef,
         duration,
         setDuration,
+        invinclibeAnimation,
+        invincibleEffect,
       }}>
       {children}
     </CarGameContext.Provider>
