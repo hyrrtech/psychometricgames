@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext, useRef} from 'react';
+import React, {useEffect, useState, useContext, useRef, useCallback} from 'react';
 import {View, StyleSheet, Text, Animated, TouchableOpacity} from 'react-native';
 import Sky from '../../components/Car Game/Sky';
 import Road from '../../components/Car Game/Road';
@@ -34,13 +34,14 @@ const {
   SPAWN_INTERVAL,
   WINDOW_HEIGHT,
   WINDOW_WIDTH,
+  DISTANCE_BETWEEN_LINES
 } = constants;
 
 const obstacleGenerator = new ComponentGenerator();
 const roadLineGenerator = new ComponentGenerator();
 
 const CarGame = () => {
-  const {carPosition, setCarPosition, invincibleAnimation, carPositionRef} =
+  const {carPosition, setCarPosition, invincibleAnimation, carPositionRef, speed} =
     useContext(CarGameContext);
   const [roadLines, setRoadLines] = useState(new Set());
   const [objects, setObjects] = useState(new Set());
@@ -52,6 +53,13 @@ const CarGame = () => {
     inputRange: [0, 1],
     outputRange: [0, 1],
   });
+
+  const getSpawnDuration = useCallback(()=>{
+    // console.log(speed);
+    const duration = 2000*(DISTANCE_BETWEEN_LINES/speed);
+    // console.log(duration);
+    return duration;
+  },[speed]);
 
   const handlPress = to => {
     if (carPosition !== to) {
@@ -88,9 +96,9 @@ const CarGame = () => {
         </AnimatedDrop>,
       );
       setRoadLines(prev => new Set(prev).add(roadLine_uuid));
-    }, SPAWN_INTERVAL * 0.8);
+    }, getSpawnDuration() * 0.8);
     return () => clearInterval(interval);
-  }, [SPAWN_INTERVAL]);
+  }, [getSpawnDuration]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -108,9 +116,9 @@ const CarGame = () => {
         </AnimatedDrop>,
       );
       setObjects(prev => new Set(prev).add(obstacle_uuid));
-    }, SPAWN_INTERVAL * 0.9);
+    }, getSpawnDuration() * 0.9);
     return () => clearInterval(interval);
-  }, [SPAWN_INTERVAL]);
+  }, [getSpawnDuration]);
 
   const renderObjects = () => {
     const components = [];
@@ -185,7 +193,7 @@ const CarGame = () => {
               alignItems: 'center',
               justifyContent: 'center',
               height: '100%',
-              borderWidth: 1,
+              // borderWidth: 1,
             }}>
             <Text>LEFT</Text>
           </TouchableOpacity>
@@ -198,7 +206,7 @@ const CarGame = () => {
               alignItems: 'center',
               justifyContent: 'center',
               height: '100%',
-              borderWidth: 1,
+              // borderWidth: 1,
             }}>
             <Text>RIGHT</Text>
           </TouchableOpacity>

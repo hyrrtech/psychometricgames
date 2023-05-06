@@ -31,6 +31,7 @@ const MIN_SPEED = 700;
 const MAX_SPEED = 1400;
 const SPAWN_INTERVAL = 2000;
 const INVINCIBILITY_DURATION = 3000;
+const DISTANCE_BETWEEN_LINES = ROAD_LINE_HEIGHT;
 
 export default {
   WINDOW_WIDTH,
@@ -45,7 +46,6 @@ export default {
   MIN_SPEED,
   MAX_SPEED,
   INVINCIBILITY_DURATION,
-  SPAWN_INTERVAL,
   CAR_HEIGHT,
   CAR_WIDTH,
   carCenterXPosition,
@@ -55,4 +55,5 @@ export default {
   obstacleCenterXPosition,
   obstacleLeftXPosition,
   obstacleRightXPosition,
+  DISTANCE_BETWEEN_LINES
 };
