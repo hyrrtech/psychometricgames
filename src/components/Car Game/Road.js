@@ -10,7 +10,7 @@ const Road = ({roadHeight, roadWidth, roadLineWidth, children}) => {
         width: roadWidth,
         height: roadHeight,
         backgroundColor: '#ce9048',
-        // transform: [{rotateX: '86.6deg'}],
+        transform: [{rotateX: '86.6deg'}],
         borderRightColor: '#916027',
         borderRightWidth: roadWidth * 0.07,
         borderLeftColor: '#916027',

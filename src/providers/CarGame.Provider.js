@@ -35,7 +35,7 @@ export const CarGameProvider = ({children}) => {
         duration: 0,
         useNativeDriver: true,
       }),
-      // Animated.delay(100),
+      Animated.delay(100),
       Animated.timing(invincibleAnimation, {
         toValue: 1,
         duration: 0,
