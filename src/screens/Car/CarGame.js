@@ -31,29 +31,24 @@ const {
   ROAD_LINE_WIDTH,
   ROAD_WIDTH,
   SKY_HEIGHT,
+  SPAWN_INTERVAL,
+  WINDOW_HEIGHT,
+  WINDOW_WIDTH,
 } = constants;
 
 const obstacleGenerator = new ComponentGenerator();
 const roadLineGenerator = new ComponentGenerator();
 
 const CarGame = () => {
-  const {
-    carPosition,
-    setCarPosition,
-    invinclibeAnimation,
-    carPositionRef,
-    duration,
-  } = useContext(CarGameContext);
+  const {carPosition, setCarPosition, invincibleAnimation, carPositionRef} =
+    useContext(CarGameContext);
   const [roadLines, setRoadLines] = useState(new Set());
   const [objects, setObjects] = useState(new Set());
   const [loading, setLoading] = useState(false);
   const [completedPopup, setCompletedPopup] = useState(false);
-  // const renderCount = useRef(0);
   const {TIME} = useCountdown(2, 0);
 
-  // console.log(renderCount.current++, 'renders');
-
-  const opacity = invinclibeAnimation.interpolate({
+  const opacity = invincibleAnimation.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 1],
   });
@@ -66,7 +61,7 @@ const CarGame = () => {
           x: translateValue,
           y: carYPosition,
         },
-        duration: 150,
+        duration: 100,
         useNativeDriver: true,
       }).start(() => setCarPosition(newPosition));
     }
@@ -93,9 +88,9 @@ const CarGame = () => {
         </AnimatedDrop>,
       );
       setRoadLines(prev => new Set(prev).add(roadLine_uuid));
-    }, duration / 2);
+    }, SPAWN_INTERVAL * 0.8);
     return () => clearInterval(interval);
-  }, [duration]);
+  }, [SPAWN_INTERVAL]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -113,9 +108,9 @@ const CarGame = () => {
         </AnimatedDrop>,
       );
       setObjects(prev => new Set(prev).add(obstacle_uuid));
-    }, duration / 2);
+    }, SPAWN_INTERVAL * 0.9);
     return () => clearInterval(interval);
-  }, [duration]);
+  }, [SPAWN_INTERVAL]);
 
   const renderObjects = () => {
     const components = [];
@@ -179,6 +174,7 @@ const CarGame = () => {
           style={{
             position: 'absolute',
             bottom: 0,
+            height: WINDOW_HEIGHT * 0.75,
             flexDirection: 'row',
             width: '100%',
           }}>
@@ -188,19 +184,21 @@ const CarGame = () => {
               width: '50%',
               alignItems: 'center',
               justifyContent: 'center',
-              height: 50,
-              backgroundColor: 'white',
+              height: '100%',
+              borderWidth: 1,
             }}>
             <Text>LEFT</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => handlPress('right')}
+            onPress={() => {
+              handlPress('right');
+            }}
             style={{
               width: '50%',
               alignItems: 'center',
               justifyContent: 'center',
-              height: 50,
-              backgroundColor: 'white',
+              height: '100%',
+              borderWidth: 1,
             }}>
             <Text>RIGHT</Text>
           </TouchableOpacity>

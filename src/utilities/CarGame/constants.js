@@ -27,7 +27,10 @@ const obstacleLeftXPosition = ROAD_LINE_WIDTH / 5;
 const obstacleRightXPosition =
   ROAD_WIDTH - OBSTACLE_WIDTH - 3 * ROAD_LINE_WIDTH;
 
-const DURATION = 1200;
+const MIN_SPEED = 700;
+const MAX_SPEED = 1400;
+const SPAWN_INTERVAL = 2000;
+const INVINCIBILITY_DURATION = 3000;
 
 export default {
   WINDOW_WIDTH,
@@ -39,7 +42,10 @@ export default {
   ROAD_LINE_WIDTH,
   OBSTACLE_HEIGHT,
   OBSTACLE_WIDTH,
-  DURATION,
+  MIN_SPEED,
+  MAX_SPEED,
+  INVINCIBILITY_DURATION,
+  SPAWN_INTERVAL,
   CAR_HEIGHT,
   CAR_WIDTH,
   carCenterXPosition,

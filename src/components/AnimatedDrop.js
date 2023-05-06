@@ -3,34 +3,27 @@ import {Animated, Easing} from 'react-native';
 import {CarGameContext} from '../providers/CarGame.Provider';
 import {constants} from '../utilities/CarGame';
 
-const {carYPosition, ROAD_HEIGHT, DURATION} = constants;
+const {carYPosition, ROAD_HEIGHT, MIN_SPEED} = constants;
 
 const AnimatedDrop = ({
   children,
-  objectHeight,
   destroy,
   objectType,
   lanePosition,
   id,
+  startTime,
+  objectHeight,
 }) => {
-  const {carPosition, setDuration, duration, invincibleEffect} =
+  const {carPosition, setSpeed, speed, invincibleEffect} =
     useContext(CarGameContext);
   const [hasCollided, setHasCollided] = useState(false);
   const animation = useRef(new Animated.Value(0)).current;
 
-  const interPolateObjectHeight = useMemo(() => {
-    if (objectType === 'obstacle')
-      return objectHeight + Math.random() * ROAD_HEIGHT * 0.2;
-    return objectHeight;
-  }, [objectType]);
-
   const distanceFromTop = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: [
-      -interPolateObjectHeight,
-      ROAD_HEIGHT + interPolateObjectHeight,
-    ],
+    outputRange: [-objectHeight, ROAD_HEIGHT + objectHeight],
   });
+
   useEffect(() => {
     if (objectType === 'obstacle')
       distanceFromTop.addListener(({value}) => {
@@ -40,30 +33,31 @@ const AnimatedDrop = ({
           value < ROAD_HEIGHT &&
           lanePosition.position === carPosition
         ) {
+          console.log('collision detected');
           setHasCollided(true);
+          setSpeed(MIN_SPEED);
           invincibleEffect();
-          setDuration(DURATION * 1.5);
         }
       });
     return () => {
-      distanceFromTop.removeAllListeners();
       setHasCollided(false);
+      distanceFromTop.removeAllListeners();
     };
-  }, [carPosition, duration]);
+  }, [carPosition, hasCollided]);
 
-  const startTime = Date.now();
   useEffect(() => {
-    const elapsedTime = Date.now() - startTime;
-    const remainingDuration = duration - elapsedTime * 10;
+    // const distanceCovered = getDistanceCovered();
+    // console.log(distanceCovered, id);
+    const duration = (2 * objectHeight + ROAD_HEIGHT * 1000) / speed;
     Animated.sequence([
       Animated.timing(animation, {
         toValue: 1,
-        duration: remainingDuration,
+        duration: duration,
         easing: Easing.linear,
         useNativeDriver: true,
       }),
     ]).start(({finished}) => finished && destroy(id));
-  }, [duration]);
+  }, [speed]);
 
   return (
     <Animated.View

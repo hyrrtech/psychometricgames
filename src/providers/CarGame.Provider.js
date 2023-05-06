@@ -3,51 +3,40 @@ import {Animated} from 'react-native';
 import {constants} from '../utilities/CarGame';
 export const CarGameContext = createContext();
 
-const {carCenterXPosition, carYPosition, DURATION} = constants;
+const {carCenterXPosition, carYPosition, MIN_SPEED, MAX_SPEED} = constants;
 
 export const CarGameProvider = ({children}) => {
-  const [duration, setDuration] = useState(DURATION);
+  const [speed, setSpeed] = useState(MIN_SPEED);
   const [carPosition, setCarPosition] = useState('center');
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setDuration(DURATION);
-    }, DURATION * 3);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [duration]);
-
+  const invincibleAnimation = useRef(new Animated.Value(1)).current;
   const carPositionRef = useRef(
     new Animated.ValueXY({
       x: carCenterXPosition,
       y: carYPosition,
     }),
   ).current;
-  const invinclibeAnimation = useRef(new Animated.Value(1)).current;
+
+  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+  async function increaseSpeed() {
+    if (speed != MAX_SPEED) {
+      await delay(4000);
+      setSpeed(MAX_SPEED);
+    }
+  }
+  useEffect(() => {
+    increaseSpeed();
+  }, [speed]);
 
   const invincibleEffect = () => {
     Animated.sequence([
-      Animated.timing(invinclibeAnimation, {
+      Animated.timing(invincibleAnimation, {
         toValue: 0,
         duration: 0,
         useNativeDriver: true,
       }),
-      Animated.delay(100),
-      Animated.timing(invinclibeAnimation, {
-        toValue: 1,
-        duration: 0,
-        useNativeDriver: true,
-      }),
-      Animated.delay(100),
-      Animated.timing(invinclibeAnimation, {
-        toValue: 0,
-        duration: 0,
-        useNativeDriver: true,
-      }),
-      Animated.delay(100),
-      Animated.timing(invinclibeAnimation, {
+      // Animated.delay(100),
+      Animated.timing(invincibleAnimation, {
         toValue: 1,
         duration: 0,
         useNativeDriver: true,
@@ -61,9 +50,9 @@ export const CarGameProvider = ({children}) => {
         carPosition,
         setCarPosition,
         carPositionRef,
-        duration,
-        setDuration,
-        invinclibeAnimation,
+        speed,
+        setSpeed,
+        invincibleAnimation,
         invincibleEffect,
       }}>
       {children}
