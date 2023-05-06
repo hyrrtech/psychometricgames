@@ -1,8 +1,8 @@
 import * as React from 'react';
-import MainStack from './stack/MainStack';
+import Provider from './stack';
 
 const App = () => {
-  return <MainStack />;
+  return <Provider />;
 };
 
 export default App;

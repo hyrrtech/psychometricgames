@@ -1,10 +1,15 @@
 import React, {useEffect, useRef} from 'react';
 import {Animated} from 'react-native';
 import {Path, Ellipse, G} from 'react-native-svg';
+import {PlaySound} from '../../utilities/';
+import balloon_pop from '../../assets/sounds/balloon_pop.wav';
+
 const AnimatedG = Animated.createAnimatedComponent(G);
 const PoppedBalloon = props => {
   const opacityAnimation = useRef(new Animated.Value(1)).current;
+
   useEffect(() => {
+    PlaySound(balloon_pop);
     Animated.timing(opacityAnimation, {
       toValue: 0,
       duration: 1500,

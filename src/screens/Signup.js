@@ -1,18 +1,43 @@
+import React, {useState, useContext} from 'react';
 import {Button} from '../components/Button';
-import {View, Text} from 'react-native';
+import {View, Text, Alert} from 'react-native';
 import {GlobalStyles} from '../styles/GlobalStyles';
 import {Logo} from '../components/Logo';
 import {SignupForm} from '../components/SignupForm';
 import google from '../assets/google.png';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
 import {BackgroundWrapper} from '../components/BackgroundWrapper';
-import bg3 from '../assets/bg3.png';
 import {FontStyle} from '../values/Font';
 import {COLORS} from '../values/Colors';
+import {AuthContext} from '../providers/AuthProvider';
+import BackgroundImage from '../values/BackgroundImage';
 
 const Signup = ({navigation, route}) => {
+  const [formData, setFormData] = useState({});
+  const {signup, signin_with_google} = useContext(AuthContext);
+  const [loading, setLoading] = useState({signup: false, google: false});
+
+  const handleSignup = () => {
+    //validation check to be done
+    setLoading({...loading, signup: true});
+    signup(formData.name, formData.email, formData.password)
+      .then(() => setLoading({...loading, signup: false}))
+      .catch(error => {
+        setLoading({...loading, signup: false});
+        Alert.alert('demo error alert', error.message, [{text: 'OK'}]);
+      });
+  };
+  const handleSignupWithGoogle = () => {
+    setLoading({...loading, google: true});
+    signin_with_google()
+      .then(() => setLoading({...loading, google: false}))
+      .catch(error => {
+        setLoading({...loading, google: false});
+        Alert.alert('demo error alert', error.message, [{text: 'OK'}]);
+      });
+  };
   return (
-    <BackgroundWrapper imageURL={bg3}>
+    <BackgroundWrapper imageURL={BackgroundImage.signup}>
       <KeyboardAwareScrollView
         contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
         style={GlobalStyles.mainContainer}>
@@ -23,10 +48,11 @@ const Signup = ({navigation, route}) => {
           <Text style={[FontStyle.h3, {color: COLORS.textPrimary}]}>
             Create New acount
           </Text>
-          <SignupForm />
+          <SignupForm formData={formData} setFormData={setFormData} />
           <View style={GlobalStyles.buttonContainer}>
             <Button
-              title="Sign up"
+              onPressIn={handleSignup}
+              title={loading.signup ? 'Loading...' : 'Sign up'}
               style={{
                 backgroundColor: COLORS.primary,
                 borderRadius: 10,
@@ -35,8 +61,9 @@ const Signup = ({navigation, route}) => {
               }}
             />
             <Button
-              icon={google}
-              title="Sign up with google"
+              onPressIn={handleSignupWithGoogle}
+              icon={!loading.google && google}
+              title={loading.google ? 'Loading...' : 'Sign up with google'}
               style={{
                 borderWidth: 1,
                 borderColor: COLORS.primary,
