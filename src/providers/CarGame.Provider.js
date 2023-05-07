@@ -20,7 +20,7 @@ export const CarGameProvider = ({children}) => {
 
   async function increaseSpeed() {
     if (speed != MAX_SPEED) {
-      await delay(4000);
+      await delay(2000);
       setSpeed(MAX_SPEED);
     }
   }

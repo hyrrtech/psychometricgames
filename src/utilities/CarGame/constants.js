@@ -28,8 +28,7 @@ const obstacleRightXPosition =
   ROAD_WIDTH - OBSTACLE_WIDTH - 3 * ROAD_LINE_WIDTH;
 
 const MIN_SPEED = 700;
-const MAX_SPEED = 700;
-const SPAWN_INTERVAL = 2000;
+const MAX_SPEED = 1200;
 const INVINCIBILITY_DURATION = 3000;
 const DISTANCE_BETWEEN_LINES = ROAD_LINE_HEIGHT;
 
@@ -55,5 +54,5 @@ export default {
   obstacleCenterXPosition,
   obstacleLeftXPosition,
   obstacleRightXPosition,
-  DISTANCE_BETWEEN_LINES
+  DISTANCE_BETWEEN_LINES,
 };

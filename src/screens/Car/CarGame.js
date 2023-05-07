@@ -1,4 +1,10 @@
-import React, {useEffect, useState, useContext, useRef, useCallback} from 'react';
+import React, {
+  useEffect,
+  useState,
+  useContext,
+  useRef,
+  useCallback,
+} from 'react';
 import {View, StyleSheet, Text, Animated, TouchableOpacity} from 'react-native';
 import Sky from '../../components/Car Game/Sky';
 import Road from '../../components/Car Game/Road';
@@ -34,15 +40,20 @@ const {
   SPAWN_INTERVAL,
   WINDOW_HEIGHT,
   WINDOW_WIDTH,
-  DISTANCE_BETWEEN_LINES
+  DISTANCE_BETWEEN_LINES,
 } = constants;
 
 const obstacleGenerator = new ComponentGenerator();
 const roadLineGenerator = new ComponentGenerator();
 
 const CarGame = () => {
-  const {carPosition, setCarPosition, invincibleAnimation, carPositionRef, speed} =
-    useContext(CarGameContext);
+  const {
+    carPosition,
+    setCarPosition,
+    invincibleAnimation,
+    carPositionRef,
+    speed,
+  } = useContext(CarGameContext);
   const [roadLines, setRoadLines] = useState(new Set());
   const [objects, setObjects] = useState(new Set());
   const [loading, setLoading] = useState(false);
@@ -54,12 +65,12 @@ const CarGame = () => {
     outputRange: [0, 1],
   });
 
-  const getSpawnDuration = useCallback(()=>{
+  const getSpawnDuration = useCallback(() => {
     // console.log(speed);
-    const duration = 2000*(DISTANCE_BETWEEN_LINES/speed);
+    const duration = 2000 * (DISTANCE_BETWEEN_LINES / speed);
     // console.log(duration);
     return duration;
-  },[speed]);
+  }, [speed]);
 
   const handlPress = to => {
     if (carPosition !== to) {
@@ -150,6 +161,12 @@ const CarGame = () => {
           value={TIME}
           style={styles.infoLabel}
           key="time"
+        />,
+        <InfoLabel
+          label={'Speed'}
+          value={speed}
+          style={styles.infoLabel}
+          key="speed"
         />,
       ]}>
       <View style={styles.background}>

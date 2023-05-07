@@ -20,29 +20,19 @@ const AnimatedDrop = ({
     useContext(CarGameContext);
   const [hasCollided, setHasCollided] = useState(false);
   const animation = useRef(new Animated.Value(0)).current;
-  const [remaining, setRemaining] = useState(DISTANCE_TO_BE_COVERED);
+  // const [remaining, setRemaining] = useState(DISTANCE_TO_BE_COVERED);
 
   const distanceFromTop = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: [-100, ROAD_HEIGHT + 100],
+    outputRange: [-ROAD_HEIGHT * 0.2, ROAD_HEIGHT + ROAD_HEIGHT * 0.2],
   });
 
-
-
   useEffect(() => {
-      const listenerid = distanceFromTop.addListener(({value}) => {
-        setRemaining(DISTANCE_TO_BE_COVERED - Math.abs(value));
-        distanceFromTop.removeListener(listenerid);
-      });
-
-      animation.addListener((val)=>console.log(val));
-  }, [speed]);
-
-  useEffect(()=>{
-    let listenerid = null;
-    if (objectType === 'obstacle'){
-      listenerid = distanceFromTop.addListener(({value}) => {
-          if (
+    if (objectType === 'obstacle') {
+      distanceFromTop.addListener(({value}) => {
+        // console.log(value);
+        if (
+          !hasCollided &&
           value >= carYPosition - objectHeight &&
           value < ROAD_HEIGHT &&
           lanePosition.position === carPosition
@@ -51,28 +41,26 @@ const AnimatedDrop = ({
           setSpeed(MIN_SPEED);
           invincibleEffect();
         }
-    });
-  }
+      });
+    }
     return () => {
-      setHasCollided(false);
-      if(!!listenerid){
-        distanceFromTop.removeListener(listenerid);
-      }
+      distanceFromTop.removeAllListeners();
     };
-  },[carPosition])
-
+  }, [carPosition, lanePosition, objectType, hasCollided, invincibleEffect]);
 
   useEffect(() => {
+    const value = distanceFromTop.__getValue();
+    const remaining = DISTANCE_TO_BE_COVERED - Math.abs(value);
     const duration = (remaining * 1000) / speed;
     Animated.sequence([
       Animated.timing(animation, {
         toValue: 1,
         duration: duration,
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: false, //__getValue() not working for "useNativeDriver: true"
       }),
     ]).start(({finished}) => finished && destroy(id));
-  }, [remaining, speed]);
+  }, [speed]);
 
   return (
     <Animated.View
