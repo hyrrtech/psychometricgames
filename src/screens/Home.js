@@ -50,6 +50,13 @@ const TestScreen = ({navigation}) => {
         title="TrainOfThoughts"
         style={styles.button}
       />
+      <Button
+        onPress={() => {
+          navigation.navigate('ColorMatch');
+        }}
+        title="Color Match"
+        style={styles.button}
+      />
       <Button onPress={signout} title="signout" />
     </View>
   );
@@ -57,7 +64,8 @@ const TestScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   button: {
     borderWidth: 2,
-    margibottom: 15,
+    marginVertical: 15,
+    marginHorizontal: 15,
   },
 });
 export default TestScreen;

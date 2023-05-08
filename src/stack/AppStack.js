@@ -9,6 +9,7 @@ import Transition from '../screens/Transition';
 import KillTheSpider from '../screens/Kill The Spider/KillTheSpider';
 import TrainOfThoughts from '../screens/Train of Thoughts/';
 import CarGame from '../screens/Car/';
+import ColorMatch from '../screens/Color Match/ColorMatch';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
@@ -44,6 +45,11 @@ function MainStack() {
       <Stack.Screen
         name="Transition"
         component={Transition}
+        options={screenOptions}
+      />
+      <Stack.Screen
+        name="ColorMatch"
+        component={ColorMatch}
         options={screenOptions}
       />
     </Stack.Navigator>

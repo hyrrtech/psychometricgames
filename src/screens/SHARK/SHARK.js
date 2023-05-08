@@ -5,13 +5,13 @@ import {PlaySound, useDebounce} from '../../utilities';
 import {InfoLabel} from '../../components/InfoLabel';
 import {GameWrapper} from '../../components/GameWrapper';
 import {Button} from '../../components/Button';
-import {SharkMatrix, Result} from '../../components/Shark';
+import {SharkMatrix} from '../../components/Shark';
+import {ResultPopup} from '../../components/ResultPopup';
 import {AuthContext} from '../../providers/AuthProvider';
 import CompletedPopup from '../../components/CompletedPopup';
 import db from '../../firebase/database';
 import initialState, {ResultAnimationTime} from './initialState';
 import {reducer, ACTIONS} from './reducer';
-
 import styles from './styles';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
@@ -118,7 +118,12 @@ const SHARK = ({navigation}) => {
         />,
       ]}>
       <SharkMatrix matrix={state.matrix} />
-      {result.show ? <Result result={result.value} /> : null}
+      {result.show ? (
+        <ResultPopup
+          result={result.value}
+          animationDuration={ResultAnimationTime}
+        />
+      ) : null}
     </GameWrapper>
   );
 };
