@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  boxText: FontStyle.h1,
+  boxText: [FontStyle.h1, {color: 'black'}],
 
   button: {
     color: COLORS.textPrimary,
