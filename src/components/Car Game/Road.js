@@ -1,16 +1,43 @@
-import {useRef, useEffect} from 'react';
-import {View, Animated, Dimensions} from 'react-native';
+import {useEffect, useRef, useMemo} from 'react';
+import {View, Animated, Easing} from 'react-native';
 
-const Road = ({roadHeight, roadWidth, roadLineWidth, children}) => {
+const Road = ({
+  roadHeight,
+  roadWidth,
+  roadLineWidth,
+  interpolation,
+  children,
+}) => {
+  const animation = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.spring(animation, {
+      toValue: 1,
+      duration: 100,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start();
+  }, [interpolation]);
+
+  const translation = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, interpolation.translateX],
+  });
+  const rotation = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', interpolation.rotateZ],
+  });
   return (
-    <View
+    <Animated.View
       style={{
-        marginLeft: '0%',
-        top: -roadHeight * 0.43,
+        bottom: roadHeight * 0.45,
         width: roadWidth,
         height: roadHeight,
+        transform: [
+          {translateX: translation},
+          {rotateX: '86.6deg'},
+          {rotateZ: rotation},
+        ],
         backgroundColor: '#ce9048',
-        transform: [{rotateX: '86.6deg'}],
         borderRightColor: '#916027',
         borderRightWidth: roadWidth * 0.07,
         borderLeftColor: '#916027',
@@ -41,7 +68,7 @@ const Road = ({roadHeight, roadWidth, roadLineWidth, children}) => {
           }}
         />
       </View>
-    </View>
+    </Animated.View>
   );
 };
 

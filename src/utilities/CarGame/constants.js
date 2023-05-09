@@ -3,15 +3,15 @@ import {Dimensions} from 'react-native';
 const {width: WINDOW_WIDTH, height: WINDOW_HEIGHT} = Dimensions.get('window');
 
 const SKY_HEIGHT = WINDOW_HEIGHT * 0.25;
-const ROAD_HEIGHT = WINDOW_HEIGHT * 2.42;
-const ROAD_WIDTH = WINDOW_WIDTH * 0.3;
+const ROAD_HEIGHT = WINDOW_HEIGHT * 2.5;
+const ROAD_WIDTH = WINDOW_WIDTH * 0.6;
 const ROAD_LINE_HEIGHT = ROAD_HEIGHT * 0.3;
 const ROAD_LINE_WIDTH = ROAD_WIDTH * 0.05;
 
-const OBSTACLE_HEIGHT = WINDOW_HEIGHT * 0.2;
+const OBSTACLE_HEIGHT = ROAD_HEIGHT * 0.05;
 const OBSTACLE_WIDTH = ROAD_WIDTH * 0.24;
 
-const CAR_HEIGHT = WINDOW_HEIGHT * 0.2;
+const CAR_HEIGHT = ROAD_HEIGHT * 0.05;
 const CAR_WIDTH = ROAD_WIDTH * 0.24;
 
 //car positions
@@ -27,8 +27,8 @@ const obstacleLeftXPosition = ROAD_LINE_WIDTH / 5;
 const obstacleRightXPosition =
   ROAD_WIDTH - OBSTACLE_WIDTH - 3 * ROAD_LINE_WIDTH;
 
-const MIN_SPEED = 700;
-const MAX_SPEED = 1200;
+const MIN_SPEED = 1500;
+const MAX_SPEED = 2000;
 const INVINCIBILITY_DURATION = 3000;
 const DISTANCE_BETWEEN_LINES = ROAD_LINE_HEIGHT;
 

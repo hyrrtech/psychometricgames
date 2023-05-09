@@ -4,6 +4,7 @@ import React, {
   useContext,
   useRef,
   useCallback,
+  useMemo,
 } from 'react';
 import {View, StyleSheet, Text, Animated, TouchableOpacity} from 'react-native';
 import Sky from '../../components/Car Game/Sky';
@@ -25,9 +26,10 @@ import {InfoLabel} from '../../components/InfoLabel';
 import {useCountdown} from '../../utilities';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
+import db from '../../firebase/database';
+import {AuthContext} from '../../providers/AuthProvider';
 
 const {
-  carYPosition,
   CAR_WIDTH,
   CAR_HEIGHT,
   OBSTACLE_HEIGHT,
@@ -37,16 +39,14 @@ const {
   ROAD_LINE_WIDTH,
   ROAD_WIDTH,
   SKY_HEIGHT,
-  SPAWN_INTERVAL,
   WINDOW_HEIGHT,
-  WINDOW_WIDTH,
   DISTANCE_BETWEEN_LINES,
 } = constants;
 
 const obstacleGenerator = new ComponentGenerator();
 const roadLineGenerator = new ComponentGenerator();
 
-const CarGame = () => {
+const CarGame = ({navigation}) => {
   const {
     carPosition,
     setCarPosition,
@@ -54,21 +54,35 @@ const CarGame = () => {
     carPositionRef,
     speed,
   } = useContext(CarGameContext);
+  const {user} = useContext(AuthContext);
   const [roadLines, setRoadLines] = useState(new Set());
   const [objects, setObjects] = useState(new Set());
   const [loading, setLoading] = useState(false);
   const [completedPopup, setCompletedPopup] = useState(false);
-  const {TIME} = useCountdown(2, 0);
+  const {TIME} = useCountdown(0, 30);
+  const linesPassed = useRef(0);
 
   const opacity = invincibleAnimation.interpolate({
     inputRange: [0, 1],
     outputRange: [0, 1],
   });
 
+  const updateDB = (distanceTraveled, uid) => {
+    const GameRef = db.ref(`/users/${uid}/CarGame/`);
+    GameRef.set({
+      distanceTraveled: distanceTraveled,
+    });
+    navigation.navigate('Home');
+  };
+
+  useEffect(() => {
+    if (TIME === '00:00') {
+      updateDB(linesPassed.current * ROAD_HEIGHT, user.uid);
+    }
+  }, [TIME]);
+
   const getSpawnDuration = useCallback(() => {
-    // console.log(speed);
     const duration = 2000 * (DISTANCE_BETWEEN_LINES / speed);
-    // console.log(duration);
     return duration;
   }, [speed]);
 
@@ -76,10 +90,7 @@ const CarGame = () => {
     if (carPosition !== to) {
       const {translateValue, newPosition} = getNewCarPosition(carPosition, to);
       Animated.timing(carPositionRef, {
-        toValue: {
-          x: translateValue,
-          y: carYPosition,
-        },
+        toValue: translateValue,
         duration: 100,
         useNativeDriver: true,
       }).start(() => setCarPosition(newPosition));
@@ -106,6 +117,7 @@ const CarGame = () => {
           />
         </AnimatedDrop>,
       );
+      linesPassed.current += 1;
       setRoadLines(prev => new Set(prev).add(roadLine_uuid));
     }, getSpawnDuration() * 0.8);
     return () => clearInterval(interval);
@@ -127,7 +139,7 @@ const CarGame = () => {
         </AnimatedDrop>,
       );
       setObjects(prev => new Set(prev).add(obstacle_uuid));
-    }, getSpawnDuration() * 0.9);
+    }, getSpawnDuration() * 1.5);
     return () => clearInterval(interval);
   }, [getSpawnDuration]);
 
@@ -146,6 +158,14 @@ const CarGame = () => {
     }
     return components;
   };
+
+  const moveRoad = useMemo(() => {
+    if (carPosition === 'left')
+      return {translateX: ROAD_WIDTH * 0.5, rotateZ: '-2deg'};
+    if (carPosition === 'center') return {translateX: 0, rotateZ: '0deg'};
+    if (carPosition === 'right')
+      return {translateX: -ROAD_WIDTH * 0.5, rotateZ: '2deg'};
+  }, [carPosition]);
 
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
@@ -174,7 +194,8 @@ const CarGame = () => {
         <Road
           roadHeight={ROAD_HEIGHT}
           roadWidth={ROAD_WIDTH}
-          roadLineWidth={ROAD_LINE_WIDTH}>
+          roadLineWidth={ROAD_LINE_WIDTH}
+          interpolation={moveRoad}>
           {renderLines()}
           {renderObjects()}
 
@@ -183,15 +204,12 @@ const CarGame = () => {
               {
                 position: 'absolute',
                 height: CAR_HEIGHT,
+                bottom: 0,
                 opacity: opacity,
-                transform: [
-                  {translateX: carPositionRef.x},
-                  {translateY: carPositionRef.y},
-                ],
+                transform: [{translateX: carPositionRef}],
                 width: CAR_WIDTH,
                 backgroundColor: 'red',
               },
-              carPositionRef.getTranslateTransform(),
             ]}
           />
         </Road>
@@ -205,26 +223,14 @@ const CarGame = () => {
           }}>
           <TouchableOpacity
             onPress={() => handlPress('left')}
-            style={{
-              width: '50%',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100%',
-              // borderWidth: 1,
-            }}>
+            style={styles.button}>
             <Text>LEFT</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
               handlPress('right');
             }}
-            style={{
-              width: '50%',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100%',
-              // borderWidth: 1,
-            }}>
+            style={styles.button}>
             <Text>RIGHT</Text>
           </TouchableOpacity>
         </View>
@@ -239,6 +245,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#dabe53',
     alignItems: 'center',
     width: '100%',
+  },
+  button: {
+    width: '50%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
   },
 });
 

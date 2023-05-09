@@ -22,9 +22,11 @@ const AnimatedDrop = ({
   const animation = useRef(new Animated.Value(0)).current;
   // const [remaining, setRemaining] = useState(DISTANCE_TO_BE_COVERED);
 
+  const offset =
+    objectType === 'obstacle' ? ROAD_HEIGHT * 0.05 : ROAD_HEIGHT * 0.2;
   const distanceFromTop = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: [-ROAD_HEIGHT * 0.2, ROAD_HEIGHT + ROAD_HEIGHT * 0.2],
+    outputRange: [-offset, ROAD_HEIGHT + offset],
   });
 
   useEffect(() => {
