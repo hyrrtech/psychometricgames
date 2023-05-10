@@ -57,6 +57,14 @@ const TestScreen = ({navigation}) => {
         title="Color Match"
         style={styles.button}
       />
+      <Button
+        onPress={() => {
+          navigation.navigate('Fish');
+        }}
+        title="Fish"
+        style={styles.button}
+      />
+
       <Button onPress={signout} title="signout" />
     </View>
   );
