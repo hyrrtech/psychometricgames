@@ -1,5 +1,5 @@
 import {View, Text, Animated, Dimensions, Easing} from 'react-native';
-import {useRef, useEffect} from 'react';
+import {useRef, useEffect, useState} from 'react';
 
 const {width: WINDOW_WIDTH, height: WINDOW_HEIGHT} = Dimensions.get('window');
 const poundAreaHeight = WINDOW_HEIGHT * 0.7;
@@ -20,56 +20,54 @@ const newToValue = () => {
   return {x, y};
 };
 
-const getNewAngle = (from, to) => {
-  const newAngle = `${
-    (Math.atan2(to.y - from.y, to.x - from.x) * 180) / Math.PI
-  }deg`;
-  return newAngle;
-};
+const getNewAngle = a => `${45 + (Math.atan2(a.y, a.x) * 180) / Math.PI}deg`;
 
 const FishModal = () => {
   const initialFromValue = newToValue();
   const initialToValue = newToValue();
-  const initialAngle = getNewAngle(initialFromValue, initialToValue);
+  const rotateFrom = getNewAngle(initialFromValue);
+  const [rotationAngle, setRotationAngle] = useState({
+    from: rotateFrom,
+    to: rotateFrom,
+  });
   const translateAnimation = useRef(
     new Animated.ValueXY({x: initialFromValue.x, y: initialFromValue.y}),
   ).current;
   const rotationAnimation = useRef(new Animated.Value(0)).current;
-  const previousAngle = useRef(initialAngle);
-  let rotateY = rotationAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [previousAngle, initialAngle],
-  });
-  console.log('rotateY', rotateY);
+
   const Animate = (from, to) => {
     const distance = Math.sqrt(
       Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2),
     );
+
+    const rotateTo = getNewAngle(to);
+    console.log(rotateTo, rotationAngle);
     //constant relative duration for all distances
     const duration = (distance / speed) * 1000;
 
-    const newAngle = getNewAngle(from, to);
-    rotateY = rotationAnimation.interpolate({
-      inputRange: [0, 1],
-      outputRange: [previousAngle, newAngle],
+    setRotationAngle(rotationAngle => {
+      return {...rotationAngle, to: rotateTo};
     });
-    previousAngle.current = newAngle;
+
     Animated.parallel([
+      Animated.timing(rotationAnimation, {
+        toValue: 1,
+        duration: 500,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
       Animated.timing(translateAnimation, {
         toValue: {x: to.x, y: to.y},
         duration: duration,
         easing: Easing.linear,
         useNativeDriver: true,
       }),
-      Animated.timing(rotationAnimation, {
-        toValue: 1,
-        duration: 300,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }),
     ]).start(({finished}) => {
       if (finished) {
         const newTo = newToValue();
+        setRotationAngle(rotationAngle => {
+          return {...rotationAngle, from: rotateTo};
+        });
         rotationAnimation.setValue(0);
         Animate(to, newTo);
       }
@@ -90,7 +88,12 @@ const FishModal = () => {
         transform: [
           {translateX: translateAnimation.x},
           {translateY: translateAnimation.y},
-          {rotateY: rotateY},
+          {
+            rotateZ: rotationAnimation.interpolate({
+              inputRange: [0, 1],
+              outputRange: [rotationAngle.from, rotationAngle.to],
+            }),
+          },
         ],
       }}>
       {/* head */}
@@ -113,10 +116,10 @@ const Fish = () => {
           width: poundAreaWidth,
           backgroundColor: 'rgb(32, 156, 226)',
         }}>
-        <FishModal />
-        <FishModal />
-        <FishModal />
-        <FishModal />
+        <FishModal key={1} />
+        {/* <FishModal key={2} />
+        <FishModal key={3} />
+        <FishModal key={4} /> */}
       </View>
     </View>
   );
