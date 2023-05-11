@@ -13,7 +13,6 @@ const AnimatedDrop = ({
   objectType,
   lanePosition,
   id,
-  startTime,
   objectHeight,
 }) => {
   const {carPosition, setSpeed, speed, invincibleEffect} =

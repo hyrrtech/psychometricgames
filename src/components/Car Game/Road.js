@@ -10,7 +10,8 @@ const Road = ({
 }) => {
   const animation = useRef(new Animated.Value(0)).current;
   useEffect(() => {
-    Animated.spring(animation, {
+    animation.setValue(0);
+    Animated.timing(animation, {
       toValue: 1,
       duration: 100,
       easing: Easing.linear,

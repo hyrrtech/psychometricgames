@@ -12,9 +12,8 @@ export const timeout = 300;
 
 const initialState = {
   score: 0,
-  correct: 0,
-  incorrect: 0,
-  total_rounds_played: 0,
+  time: time,
+  roundsResult: [],
   colorSet: newColorSetGenerator(colors),
 };
 
