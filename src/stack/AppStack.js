@@ -11,6 +11,7 @@ import TrainOfThoughts from '../screens/Train of Thoughts/';
 import CarGame from '../screens/Car/';
 import ColorMatch from '../screens/Color Match/ColorMatch';
 import Fish from '../screens/Fish/Fish';
+import FrogJump from '../screens/Frog Jump/FrogJump';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
@@ -53,6 +54,12 @@ function MainStack() {
         component={ColorMatch}
         options={screenOptions}
       />
+      <Stack.Screen
+        name="Frog Jump"
+        component={FrogJump}
+        options={screenOptions}
+      />
+
       <Stack.Screen name="Fish" component={Fish} options={screenOptions} />
     </Stack.Navigator>
   );
