@@ -1,4 +1,11 @@
-import {View, Text, Animated, Dimensions, Easing} from 'react-native';
+import {
+  View,
+  Text,
+  Animated,
+  Dimensions,
+  Easing,
+  TouchableOpacity,
+} from 'react-native';
 import {useRef, useEffect, useState} from 'react';
 
 const {width: WINDOW_WIDTH, height: WINDOW_HEIGHT} = Dimensions.get('window');
@@ -22,7 +29,7 @@ const newToValue = () => {
 
 const getNewAngle = a => `${(Math.atan2(a.y, a.x) * 180) / Math.PI}deg`;
 
-const FishModal = () => {
+const FishModal = ({id, fed, setFishes}) => {
   const initialFromValue = newToValue();
   const initialToValue = newToValue();
   const rotateFrom = getNewAngle(initialFromValue);
@@ -41,7 +48,7 @@ const FishModal = () => {
     );
 
     const rotateTo = getNewAngle(to);
-    console.log(rotateTo, rotationAngle);
+    // console.log(rotateTo, rotationAngle);
     //constant relative duration for all distances
     const duration = (distance / speed) * 1000;
 
@@ -77,9 +84,15 @@ const FishModal = () => {
   useEffect(() => {
     Animate(initialFromValue, initialToValue);
   }, [translateAnimation]);
-
+  const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
   return (
-    <Animated.View
+    <AnimatedTouchable
+      //onpress set fed = true
+      onPress={() =>
+        setFishes(fishes =>
+          fishes.map(fish => (fish.id === id ? {...fish, fed: true} : fish)),
+        )
+      }
       style={{
         position: 'absolute',
         height: fishHeight,
@@ -98,11 +111,21 @@ const FishModal = () => {
       }}>
       {/* head */}
       <View style={{height: '20%', backgroundColor: 'red'}} />
-    </Animated.View>
+    </AnimatedTouchable>
   );
+};
+const generateFishes = number_of_fishes => {
+  const fishes = [];
+  for (let i = 0; i < number_of_fishes; i++) {
+    fishes.push({id: i, fed: false});
+  }
+  return fishes;
 };
 
 const Fish = () => {
+  const [fishes, setFishes] = useState(generateFishes(5));
+  console.log(fishes);
+
   return (
     <View
       style={{
@@ -116,10 +139,14 @@ const Fish = () => {
           width: poundAreaWidth,
           backgroundColor: 'rgb(32, 156, 226)',
         }}>
-        <FishModal key={1} />
-        {/* <FishModal key={2} />
-        <FishModal key={3} />
-        <FishModal key={4} /> */}
+        {fishes.map(fish => (
+          <FishModal
+            key={fish.id}
+            id={fish.id}
+            setFishes={setFishes}
+            fed={fish.fed}
+          />
+        ))}
       </View>
     </View>
   );
