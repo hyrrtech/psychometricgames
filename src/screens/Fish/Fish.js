@@ -27,7 +27,7 @@ const newToValue = () => {
   return {x, y};
 };
 
-const getNewAngle = a => `${(Math.atan2(a.y, a.x) * 180) / Math.PI}deg`;
+const getNewAngle = a => `${(Math.atan(a.y, a.x) * 180) / Math.PI}deg`;
 
 const FishModal = ({id, fed, setFishes}) => {
   const initialFromValue = newToValue();

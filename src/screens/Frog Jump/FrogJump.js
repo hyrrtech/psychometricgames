@@ -75,7 +75,7 @@ const generateInitialSetOfLeaderFrogPositions = (
   return initialSetOfLeaderFrogPositions;
 };
 
-const FollowerFrog = ({initialPosition, position}) => {
+const FollowerFrog = ({initialPosition, position, setDisabled}) => {
   const animation = useRef(
     new Animated.ValueXY({x: initialPosition.x, y: initialPosition.y}),
   ).current;
@@ -86,6 +86,7 @@ const FollowerFrog = ({initialPosition, position}) => {
   );
   const duration = (distance * 1000) / speed;
   useEffect(() => {
+    setDisabled(true);
     Animated.timing(animation, {
       toValue: {x: position.x, y: position.y},
       duration: duration,
@@ -94,6 +95,7 @@ const FollowerFrog = ({initialPosition, position}) => {
       if (finished) {
         animation.setValue({x: position.x, y: position.y});
         previousPosition.current = position;
+        setDisabled(false);
       }
     });
   }, [position]);
@@ -108,9 +110,9 @@ const FollowerFrog = ({initialPosition, position}) => {
   );
 };
 
-const LeaderFrog = ({leaderFrogPosition}) => {
-  const currentPosition = useRef(0);
-  const initialPosition = leaderFrogPosition[currentPosition.current];
+const LeaderFrog = ({leaderFrogPosition, setDisabled}) => {
+  const currentPosition = useRef(leaderFrogPosition[0]);
+  const initialPosition = leaderFrogPosition[0];
   const animation = useRef(
     new Animated.ValueXY({x: initialPosition.x, y: initialPosition.y}),
   ).current;
@@ -129,9 +131,15 @@ const LeaderFrog = ({leaderFrogPosition}) => {
         useNativeDriver: true,
       }),
     ]).start(({finished}) => {
+      const indexOfCurrentPosition = leaderFrogPosition.findIndex(
+        item => item.x === to.x && item.y === to.y,
+      );
       if (finished && currentPosition.current < leaderFrogPosition.length - 1) {
-        currentPosition.current = currentPosition.current + 1;
         Animate(to, leaderFrogPosition[currentPosition.current]);
+      }
+      if (currentPosition.current === leaderFrogPosition.length - 1) {
+        setDisabled(false);
+        currentPosition.current = 0;
       }
     });
   };
@@ -153,21 +161,67 @@ const LeaderFrog = ({leaderFrogPosition}) => {
 
 const Lillipad = ({
   position,
+  // followerFrogPosition, //will work with context
   lillipadPositions,
   frogPositions,
   setFollowerFrogPosition,
+  setLeaderFrogPosition,
+  leaderFrogPosition,
+  disabled,
 }) => {
+  const handlePressIn = () => {
+    const index = lillipadPositions.findIndex(item => {
+      return item.x === position.x && item.y === position.y;
+    });
+    const newLeaderFrogPosition = () => {
+      let newPositionIndex = Math.floor(Math.random() * frogPositions.length);
+      const previousLeaderFrogPosition =
+        leaderFrogPosition[leaderFrogPosition.length - 1];
+      while (
+        newPositionIndex ===
+          frogPositions.findIndex(
+            item =>
+              item.x === frogPositions[index].x &&
+              item.y === frogPositions[index].y,
+          ) ||
+        newPositionIndex ===
+          frogPositions.findIndex(
+            item =>
+              item.x === previousLeaderFrogPosition.x &&
+              item.y === previousLeaderFrogPosition.y,
+          )
+      ) {
+        newPositionIndex = Math.floor(Math.random() * frogPositions.length);
+      }
+      return {
+        x:
+          frogPositions[newPositionIndex].x -
+          (lillipadSize - followerFrogSize) / 2 +
+          (lillipadSize - leaderFrogSize) / 2,
+        y:
+          frogPositions[newPositionIndex].y -
+          (lillipadSize - followerFrogSize) / 2 +
+          (lillipadSize - leaderFrogSize) / 2,
+      };
+    };
+    setFollowerFrogPosition({
+      x: frogPositions[index].x,
+      y: frogPositions[index].y,
+    });
+    setLeaderFrogPosition(() => [newLeaderFrogPosition()]);
+  };
+
   return (
     <TouchableOpacity
-      onPressIn={() => {
-        const index = lillipadPositions.findIndex(item => {
-          return item.x === position.x && item.y === position.y;
-        });
-        setFollowerFrogPosition({
-          x: frogPositions[index].x,
-          y: frogPositions[index].y,
-        });
-      }}
+      disabled={
+        disabled
+        //  ||
+        // (position.x ===
+        //   followerFrogPosition.x - (lillipadSize - followerFrogSize) / 2 &&
+        //   position.y ===
+        //     followerFrogPosition.y - (lillipadSize - followerFrogSize) / 2)
+      }
+      onPressIn={handlePressIn}
       activeOpacity={0.5}
       style={[
         styles.lillipad,
@@ -202,6 +256,7 @@ const FrogJump = () => {
       4,
     ),
   );
+  const [disabled, setDisabled] = useState(true);
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -219,14 +274,22 @@ const FrogJump = () => {
               lillipadPositions={lillipadPositions}
               frogPositions={frogPositions}
               setFollowerFrogPosition={setFollowerFrogPosition}
+              setLeaderFrogPosition={setLeaderFrogPosition}
+              leaderFrogPosition={leaderFrogPosition}
+              followerFrogPosition={followerFrogPosition}
+              disabled={disabled}
             />
           );
         })}
         <FollowerFrog
           position={followerFrogPosition}
           initialPosition={followerFrogPosition}
+          setDisabled={setDisabled}
         />
-        <LeaderFrog leaderFrogPosition={leaderFrogPosition} />
+        <LeaderFrog
+          leaderFrogPosition={leaderFrogPosition}
+          setDisabled={setDisabled}
+        />
       </View>
     </View>
   );
