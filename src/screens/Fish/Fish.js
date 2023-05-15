@@ -1,12 +1,12 @@
 import {View, Text, Animated, Dimensions, Easing} from 'react-native';
-import {useRef, useEffect, useState} from 'react';
+import {useRef, useEffect, useState, useMemo} from 'react';
 
 const {width: WINDOW_WIDTH, height: WINDOW_HEIGHT} = Dimensions.get('window');
 const poundAreaHeight = WINDOW_HEIGHT * 0.7;
 const poundAreaWidth = WINDOW_WIDTH * 0.9;
 const speed = 50;
-const fishHeight = 50;
-const fishWidth = 20;
+const fishHeight = 20;
+const fishWidth = 50;
 
 const newToValue = () => {
   const minX = poundAreaWidth * 0.05;
@@ -21,16 +21,23 @@ const newToValue = () => {
 };
 
 const getNewAngle = (a, b) => {
-  return `${90 + Math.atan((b.y - a.y) / (b.x - a.x)) / (Math.PI / 180)}deg`;
+  const angle = Math.atan2(b.y - a.y, b.x - a.x);
+  return `${angle}rad`;
 };
+function removeDeg(stringWithDeg) {
+  const numberPart = stringWithDeg.replace('deg', '');
+  return parseFloat(numberPart);
+}
 
 const FishModal = () => {
-  // const initialFromValue = newToValue();
-  // const initialToValue = newToValue();
-  // const rotateFrom = getNewAngle(initialFromValue, initialToValue);
+  const rotateFrom = useMemo(() => {
+    const initialFromValue = newToValue();
+    const initialToValue = newToValue();
+    return getNewAngle(initialFromValue, initialToValue);
+  });
   const [rotationAngle, setRotationAngle] = useState({
-    from: '0deg',
-    to: '45deg',
+    from: rotateFrom,
+    to: rotateFrom,
   });
   const translateAnimation = useRef(
     new Animated.ValueXY({x: 0.05, y: 0.05}),
@@ -42,16 +49,15 @@ const FishModal = () => {
     const distance = Math.sqrt(
       Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2),
     );
-
-    const rotateTo = getNewAngle(from, to);
-    //constant relative duration for all distances
     const duration = (distance / speed) * 1000;
+
+    let rotateTo = getNewAngle(from, to);
 
     setRotationAngle(rotationAngle => {
       return {from: rotationAngle.to, to: rotateTo};
     });
 
-    Animated.sequence([
+    Animated.parallel([
       Animated.timing(rotationAnimation, {
         toValue: 1,
         duration: 500,
@@ -66,7 +72,7 @@ const FishModal = () => {
       }),
     ]).start(({finished}) => {
       if (finished) {
-        const newTo = newToValue();
+        let newTo = newToValue();
         rotationAnimation.setValue(0);
         Animate(to, newTo);
       }
@@ -83,6 +89,7 @@ const FishModal = () => {
         position: 'absolute',
         height: fishHeight,
         width: fishWidth,
+
         backgroundColor: 'green',
         transform: [
           {translateX: translateAnimation.x},
@@ -96,8 +103,7 @@ const FishModal = () => {
         ],
       }}>
       {/* head */}
-      <View style={{height: '20%', backgroundColor: 'red'}} />
-      <View></View>
+      <View style={{height: '100%', width: '20%', backgroundColor: 'red'}} />
     </Animated.View>
   );
 };
@@ -117,11 +123,6 @@ const Fish = () => {
           backgroundColor: 'rgb(32, 156, 226)',
         }}>
         <FishModal key={1} />
-        {/* <FishModal key={2} />
-        <FishModal key={3} />
-        <FishModal key={4} /> */}
-        {/* <View style={{backgroundColor: 'black', position:'absolute', left: 108.56699052282737, top: 211.54916516834209, width:5, height:5}}></View> */}
-        {/* <View style={{backgroundColor: 'black', position:'absolute', left: 32.30618920873511, top: 162.76220980435, width:5, height:5}}></View> */}
       </View>
     </View>
   );
