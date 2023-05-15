@@ -11,7 +11,7 @@ import TrainOfThoughts from '../screens/Train of Thoughts/';
 import CarGame from '../screens/Car/';
 import ColorMatch from '../screens/Color Match/ColorMatch';
 import Fish from '../screens/Fish/Fish';
-import FrogJump from '../screens/Frog Jump/FrogJump';
+import FrogJump from '../screens/Frog Jump/';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
