@@ -59,9 +59,9 @@ const TestScreen = ({navigation}) => {
       />
       <Button
         onPress={() => {
-          navigation.navigate('Fish');
+          navigation.navigate('FishGame');
         }}
-        title="Fish"
+        title="Fish Game"
         style={styles.button}
       />
 

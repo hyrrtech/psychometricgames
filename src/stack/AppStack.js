@@ -10,7 +10,7 @@ import KillTheSpider from '../screens/Kill The Spider/KillTheSpider';
 import TrainOfThoughts from '../screens/Train of Thoughts/';
 import CarGame from '../screens/Car/';
 import ColorMatch from '../screens/Color Match/ColorMatch';
-import Fish from '../screens/Fish/Fish';
+import FishGame from '../screens/Fish Game/';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
@@ -42,7 +42,6 @@ function MainStack() {
         component={TrainOfThoughts}
         options={screenOptions}
       />
-
       <Stack.Screen
         name="Transition"
         component={Transition}
@@ -53,7 +52,11 @@ function MainStack() {
         component={ColorMatch}
         options={screenOptions}
       />
-      <Stack.Screen name="Fish" component={Fish} options={screenOptions} />
+      <Stack.Screen
+        name="FishGame"
+        component={FishGame}
+        options={screenOptions}
+      />
     </Stack.Navigator>
   );
 }

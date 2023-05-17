@@ -1,51 +1,32 @@
-import {View, Text, Animated, Dimensions, Easing} from 'react-native';
-import {useRef, useEffect, useState, useMemo} from 'react';
+import {View, TouchableOpacity, Animated, Easing} from 'react-native';
+import {useEffect, useState, useContext, useMemo, useRef} from 'react';
+import {FishGameContext} from '../../providers/FishGame.Provider';
+import {constants, getNewAngle, newToValue} from '../../utilities/Fish Game';
+const {poundAreaHeight, poundAreaWidth, fishHeight, fishWidth, speed} =
+  constants;
 
-const {width: WINDOW_WIDTH, height: WINDOW_HEIGHT} = Dimensions.get('window');
-const poundAreaHeight = WINDOW_HEIGHT * 0.7;
-const poundAreaWidth = WINDOW_WIDTH * 0.9;
-const speed = 50;
-const fishHeight = 20;
-const fishWidth = 50;
+const Fish = () => {
+  const {disabled, setDisabled} = useContext(FishGameContext);
+  const [fed, setFed] = useState(false);
 
-const newToValue = () => {
-  const minX = poundAreaWidth * 0.05;
-  const maxX = poundAreaWidth * 0.95;
-  const minY = poundAreaHeight * 0.05;
-  const maxY = poundAreaHeight * 0.9;
-
-  const x = Math.random() * (maxX - minX) + minX;
-  const y = Math.random() * (maxY - minY) + minY;
-
-  return {x, y};
-};
-
-const getNewAngle = (a, b) => {
-  const angle = Math.atan2(b.y - a.y, b.x - a.x);
-  return `${angle}rad`;
-};
-function removeDeg(stringWithDeg) {
-  const numberPart = stringWithDeg.replace('deg', '');
-  return parseFloat(numberPart);
-}
-
-const FishModal = () => {
-  const rotateFrom = useMemo(() => {
+  const {rotateFrom, initialFromValue, initialToValue} = useMemo(() => {
     const initialFromValue = newToValue();
     const initialToValue = newToValue();
-    return getNewAngle(initialFromValue, initialToValue);
-  });
+    const rotateFrom = getNewAngle(initialFromValue, initialToValue);
+    return {rotateFrom, initialFromValue, initialToValue};
+  }, []);
+
   const [rotationAngle, setRotationAngle] = useState({
     from: rotateFrom,
     to: rotateFrom,
   });
+
   const translateAnimation = useRef(
-    new Animated.ValueXY({x: 0.05, y: 0.05}),
+    new Animated.ValueXY({x: initialFromValue.x, y: initialFromValue.y}),
   ).current;
   const rotationAnimation = useRef(new Animated.Value(0)).current;
-  console.log(rotationAngle);
+
   const Animate = (from, to) => {
-    console.log(from, to);
     const distance = Math.sqrt(
       Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2),
     );
@@ -80,16 +61,29 @@ const FishModal = () => {
   };
 
   useEffect(() => {
-    Animate(newToValue(), newToValue());
+    Animate(initialFromValue, initialToValue);
   }, []);
 
+  const handlePress = () => {
+    if (fed) {
+      //game over dispatch method
+    } else {
+      setFed(true);
+      setDisabled(true);
+    }
+  };
+
   return (
-    <Animated.View
+    <TouchableOpacity
+      disabled={disabled}
+      activeOpacity={0.7}
+      onPressIn={handlePress}
       style={{
         position: 'absolute',
         height: fishHeight,
         width: fishWidth,
-
+        borderRadius: 10,
+        overflow: 'hidden',
         backgroundColor: 'green',
         transform: [
           {translateX: translateAnimation.x},
@@ -104,27 +98,8 @@ const FishModal = () => {
       }}>
       {/* head */}
       <View style={{height: '100%', width: '20%', backgroundColor: 'red'}} />
-    </Animated.View>
+    </TouchableOpacity>
   );
 };
 
-const Fish = () => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-      <View
-        style={{
-          height: poundAreaHeight,
-          width: poundAreaWidth,
-          backgroundColor: 'rgb(32, 156, 226)',
-        }}>
-        <FishModal key={1} />
-      </View>
-    </View>
-  );
-};
 export default Fish;
