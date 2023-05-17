@@ -11,6 +11,7 @@ import TrainOfThoughts from '../screens/Train of Thoughts/';
 import CarGame from '../screens/Car/';
 import ColorMatch from '../screens/Color Match/ColorMatch';
 import FishGame from '../screens/Fish Game/';
+import PiratePassage from '../screens/Pirate Passage/PiratePassage';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
@@ -55,6 +56,11 @@ function MainStack() {
       <Stack.Screen
         name="FishGame"
         component={FishGame}
+        options={screenOptions}
+      />
+      <Stack.Screen
+        name="PiratePassage"
+        component={PiratePassage}
         options={screenOptions}
       />
     </Stack.Navigator>
