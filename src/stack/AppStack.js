@@ -11,7 +11,7 @@ import TrainOfThoughts from '../screens/Train of Thoughts/';
 import CarGame from '../screens/Car/';
 import ColorMatch from '../screens/Color Match/ColorMatch';
 import FishGame from '../screens/Fish Game/';
-import PiratePassage from '../screens/Pirate Passage/PiratePassage';
+import PiratePassage from '../screens/Pirate Passage/';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
