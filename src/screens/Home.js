@@ -71,6 +71,13 @@ const TestScreen = ({navigation}) => {
         title="Pirate Passage"
         style={styles.button}
       />
+      <Button
+        onPress={() => {
+          navigation.navigate('FuseWire');
+        }}
+        title="Fuse Wire"
+        style={styles.button}
+      />
 
       <Button onPress={signout} title="signout" />
     </View>

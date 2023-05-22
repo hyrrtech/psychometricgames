@@ -12,6 +12,7 @@ import CarGame from '../screens/Car/';
 import ColorMatch from '../screens/Color Match/ColorMatch';
 import FishGame from '../screens/Fish Game/';
 import PiratePassage from '../screens/Pirate Passage/PiratePassage';
+import FuseWire from '../screens/Fuse Wire/FuseWire';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
@@ -61,6 +62,11 @@ function MainStack() {
       <Stack.Screen
         name="PiratePassage"
         component={PiratePassage}
+        options={screenOptions}
+      />
+      <Stack.Screen
+        name="FuseWire"
+        component={FuseWire}
         options={screenOptions}
       />
     </Stack.Navigator>
