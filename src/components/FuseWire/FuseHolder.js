@@ -1,7 +1,7 @@
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import {constants} from '../../utilities/FuseWire';
 const {FuseHolderHeight, FuseHolderWidth} = constants;
-const FuseHolder = ({position}) => {
+const FuseHolder = ({position, value, initiallyBlank}) => {
   return (
     <View
       style={[
@@ -10,7 +10,9 @@ const FuseHolder = ({position}) => {
           left: position.x - FuseHolderWidth / 2,
           top: position.y - FuseHolderHeight / 2,
         },
-      ]}></View>
+      ]}>
+      <Text style={styles.text}>{initiallyBlank ? '' : value}</Text>
+    </View>
   );
 };
 
@@ -20,6 +22,12 @@ const styles = StyleSheet.create({
     height: FuseHolderHeight,
     width: FuseHolderWidth,
     backgroundColor: '#2c3e50',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  text: {
+    color: '#fff',
+    fontSize: 25,
   },
 });
 

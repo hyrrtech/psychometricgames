@@ -1,32 +1,73 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {PanResponder, View, Animated, StyleSheet, Text} from 'react-native';
-import {constants, generateRangeInAsc} from '../../utilities/FuseWire';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {
+  PanResponder,
+  View,
+  Animated,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+import {constants, getFusePositions} from '../../utilities/FuseWire';
+import {FuseWireContext} from '../../providers/FuseWire.Provider';
+
 import FuseHolder from '../../components/FuseWire/FuseHolder';
 import Fuse from '../../components/FuseWire/Fuse';
 const {FuseHeight, FuseWidth, FuseHolderHeight, FuseHolderWidth} = constants;
 
-const dropZonePosition = {
-  x: 200 - FuseHolderWidth / 2,
-  y: 200 - FuseHolderHeight / 2,
-};
-const originalFusePosition = {x: 100 - FuseWidth / 2, y: 100 - FuseHeight / 2};
+function generateCloseValues(array) {
+  const result = [];
 
-const Drag = () => {
-  const pan = useRef(new Animated.ValueXY(originalFusePosition)).current;
-  const fuseHolders = [
-    {position: {x: 100, y: 150}},
-    {position: {x: 100, y: 250}},
-    {position: {x: 100, y: 350}},
-    {position: {x: 100, y: 450}},
-  ];
+  if (array.length === 0) {
+    return result;
+  }
+
+  for (let i = 1; i <= Math.floor(array.length / 2); i++) {
+    const newValue1 = array[0] * i + 1;
+    const newValue2 = array[array.length - 1] + i;
+    result.push(newValue1, newValue2);
+  }
+
+  return result;
+}
+
+const FuseWire = () => {
+  const {fuseHolders, blankValues} = useContext(FuseWireContext);
+  const [fuse, setFuse] = useState(
+    getFusePositions([...blankValues, ...generateCloseValues(blankValues)]),
+  );
+
+  const handleCheck = () => {
+    const checkIfCorrect = () =>
+      fuseHolders
+        .filter(fuseHolder => fuseHolder.initiallyBlank)
+        .every(fuseHolder => fuseHolder.sequence === fuseHolder.inputValue);
+    const result = checkIfCorrect();
+
+    console.log(result);
+  };
 
   return (
     <View style={styles.mainContainer}>
       {fuseHolders.map((fuseHolder, index) => (
-        <FuseHolder key={index} position={fuseHolder.position} />
+        <FuseHolder
+          key={index}
+          position={fuseHolder.position}
+          value={fuseHolder.sequence}
+          initiallyBlank={fuseHolder.initiallyBlank}
+        />
       ))}
-
-      <Fuse position={{x: 200, y: 200}} fuseHolders={fuseHolders} />
+      {fuse.map((row, rowIndex) =>
+        row.map((fuse, colIndex) => (
+          <Fuse
+            key={`${rowIndex}-${colIndex}`}
+            position={fuse.position}
+            value={fuse.value}
+          />
+        )),
+      )}
+      <TouchableOpacity style={styles.button} onPressIn={handleCheck}>
+        <Text style={styles.text}>Check</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -35,21 +76,17 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
   },
-
-  text: {
-    marginTop: 25,
-    marginLeft: 5,
-    marginRight: 5,
-    textAlign: 'center',
-    color: '#fff',
-  },
-
-  circle: {
+  button: {
     position: 'absolute',
-    backgroundColor: '#1abc9c',
-    width: FuseWidth,
-    height: FuseHeight,
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#2c3e50',
+    padding: 10,
+  },
+  text: {
+    color: '#fff',
+    fontSize: 50,
   },
 });
 
-export default Drag;
+export default FuseWire;
