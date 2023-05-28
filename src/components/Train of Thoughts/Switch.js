@@ -3,12 +3,13 @@ import SwitchSvgVertical from './SVG/SwitchSvgVertical';
 import SwitchSvgTurn from './SVG/SwitchSvgTurn';
 import {useContext} from 'react';
 import {TrainOfThoughtsContext} from '../../providers/TrainOfThoughts.Provider';
-import {adjustCoordinates} from '../../utilities/Train of Thoughts';
-
-const Switch = (point, switchSize, id, directions) => {
+import {adjustCoordinates, constants} from '../../utilities/Train of Thoughts';
+const {switchSize} = constants;
+const Switch = (point, id, directions) => {
   const {switchDirections, setSwitchDirections} = useContext(
     TrainOfThoughtsContext,
   );
+
   const direction = switchDirections[id - 1];
   const handlePress = () => {
     const newSwitchDirections = [...switchDirections];

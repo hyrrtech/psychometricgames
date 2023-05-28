@@ -38,19 +38,50 @@ const TestScreen = ({navigation}) => {
       />
       <Button
         onPress={() => {
+          navigation.navigate('CarGame');
+        }}
+        title="Car Game"
+        style={styles.button}
+      />
+      <Button
+        onPress={() => {
           navigation.navigate('TrainOfThoughts');
         }}
         title="TrainOfThoughts"
         style={styles.button}
       />
+      <Button
+        onPress={() => {
+          navigation.navigate('ColorMatch');
+        }}
+        title="Color Match"
+        style={styles.button}
+      />
+      <Button
+        onPress={() => {
+          navigation.navigate('Fish');
+        }}
+        title="Fish"
+        style={styles.button}
+      />
+
+      <Button
+        onPress={() => {
+          navigation.navigate('Frog Jump');
+        }}
+        title="Frog Jump"
+        style={styles.button}
+      />
+
       <Button onPress={signout} title="signout" />
     </View>
   );
 };
 const styles = StyleSheet.create({
   button: {
-    borderWidth: 1,
-    margibottom: 10,
+    borderWidth: 2,
+    marginVertical: 15,
+    marginHorizontal: 15,
   },
 });
 export default TestScreen;

@@ -20,11 +20,10 @@ const updateDB = (state, uid) => {
 const updateTrain = (data, uid) => {
   const GameRef = db.ref(`/users/${uid}/TrainOfThoughts/`);
   const trainData = {
-    intendedStation: data.intendedStation,
-    stationReached: data.stationReached,
     departureTime: data.departureTime,
     arrivalTime: data.arrivalTime,
     pathFollowed: data.pathFollowed,
+    correctPath: data.correctPath,
   };
   GameRef.child('trains').push(trainData);
 };
@@ -35,15 +34,13 @@ export function reducer(state, action) {
       return newState;
 
     case ACTIONS.ON_REACH_STATION:
-      const {
-        intendedStation,
-        stationReached,
-        departureTime,
-        arrivalTime,
-        pathFollowed,
-      } = action.payload;
+      const {departureTime, arrivalTime, pathFollowed, correctPath} =
+        action.payload;
       var newState = {...state};
-      if (intendedStation === stationReached) {
+      if (
+        pathFollowed[pathFollowed.length - 1] ===
+        correctPath[correctPath.length - 1]
+      ) {
         newState.correctStations += 1;
         newState.score += 50;
       } else {
@@ -52,11 +49,10 @@ export function reducer(state, action) {
       }
       updateTrain(
         {
-          intendedStation,
-          stationReached,
           departureTime,
           arrivalTime,
           pathFollowed,
+          correctPath,
         },
         action.payload.uid,
       );

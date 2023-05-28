@@ -162,7 +162,6 @@ const KillTheSpider = ({navigation}) => {
             ),
         )}
       </View>
-      <View></View>
     </GameWrapper>
   );
 };

@@ -55,6 +55,13 @@ const Transition = ({route, navigation}) => {
           ? 'You have completed the game. Press home to go back to home screen'
           : `You have completed ${currentLevel}/${totalLevels} part of the game. Press next game to play further`,
     },
+    ColorMatch: {
+      backgroundGradient: COLORS.sharkBGGrandient,
+      imageURL: BackgroundImage.SHARK,
+      navigateTo: 'Home',
+      navigateButtonText: 'Home',
+      text: 'You have completed the game. Press home to go back to home screen',
+    },
   };
   //prevent navigation to gamescreen when back button is pressed if the game is over
   useEffect(() => {
