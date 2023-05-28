@@ -8,6 +8,13 @@ const Fuse = ({position, value}) => {
   const {fuseHolders, setFuseHolders} = useContext(FuseWireContext);
   const currentFuseHolderId = useRef(null);
   const pan = useRef(new Animated.ValueXY(position)).current;
+
+  console.log(
+    value,
+    currentFuseHolderId.current,
+    fuseHolders[currentFuseHolderId.current],
+  );
+
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant: () => {
@@ -41,12 +48,12 @@ const Fuse = ({position, value}) => {
       toValue: position,
       useNativeDriver: false,
     }).start();
-
     if (currentFuseHolderId.current !== null) {
       setFuseHolders(prevState => {
         const newState = [...prevState];
         newState[currentFuseHolderId.current].isBlank = true;
         newState[currentFuseHolderId.current].inputValue = null;
+        currentFuseHolderId.current = null;
         return newState;
       });
     }
@@ -65,13 +72,20 @@ const Fuse = ({position, value}) => {
         fuseHolder.isBlank
       ) {
         result = {exist: true, position: fuseHolder.position};
-        currentFuseHolderId.current = fuseHolder.id;
         setFuseHolders(prevState => {
           const newState = [...prevState];
+          // console.log(fuseHolder.id, value, currentFuseHolderId.current);
+          if (currentFuseHolderId.current !== null) {
+            newState[currentFuseHolderId.current].isBlank = true;
+            newState[currentFuseHolderId.current].inputValue = null;
+          }
+
           newState[fuseHolder.id].isBlank = false;
           newState[fuseHolder.id].inputValue = value;
+          currentFuseHolderId.current = fuseHolder.id;
           return newState;
         });
+
         return true;
       }
     });
