@@ -9,12 +9,6 @@ const Fuse = ({position, value}) => {
   const currentFuseHolderId = useRef(null);
   const pan = useRef(new Animated.ValueXY(position)).current;
 
-  console.log(
-    value,
-    currentFuseHolderId.current,
-    fuseHolders[currentFuseHolderId.current],
-  );
-
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant: () => {
@@ -74,7 +68,6 @@ const Fuse = ({position, value}) => {
         result = {exist: true, position: fuseHolder.position};
         setFuseHolders(prevState => {
           const newState = [...prevState];
-          // console.log(fuseHolder.id, value, currentFuseHolderId.current);
           if (currentFuseHolderId.current !== null) {
             newState[currentFuseHolderId.current].isBlank = true;
             newState[currentFuseHolderId.current].inputValue = null;
