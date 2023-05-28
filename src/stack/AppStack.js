@@ -11,11 +11,8 @@ import TrainOfThoughts from '../screens/Train of Thoughts/';
 import CarGame from '../screens/Car/';
 import ColorMatch from '../screens/Color Match/ColorMatch';
 import FishGame from '../screens/Fish Game/';
-
-import FuseWire from '../screens/Fuse Wire/';
-
 import PiratePassage from '../screens/Pirate Passage/';
-
+import FuseWire from '../screens/Fuse Wire/';
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
 
