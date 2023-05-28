@@ -79,6 +79,14 @@ const TestScreen = ({navigation}) => {
         style={styles.button}
       />
 
+      <Button
+        onPress={() => {
+          navigation.navigate('Frog Jump');
+        }}
+        title="Frog Jump"
+        style={styles.button}
+      />
+
       <Button onPress={signout} title="signout" />
     </View>
   );

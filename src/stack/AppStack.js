@@ -13,6 +13,7 @@ import ColorMatch from '../screens/Color Match/ColorMatch';
 import FishGame from '../screens/Fish Game/';
 import PiratePassage from '../screens/Pirate Passage/';
 import FuseWire from '../screens/Fuse Wire/';
+import FrogJump from '../screens/Frog Jump/';
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
 
@@ -66,6 +67,11 @@ function MainStack() {
       <Stack.Screen
         name="FuseWire"
         component={FuseWire}
+        options={screenOptions}
+      />
+      <Stack.Screen
+        name="FrogJump"
+        component={FrogJump}
         options={screenOptions}
       />
     </Stack.Navigator>
