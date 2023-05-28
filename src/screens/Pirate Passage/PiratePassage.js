@@ -1,82 +1,48 @@
-import {View, TouchableOpacity, Text, Animated, Dimensions} from 'react-native';
-import {useRef} from 'react';
-const {width, height} = Dimensions.get('screen');
-const tileSize = (height / width) * 30;
-
-const Tile = ({tileSize, position, index}) => {
-  const opacity = useRef(new Animated.Value(0)).current;
-  const handlePress = () => {
-    Animated.sequence([
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-      Animated.timing(opacity, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
-
-  return (
-    <>
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={handlePress}
-        style={{
-          height: tileSize,
-          width: tileSize,
-          position: 'absolute',
-          backgroundColor: '#64d7dc',
-          left: position.x - tileSize / 2,
-          top: position.y - tileSize / 2,
-        }}>
-        <Text>
-          [{index.i},{index.j}]
-        </Text>
-      </TouchableOpacity>
-      <Animated.View
-        style={{
-          position: 'absolute',
-          left: position.x - 5 / 2,
-          top: position.y - 5 / 2,
-          height: 5,
-          width: 5,
-          opacity: opacity,
-          backgroundColor: 'black',
-        }}></Animated.View>
-    </>
-  );
-};
-
-const generateMatrix = (row, col) => {
-  const gap = (height / width) * 2;
-  const totalWidth = tileSize * col + gap * (col - 1);
-  const totalHeight = tileSize * row + gap * (row - 1);
-  const intialX = width / 2 - totalWidth / 2 + tileSize / 2;
-  const intialY = height / 2 - totalHeight / 2 + tileSize / 2;
-
-  const matrix = [];
-  for (let i = 0; i < row; i++) {
-    const row = [];
-    for (let j = 0; j < col; j++) {
-      row.push({
-        position: {
-          x: intialX + j * (tileSize + gap),
-          y: intialY + i * (tileSize + gap),
-        },
-        index: {i, j},
-      });
-    }
-    matrix.push(row);
-  }
-  return matrix;
-};
+import {useRef, useMemo, useContext} from 'react';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {Tile, Ship} from '../../components/Pirate Passage';
+import {PiratePassageContext} from '../../providers/PiratePassage.Provider';
+import {FontStyle} from '../../values/Font';
+import PirateShip from '../../components/Pirate Passage/PirateShip';
 
 const PiratePassage = () => {
-  const matrix = generateMatrix(7, 5);
+  const {
+    pathComponents,
+    pathCoordinates,
+    matrix,
+    setPathIndexes,
+    piratePathCoordinates,
+    piratePathComponents,
+    setGo,
+  } = useContext(PiratePassageContext);
+
+  const handle_go = () => {
+    setGo(true);
+  };
+  const handle_undo = () => {
+    setPathIndexes(prev => {
+      const prevIndexes = prev.indexes;
+      const prev_number_of_indexes_added = prev.number_of_indexes_added;
+      if (prevIndexes.length === 1) {
+        return prev;
+      }
+
+      const number_of_indexes_added_in_last_segment =
+        prev_number_of_indexes_added[prev_number_of_indexes_added.length - 1];
+      //remove number of indexes added in last segment from prevIndexes from end
+      prevIndexes.splice(
+        prevIndexes.length - number_of_indexes_added_in_last_segment,
+        number_of_indexes_added_in_last_segment,
+      );
+      //remove number of indexes added in last segment from prev_number_of_indexes_added from end
+      prev_number_of_indexes_added.pop();
+      return {
+        indexes: [...prevIndexes],
+        number_of_indexes_added: [...prev_number_of_indexes_added],
+      };
+    });
+  };
+
   return (
     <View style={{flex: 1, backgroundColor: '#79eff2'}}>
       {matrix.map((row, rowIndex) => {
@@ -84,15 +50,60 @@ const PiratePassage = () => {
           return (
             <Tile
               key={`${rowIndex}-${colIndex}`}
-              tileSize={tileSize}
               index={tile.index}
               position={tile.position}
             />
           );
         });
       })}
+      {piratePathComponents.map((line, index) => {
+        return line.map(path => path);
+      })}
+      {pathComponents.map((line, index) => {
+        return line;
+      })}
+      {piratePathCoordinates.map((piratePath, index) => {
+        return (
+          <PirateShip
+            key={index}
+            color={piratePath.color}
+            shipPath={piratePath.pathCoordinates}
+            initialPosition={piratePath.initialShipCoordinates}
+          />
+        );
+      })}
+
+      <Ship color="yellow" shipPath={pathCoordinates} />
+
+      <View style={styles.buttonContaienr}>
+        <TouchableOpacity style={styles.button} onPress={handle_undo}>
+          <Text style={styles.buttonText}>Undo</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handle_go}>
+          <Text style={styles.buttonText}>Go</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
-
+const styles = StyleSheet.create({
+  buttonContaienr: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: 70,
+    flexDirection: 'row',
+  },
+  button: {
+    height: '100%',
+    width: '50%',
+    backgroundColor: '#3c6966',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    ...FontStyle.h3,
+    color: '#79eff2',
+  },
+});
 export default PiratePassage;
