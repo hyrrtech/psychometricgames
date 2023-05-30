@@ -14,6 +14,7 @@ import FishGame from '../screens/Fish Game/';
 import PiratePassage from '../screens/Pirate Passage/';
 import FuseWire from '../screens/Fuse Wire/';
 import FrogJump from '../screens/Frog Jump/';
+import OrganicOrder from '../screens/Organic Order/';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
@@ -73,6 +74,11 @@ function MainStack() {
       <Stack.Screen
         name="FrogJump"
         component={FrogJump}
+        options={screenOptions}
+      />
+      <Stack.Screen
+        name="OrganicOrder"
+        component={OrganicOrder}
         options={screenOptions}
       />
     </Stack.Navigator>
