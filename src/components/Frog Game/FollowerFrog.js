@@ -1,7 +1,10 @@
 import React, {useRef, useEffect, useContext} from 'react';
 import {Animated, StyleSheet} from 'react-native';
 import {FrogGameContext} from '../../providers/FrogGame.Provider';
-import {constants} from '../../utilities/Frog Jump';
+import {
+  constants,
+  generateSetOfLeaderFrogPositions,
+} from '../../utilities/Frog Jump';
 const {followerFrogSize, speed} = constants;
 
 const FollowerFrog = () => {
@@ -9,6 +12,11 @@ const FollowerFrog = () => {
     followerFrogPosition: position,
     initialFollowerFrogPosition: initialPosition,
     setDisabled,
+    recentFollowerFrogPositions,
+    frogPositions,
+    setLeaderFrogPosition,
+    currentLeaderFrogPosition,
+    leaderFrogPositionHistory,
   } = useContext(FrogGameContext);
 
   const animation = useRef(
@@ -20,6 +28,7 @@ const FollowerFrog = () => {
       Math.pow(position.y - previousPosition.current.y, 2),
   );
   const duration = (distance * 1000) / speed;
+
   useEffect(() => {
     setDisabled(true);
     Animated.timing(animation, {

@@ -5,7 +5,7 @@ import {
 } from '../../utilities/Frog Jump';
 import {useContext} from 'react';
 import {FrogGameContext} from '../../providers/FrogGame.Provider';
-const {lillipadSize, followerFrogSize, leaderFrogSize} = constants;
+const {lillipadSize, leaderFrogSize, followerFrogSize} = constants;
 const Lillipad = ({position, id}) => {
   const {
     disabled,
@@ -13,30 +13,47 @@ const Lillipad = ({position, id}) => {
     setLeaderFrogPosition,
     lillipadPositions,
     followerFrogPosition,
+    leaderFrogPositionHistory,
     setFollowerFrogPosition,
-    recentLeaderFrogPositions,
+    recentFollowerFrogPositions,
+    currentLeaderFrogPosition,
   } = useContext(FrogGameContext);
 
   const handlePressIn = () => {
-    const index = lillipadPositions.findIndex(item => {
+    const indexOfLillipad = lillipadPositions.findIndex(item => {
       return item.x === position.x && item.y === position.y;
     });
     setFollowerFrogPosition({
-      x: frogPositions[index].x,
-      y: frogPositions[index].y,
+      x: frogPositions[indexOfLillipad].x,
+      y: frogPositions[indexOfLillipad].y,
     });
-
-    setLeaderFrogPosition(() =>
-      generateSetOfLeaderFrogPositions(
-        {
-          x: frogPositions[index].x,
-          y: frogPositions[index].y,
-        },
-        recentLeaderFrogPositions.current,
+    recentFollowerFrogPositions.current.push(frogPositions[indexOfLillipad]);
+    setLeaderFrogPosition(() => {
+      const newPositions = generateSetOfLeaderFrogPositions(
+        currentLeaderFrogPosition.current,
+        recentFollowerFrogPositions.current,
         frogPositions,
         1,
-      ),
-    );
+      );
+      const indexesOfNewPositions = newPositions.map(item =>
+        frogPositions.findIndex(
+          frogPosition =>
+            frogPosition.x ===
+              item.x -
+                (lillipadSize - leaderFrogSize) / 2 +
+                (lillipadSize - followerFrogSize) / 2 &&
+            frogPosition.y ===
+              item.y -
+                (lillipadSize - leaderFrogSize) / 2 +
+                (lillipadSize - followerFrogSize) / 2,
+        ),
+      );
+      leaderFrogPositionHistory.current = [
+        ...leaderFrogPositionHistory.current,
+        ...indexesOfNewPositions,
+      ];
+      return newPositions;
+    });
   };
 
   return (

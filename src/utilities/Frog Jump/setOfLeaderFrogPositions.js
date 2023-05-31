@@ -1,47 +1,45 @@
 import constants from './constants';
 const {lillipadSize, followerFrogSize, leaderFrogSize} = constants;
 const generateSetOfLeaderFrogPositions = (
-  followerFrogPosition,
-  recentLeaderFrogPositions,
+  currentLeaderFrogPosition,
+  recentFollowerFrogPositions,
   frogPositions,
   number_of_positions,
 ) => {
   let setOfLeaderFrogPositions = [];
   let choosenFrogPositions = [];
-  const indexesOfRecentLeaderFrogPositions = recentLeaderFrogPositions
+  const indexesOfRecentFollowerFrogPositions = recentFollowerFrogPositions
     .getArray()
     .map(item =>
       frogPositions.findIndex(
-        frogPosition =>
-          frogPosition.x ===
-            item.x -
-              (lillipadSize - leaderFrogSize) / 2 +
-              (lillipadSize - followerFrogSize) / 2 &&
-          frogPosition.y ===
-            item.y -
-              (lillipadSize - leaderFrogSize) / 2 +
-              (lillipadSize - followerFrogSize) / 2,
+        frogPosition => frogPosition.x === item.x && frogPosition.y === item.y,
       ),
     );
-  const indexOfFollowerFrogPosition = frogPositions.findIndex(
-    item =>
-      item.x === followerFrogPosition.x && item.y === followerFrogPosition.y,
+  const indexOfCurrentLeaderFrogPosition = frogPositions.findIndex(
+    frogPosition =>
+      frogPosition.x ===
+        currentLeaderFrogPosition.x -
+          (lillipadSize - leaderFrogSize) / 2 +
+          (lillipadSize - followerFrogSize) / 2 &&
+      frogPosition.y ===
+        currentLeaderFrogPosition.y -
+          (lillipadSize - leaderFrogSize) / 2 +
+          (lillipadSize - followerFrogSize) / 2,
+  );
+  console.log(
+    indexOfCurrentLeaderFrogPosition,
+    indexesOfRecentFollowerFrogPositions,
   );
   for (let i = 0; i < number_of_positions; i++) {
     let newPositionIndex = Math.floor(Math.random() * frogPositions.length);
 
     while (
       choosenFrogPositions.includes(newPositionIndex) ||
-      newPositionIndex === indexOfFollowerFrogPosition ||
-      indexesOfRecentLeaderFrogPositions.includes(newPositionIndex)
+      indexOfCurrentLeaderFrogPosition === newPositionIndex ||
+      indexesOfRecentFollowerFrogPositions.includes(newPositionIndex)
     ) {
       newPositionIndex = Math.floor(Math.random() * frogPositions.length);
     }
-    console.log(
-      newPositionIndex,
-      indexesOfRecentLeaderFrogPositions,
-      indexOfFollowerFrogPosition,
-    );
     choosenFrogPositions.push(newPositionIndex);
 
     let leaderFrogPosition = {

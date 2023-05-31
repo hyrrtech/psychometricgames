@@ -8,15 +8,16 @@ const LeaderFrog = () => {
     setDisabled,
     leaderFrogPosition,
     initialLeaderFrogPosition,
-    recentLeaderFrogPositions,
+    currentLeaderFrogPosition,
     followerFrogPosition,
     frogPositions,
   } = useContext(FrogGameContext);
   const index = useRef(0);
+  const previousLeaderFrogPosition = useRef(initialLeaderFrogPosition);
   const animation = useRef(
     new Animated.ValueXY({
-      x: initialLeaderFrogPosition.x,
-      y: initialLeaderFrogPosition.y,
+      x: previousLeaderFrogPosition.current.x,
+      y: previousLeaderFrogPosition.current.y,
     }),
   ).current;
 
@@ -25,19 +26,7 @@ const LeaderFrog = () => {
       Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2),
     );
     const duration = (distance * 1000) / speed;
-    console.log(
-      frogPositions.findIndex(
-        frogPosition =>
-          frogPosition.x ===
-            to.x -
-              (lillipadSize - leaderFrogSize) / 2 +
-              (lillipadSize - followerFrogSize) / 2 &&
-          frogPosition.y ===
-            to.y -
-              (lillipadSize - leaderFrogSize) / 2 +
-              (lillipadSize - followerFrogSize) / 2,
-      ),
-    );
+    currentLeaderFrogPosition.current = to;
     Animated.sequence([
       Animated.delay(500),
       Animated.timing(animation, {
@@ -46,7 +35,7 @@ const LeaderFrog = () => {
         useNativeDriver: true,
       }),
     ]).start(({finished}) => {
-      recentLeaderFrogPositions.current.push(leaderFrogPosition[index.current]);
+      previousLeaderFrogPosition.current = to;
       if (finished && index.current < leaderFrogPosition.length - 1) {
         index.current = index.current + 1;
         Animate(to, leaderFrogPosition[index.current]);
@@ -56,7 +45,10 @@ const LeaderFrog = () => {
 
   useEffect(() => {
     index.current = 0;
-    Animate(initialLeaderFrogPosition, leaderFrogPosition[index.current]);
+    Animate(
+      previousLeaderFrogPosition.current,
+      leaderFrogPosition[index.current],
+    );
   }, [followerFrogPosition]);
 
   return (
