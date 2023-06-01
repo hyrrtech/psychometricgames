@@ -12,7 +12,6 @@ import {
   Dimensions,
   View,
 } from 'react-native';
-// import {TouchableOpacity} from 'react-native-gesture-handler';
 import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
 import {InfoLabel} from '../../components/InfoLabel';
@@ -31,7 +30,6 @@ import {PlaySound, useCountdown} from '../../utilities';
 const {height, width} = Dimensions.get('window');
 const spawnAreaHeight = height * 0.65;
 const spawnAreaWidth = width * 0.95;
-const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
 const KillTheSpider = ({navigation}) => {
   const {user} = useContext(AuthContext);

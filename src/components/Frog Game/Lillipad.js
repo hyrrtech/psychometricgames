@@ -1,4 +1,3 @@
-import {useRef} from 'react';
 import {TouchableOpacity, StyleSheet, Text} from 'react-native';
 import {
   constants,
@@ -6,7 +5,7 @@ import {
 } from '../../utilities/Frog Jump';
 import {useContext} from 'react';
 import {FrogGameContext} from '../../providers/FrogGame.Provider';
-const {lillipadSize, leaderFrogSize, followerFrogSize} = constants;
+const {lillipadSize} = constants;
 const Lillipad = ({position, id}) => {
   const {
     disabled,
@@ -17,6 +16,7 @@ const Lillipad = ({position, id}) => {
     currentAndFutureFollowerFrogPositions,
     currentLeaderFrogPosition,
     numberOfJumpsByFollowerFrog,
+    setGameOver,
   } = useContext(FrogGameContext);
 
   const handlePressIn = () => {
@@ -25,34 +25,41 @@ const Lillipad = ({position, id}) => {
     currentAndFutureFollowerFrogPositions.current.push(
       lillipadPositions[indexOfLillipad],
     );
-    setFollowerFrogPosition({
-      ...lillipadPositions[indexOfLillipad],
-    });
+    if (
+      indexOfLillipad ===
+      leaderFrogPositionHistory.current[numberOfJumpsByFollowerFrog.current]
+    ) {
+      setFollowerFrogPosition({
+        ...lillipadPositions[indexOfLillipad],
+      });
 
-    currentAndFutureFollowerFrogPositions.current.push(
-      lillipadPositions[
-        leaderFrogPositionHistory.current[
-          numberOfJumpsByFollowerFrog.current + 1
-        ]
-      ],
-    );
-    numberOfJumpsByFollowerFrog.current =
-      numberOfJumpsByFollowerFrog.current + 1;
-
-    setLeaderFrogPosition(() => {
-      const newPositions = generateSetOfLeaderFrogPositions(
-        currentLeaderFrogPosition.current,
-        currentAndFutureFollowerFrogPositions.current,
-        lillipadPositions,
-        1,
+      currentAndFutureFollowerFrogPositions.current.push(
+        lillipadPositions[
+          leaderFrogPositionHistory.current[
+            numberOfJumpsByFollowerFrog.current + 1
+          ]
+        ],
       );
-      const indexesOfNewPositions = newPositions.map(item => item.id);
-      leaderFrogPositionHistory.current = [
-        ...leaderFrogPositionHistory.current,
-        ...indexesOfNewPositions,
-      ];
-      return newPositions;
-    });
+      numberOfJumpsByFollowerFrog.current =
+        numberOfJumpsByFollowerFrog.current + 1;
+      if (numberOfJumpsByFollowerFrog.current >= 2)
+        setLeaderFrogPosition(() => {
+          const newPositions = generateSetOfLeaderFrogPositions(
+            currentLeaderFrogPosition.current,
+            currentAndFutureFollowerFrogPositions.current,
+            lillipadPositions,
+            numberOfJumpsByFollowerFrog.current % 5 === 0 ? 2 : 1,
+          );
+          const indexesOfNewPositions = newPositions.map(item => item.id);
+          leaderFrogPositionHistory.current = [
+            ...leaderFrogPositionHistory.current,
+            ...indexesOfNewPositions,
+          ];
+          return newPositions;
+        });
+    } else {
+      setGameOver(true);
+    }
   };
 
   return (
