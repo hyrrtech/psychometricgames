@@ -19,31 +19,21 @@ export const FrogGameContext = createContext();
 export const FrogGameProvider = ({children}) => {
   const [disabled, setDisabled] = useState(true);
   const [gameOver, setGameOver] = useState(false);
-  console.log('gameover', gameOver);
+  // console.log('gameover', gameOver);
   const {
     initialFollowerFrogPosition,
     initialLeaderFrogPosition,
     lillipadPositions,
-    frogPositions,
     circularBuffer,
     initialSetOfLeaderFrogPositions,
   } = useMemo(() => {
     const lillipadPositions = randomLillipadPositions(10);
-    const frogPositions = lillipadPositions.map(lillipad => {
-      return {
-        x: lillipad.x + (lillipadSize - followerFrogSize) / 2,
-        y: lillipad.y + (lillipadSize - followerFrogSize) / 2,
-      };
-    });
-    const indexForIntialFrogPosition = Math.floor(
-      Math.random() * frogPositions.length,
-    );
     const initialFollowerFrogPosition =
-      frogPositions[indexForIntialFrogPosition];
+      lillipadPositions[Math.floor(Math.random() * lillipadPositions.length)];
 
     const initialLeaderFrogPosition = getInitialLeaderFrogPosition(
-      frogPositions,
-      indexForIntialFrogPosition,
+      lillipadPositions,
+      initialFollowerFrogPosition.id,
     );
     const circularBuffer = new CircularBuffer(2);
     circularBuffer.push(initialFollowerFrogPosition);
@@ -51,7 +41,7 @@ export const FrogGameProvider = ({children}) => {
     const initialSetOfLeaderFrogPositions = generateSetOfLeaderFrogPositions(
       initialLeaderFrogPosition,
       circularBuffer,
-      frogPositions,
+      lillipadPositions,
       3,
     );
 
@@ -59,45 +49,33 @@ export const FrogGameProvider = ({children}) => {
       initialFollowerFrogPosition,
       initialLeaderFrogPosition,
       lillipadPositions,
-      frogPositions,
       circularBuffer,
       initialSetOfLeaderFrogPositions,
     };
   }, []);
 
-  const [followerFrogPosition, setFollowerFrogPosition] = useState({
-    x: initialFollowerFrogPosition.x,
-    y: initialFollowerFrogPosition.y,
-  });
-  const recentFollowerFrogPositions = useRef(circularBuffer);
+  const [followerFrogPosition, setFollowerFrogPosition] = useState(
+    initialFollowerFrogPosition,
+  );
+  const currentAndFutureFollowerFrogPositions = useRef(circularBuffer);
+  const numberOfJumpsByFollowerFrog = useRef(0);
 
   const [leaderFrogPosition, setLeaderFrogPosition] = useState(
     initialSetOfLeaderFrogPositions,
   );
 
-  const leaderFrogPositionHistory = useRef(
-    initialSetOfLeaderFrogPositions.map(item =>
-      frogPositions.findIndex(
-        frogPosition =>
-          frogPosition.x ===
-            item.x -
-              (lillipadSize - leaderFrogSize) / 2 +
-              (lillipadSize - followerFrogSize) / 2 &&
-          frogPosition.y ===
-            item.y -
-              (lillipadSize - leaderFrogSize) / 2 +
-              (lillipadSize - followerFrogSize) / 2,
-      ),
-    ),
-  );
-  console.log(leaderFrogPositionHistory.current);
+  const leaderFrogPositionHistory = useRef([
+    initialLeaderFrogPosition.id,
+    ...initialSetOfLeaderFrogPositions.map(item => item.id),
+  ]);
+
+  console.log(leaderFrogPositionHistory.current, 'history');
   const currentLeaderFrogPosition = useRef(initialLeaderFrogPosition);
 
   return (
     <FrogGameContext.Provider
       value={{
         lillipadPositions,
-        frogPositions,
         followerFrogPosition,
         initialFollowerFrogPosition,
         initialLeaderFrogPosition,
@@ -106,9 +84,10 @@ export const FrogGameProvider = ({children}) => {
         leaderFrogPosition,
         disabled,
         setDisabled,
-        recentFollowerFrogPositions,
+        currentAndFutureFollowerFrogPositions,
         currentLeaderFrogPosition,
         leaderFrogPositionHistory,
+        numberOfJumpsByFollowerFrog,
       }}>
       {children}
     </FrogGameContext.Provider>

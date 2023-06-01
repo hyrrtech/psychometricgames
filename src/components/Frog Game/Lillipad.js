@@ -1,3 +1,4 @@
+import {useRef} from 'react';
 import {TouchableOpacity, StyleSheet, Text} from 'react-native';
 import {
   constants,
@@ -9,45 +10,43 @@ const {lillipadSize, leaderFrogSize, followerFrogSize} = constants;
 const Lillipad = ({position, id}) => {
   const {
     disabled,
-    frogPositions,
     setLeaderFrogPosition,
     lillipadPositions,
-    followerFrogPosition,
     leaderFrogPositionHistory,
     setFollowerFrogPosition,
-    recentFollowerFrogPositions,
+    currentAndFutureFollowerFrogPositions,
     currentLeaderFrogPosition,
+    numberOfJumpsByFollowerFrog,
   } = useContext(FrogGameContext);
 
   const handlePressIn = () => {
-    const indexOfLillipad = lillipadPositions.findIndex(item => {
-      return item.x === position.x && item.y === position.y;
-    });
+    const indexOfLillipad = id;
+
+    currentAndFutureFollowerFrogPositions.current.push(
+      lillipadPositions[indexOfLillipad],
+    );
     setFollowerFrogPosition({
-      x: frogPositions[indexOfLillipad].x,
-      y: frogPositions[indexOfLillipad].y,
+      ...lillipadPositions[indexOfLillipad],
     });
-    recentFollowerFrogPositions.current.push(frogPositions[indexOfLillipad]);
+
+    currentAndFutureFollowerFrogPositions.current.push(
+      lillipadPositions[
+        leaderFrogPositionHistory.current[
+          numberOfJumpsByFollowerFrog.current + 1
+        ]
+      ],
+    );
+    numberOfJumpsByFollowerFrog.current =
+      numberOfJumpsByFollowerFrog.current + 1;
+
     setLeaderFrogPosition(() => {
       const newPositions = generateSetOfLeaderFrogPositions(
         currentLeaderFrogPosition.current,
-        recentFollowerFrogPositions.current,
-        frogPositions,
+        currentAndFutureFollowerFrogPositions.current,
+        lillipadPositions,
         1,
       );
-      const indexesOfNewPositions = newPositions.map(item =>
-        frogPositions.findIndex(
-          frogPosition =>
-            frogPosition.x ===
-              item.x -
-                (lillipadSize - leaderFrogSize) / 2 +
-                (lillipadSize - followerFrogSize) / 2 &&
-            frogPosition.y ===
-              item.y -
-                (lillipadSize - leaderFrogSize) / 2 +
-                (lillipadSize - followerFrogSize) / 2,
-        ),
-      );
+      const indexesOfNewPositions = newPositions.map(item => item.id);
       leaderFrogPositionHistory.current = [
         ...leaderFrogPositionHistory.current,
         ...indexesOfNewPositions,
@@ -58,14 +57,7 @@ const Lillipad = ({position, id}) => {
 
   return (
     <TouchableOpacity
-      disabled={
-        disabled
-        //  ||
-        // (position.x ===
-        //   followerFrogPosition.x - (lillipadSize - followerFrogSize) / 2 &&
-        //   position.y ===
-        //     followerFrogPosition.y - (lillipadSize - followerFrogSize) / 2)
-      }
+      disabled={disabled}
       onPressIn={handlePressIn}
       activeOpacity={0.5}
       style={[styles.lillipad, {top: position.y, left: position.x}]}>

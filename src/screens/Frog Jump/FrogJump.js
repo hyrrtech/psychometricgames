@@ -1,6 +1,6 @@
 import {useContext} from 'react';
 import {View} from 'react-native';
-import {FollowerFrog, Lillipad, LeaderFrog} from '../../components/Frog Game';
+import {FollowerFrog, Lillipad} from '../../components/Frog Game';
 import {FrogGameContext} from '../../providers/FrogGame.Provider';
 import {constants} from '../../utilities/Frog Jump';
 
@@ -18,10 +18,16 @@ const FrogJump = () => {
           backgroundColor: '#1b5256',
         }}>
         {lillipadPositions.map((lillipad, index) => {
-          return <Lillipad key={index} position={lillipad} id={index} />;
+          return (
+            <Lillipad
+              key={index}
+              position={lillipad.position}
+              id={lillipad.id}
+            />
+          );
         })}
         <FollowerFrog />
-        <LeaderFrog />
+        {/* <LeaderFrog /> */}
       </View>
     </View>
   );
