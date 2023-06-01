@@ -10,8 +10,6 @@ const FollowerFrog = () => {
     initialFollowerFrogPosition: initialPosition,
     setDisabled,
   } = useContext(FrogGameContext);
-  console.log(initialPosition, 'initialPosition');
-  console.log(currentPosition, 'position');
 
   const animation = useRef(
     new Animated.ValueXY({

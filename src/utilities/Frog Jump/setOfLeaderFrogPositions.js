@@ -1,5 +1,3 @@
-import constants from './constants';
-const {lillipadSize, followerFrogSize, leaderFrogSize} = constants;
 const generateSetOfLeaderFrogPositions = (
   currentLeaderFrogPosition,
   currentAndFutureFollowerFrogPositions,
@@ -8,6 +6,7 @@ const generateSetOfLeaderFrogPositions = (
 ) => {
   let setOfLeaderFrogPositions = [];
   let choosenFrogPositions = [];
+
   const indexesOfCurrentAndFutureFollowerFrogPositions =
     currentAndFutureFollowerFrogPositions.getArray().map(item => item.id);
   const indexOfCurrentLeaderFrogPosition = currentLeaderFrogPosition.id;

@@ -63,13 +63,12 @@ export const FrogGameProvider = ({children}) => {
   const [leaderFrogPosition, setLeaderFrogPosition] = useState(
     initialSetOfLeaderFrogPositions,
   );
-
   const leaderFrogPositionHistory = useRef([
     initialLeaderFrogPosition.id,
     ...initialSetOfLeaderFrogPositions.map(item => item.id),
   ]);
 
-  console.log(leaderFrogPositionHistory.current, 'history');
+  // console.log(leaderFrogPositionHistory.current, 'history');
   const currentLeaderFrogPosition = useRef(initialLeaderFrogPosition);
 
   return (

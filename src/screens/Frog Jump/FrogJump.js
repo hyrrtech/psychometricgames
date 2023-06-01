@@ -1,6 +1,6 @@
 import {useContext} from 'react';
 import {View} from 'react-native';
-import {FollowerFrog, Lillipad} from '../../components/Frog Game';
+import {FollowerFrog, Lillipad, LeaderFrog} from '../../components/Frog Game';
 import {FrogGameContext} from '../../providers/FrogGame.Provider';
 import {constants} from '../../utilities/Frog Jump';
 
@@ -27,7 +27,7 @@ const FrogJump = () => {
           );
         })}
         <FollowerFrog />
-        {/* <LeaderFrog /> */}
+        <LeaderFrog />
       </View>
     </View>
   );

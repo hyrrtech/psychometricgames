@@ -13,7 +13,7 @@ const getInitialLeaderFrogPosition = (
     );
   }
   return {
-    positon: {
+    position: {
       ...lillipadPositions[leaderFrogPositionInitialIndex].position,
     },
     id: leaderFrogPositionInitialIndex,
