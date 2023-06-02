@@ -1,23 +1,12 @@
-import React, {
-  createContext,
-  useState,
-  useMemo,
-  useRef,
-  useEffect,
-  useContext,
-} from 'react';
+import React, {createContext, useState, useMemo, useRef} from 'react';
 import {
-  randomLillipadPositions,
-  getInitialLeaderFrogPosition,
-  generateSetOfLeaderFrogPositions,
-} from '../utilities/Frog Jump';
-import CircularBuffer from '../utilities/CircularBuffer';
-import db from '../firebase/database';
-import {AuthContext} from './AuthProvider';
+  initialState,
+  MAX_NUM_OF_JUMPS,
+} from '../screens/Frog Jump/initialState';
+
 export const FrogGameContext = createContext();
 
 export const FrogGameProvider = ({children}) => {
-  const {user} = useContext(AuthContext);
   const [disabled, setDisabled] = useState(true);
   const [gameOver, setGameOver] = useState(false);
 
@@ -27,32 +16,7 @@ export const FrogGameProvider = ({children}) => {
     lillipadPositions,
     circularBuffer,
     initialSetOfLeaderFrogPositions,
-  } = useMemo(() => {
-    const lillipadPositions = randomLillipadPositions(10);
-    const initialFollowerFrogPosition =
-      lillipadPositions[Math.floor(Math.random() * lillipadPositions.length)];
-
-    const initialLeaderFrogPosition = getInitialLeaderFrogPosition(
-      lillipadPositions,
-      initialFollowerFrogPosition.id,
-    );
-    const circularBuffer = new CircularBuffer(2);
-    circularBuffer.push(initialFollowerFrogPosition);
-
-    const initialSetOfLeaderFrogPositions = generateSetOfLeaderFrogPositions(
-      initialLeaderFrogPosition,
-      circularBuffer,
-      lillipadPositions,
-      3,
-    );
-    return {
-      initialFollowerFrogPosition,
-      initialLeaderFrogPosition,
-      lillipadPositions,
-      circularBuffer,
-      initialSetOfLeaderFrogPositions,
-    };
-  }, []);
+  } = initialState;
 
   const [followerFrogPosition, setFollowerFrogPosition] = useState(
     initialFollowerFrogPosition,
@@ -69,15 +33,6 @@ export const FrogGameProvider = ({children}) => {
     ...initialSetOfLeaderFrogPositions.map(item => item.id),
   ]);
   const currentLeaderFrogPosition = useRef(initialLeaderFrogPosition);
-
-  useEffect(() => {
-    if (gameOver) {
-      const GameRef = db.ref(`/users/${user.uid}/FollowTheFrog/`);
-      GameRef.update({
-        numberOfJumpsByFollowerFrog: numberOfJumpsByFollowerFrog.current,
-      });
-    }
-  }, [gameOver]);
 
   return (
     <FrogGameContext.Provider
@@ -96,6 +51,8 @@ export const FrogGameProvider = ({children}) => {
         leaderFrogPositionHistory,
         numberOfJumpsByFollowerFrog,
         setGameOver,
+        gameOver,
+        MAX_NUM_OF_JUMPS,
       }}>
       {children}
     </FrogGameContext.Provider>

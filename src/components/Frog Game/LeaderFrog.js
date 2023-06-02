@@ -62,7 +62,7 @@ const LeaderFrog = () => {
       previousLeaderFrogPosition.current,
       leaderFrogPosition[index.current],
     );
-  }, [followerFrogPosition]);
+  }, [leaderFrogPosition]);
 
   return (
     <Animated.View

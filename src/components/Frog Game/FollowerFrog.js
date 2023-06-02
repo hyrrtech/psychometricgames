@@ -11,6 +11,8 @@ const FollowerFrog = () => {
     setDisabled,
   } = useContext(FrogGameContext);
 
+  //navigation and check here if gameover
+
   const animation = useRef(
     new Animated.ValueXY({
       x: initialPosition.position.x + (lillipadSize - followerFrogSize) / 2,

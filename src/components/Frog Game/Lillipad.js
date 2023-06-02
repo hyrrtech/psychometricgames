@@ -21,44 +21,53 @@ const Lillipad = ({position, id}) => {
 
   const handlePressIn = () => {
     const indexOfLillipad = id;
-
+    //reserve current position for the follower frog
     currentAndFutureFollowerFrogPositions.current.push(
       lillipadPositions[indexOfLillipad],
     );
     if (
-      indexOfLillipad ===
+      indexOfLillipad !==
       leaderFrogPositionHistory.current[numberOfJumpsByFollowerFrog.current]
     ) {
-      setFollowerFrogPosition({
-        ...lillipadPositions[indexOfLillipad],
-      });
-
-      currentAndFutureFollowerFrogPositions.current.push(
-        lillipadPositions[
-          leaderFrogPositionHistory.current[
-            numberOfJumpsByFollowerFrog.current + 1
-          ]
-        ],
-      );
-      numberOfJumpsByFollowerFrog.current =
-        numberOfJumpsByFollowerFrog.current + 1;
-      if (numberOfJumpsByFollowerFrog.current >= 2)
-        setLeaderFrogPosition(() => {
-          const newPositions = generateSetOfLeaderFrogPositions(
-            currentLeaderFrogPosition.current,
-            currentAndFutureFollowerFrogPositions.current,
-            lillipadPositions,
-            numberOfJumpsByFollowerFrog.current % 5 === 0 ? 2 : 1,
-          );
-          const indexesOfNewPositions = newPositions.map(item => item.id);
-          leaderFrogPositionHistory.current = [
-            ...leaderFrogPositionHistory.current,
-            ...indexesOfNewPositions,
-          ];
-          return newPositions;
-        });
-    } else {
       setGameOver(true);
+      return;
+    }
+    setFollowerFrogPosition({
+      ...lillipadPositions[indexOfLillipad],
+    });
+
+    //reserving 2 future positions for the follower frog
+    currentAndFutureFollowerFrogPositions.current.push(
+      lillipadPositions[
+        leaderFrogPositionHistory.current[
+          numberOfJumpsByFollowerFrog.current + 1
+        ]
+      ],
+      lillipadPositions[
+        leaderFrogPositionHistory.current[
+          numberOfJumpsByFollowerFrog.current + 2
+        ]
+      ],
+    );
+    numberOfJumpsByFollowerFrog.current =
+      numberOfJumpsByFollowerFrog.current + 1;
+    console.log(numberOfJumpsByFollowerFrog.current);
+    if (numberOfJumpsByFollowerFrog.current >= 2) {
+      setLeaderFrogPosition(() => {
+        console.log('chla');
+        const newPositions = generateSetOfLeaderFrogPositions(
+          currentLeaderFrogPosition.current,
+          currentAndFutureFollowerFrogPositions.current,
+          lillipadPositions,
+          numberOfJumpsByFollowerFrog.current % 5 === 0 ? 2 : 1,
+        );
+        const indexesOfNewPositions = newPositions.map(item => item.id);
+        leaderFrogPositionHistory.current = [
+          ...leaderFrogPositionHistory.current,
+          ...indexesOfNewPositions,
+        ];
+        return newPositions;
+      });
     }
   };
 

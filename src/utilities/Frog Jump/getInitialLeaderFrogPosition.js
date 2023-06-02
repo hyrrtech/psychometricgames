@@ -1,5 +1,3 @@
-import constants from './constants';
-const {leaderFrogSize, lillipadSize, followerFrogSize} = constants;
 const getInitialLeaderFrogPosition = (
   lillipadPositions,
   initialFrogPositionIndex,
