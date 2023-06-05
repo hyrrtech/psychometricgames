@@ -1,11 +1,11 @@
 import {useRef, useContext} from 'react';
-import {View, PanResponder, Animated, StyleSheet, Text} from 'react-native';
+import {PanResponder, Animated, StyleSheet, Text} from 'react-native';
 import {FuseWireContext} from '../../providers/FuseWire.Provider';
 import {constants} from '../../utilities/FuseWire';
 const {FuseHeight, FuseWidth, FuseHolderHeight, FuseHolderWidth} = constants;
 
 const Fuse = ({position, value}) => {
-  const {fuseHolders, setFuseHolders} = useContext(FuseWireContext);
+  const {fuseHolders, dispatch, ACTIONS} = useContext(FuseWireContext);
   const currentFuseHolderId = useRef(null);
   const pan = useRef(new Animated.ValueXY(position)).current;
 
@@ -42,14 +42,23 @@ const Fuse = ({position, value}) => {
       toValue: position,
       useNativeDriver: false,
     }).start();
+    console.log(currentFuseHolderId.current, 'currentfuseholderid');
     if (currentFuseHolderId.current !== null) {
-      setFuseHolders(prevState => {
-        const newState = [...prevState];
-        newState[currentFuseHolderId.current].isBlank = true;
-        newState[currentFuseHolderId.current].inputValue = null;
-        currentFuseHolderId.current = null;
-        return newState;
+      dispatch({
+        type: ACTIONS.RESET_FUSEHOLDER,
+        payload: {
+          currentFuseHolderId: currentFuseHolderId.current,
+        },
       });
+
+      currentFuseHolderId.current = null;
+      // setFuseHolders(prevState => {
+      // const newState = [...prevState];
+      // newState[currentFuseHolderId.current].isBlank = true;
+      // newState[currentFuseHolderId.current].inputValue = null;
+      // currentFuseHolderId.current = null;
+      // return newState;
+      // });
     }
   };
   const isDropZone = gesture => {
@@ -66,20 +75,30 @@ const Fuse = ({position, value}) => {
         fuseHolder.isBlank
       ) {
         result = {exist: true, position: fuseHolder.position};
-        setFuseHolders(prevState => {
-          const newState = [...prevState];
-          if (currentFuseHolderId.current !== null) {
-            newState[currentFuseHolderId.current].isBlank = true;
-            newState[currentFuseHolderId.current].inputValue = null;
-          }
 
-          newState[fuseHolder.id].isBlank = false;
-          newState[fuseHolder.id].inputValue = value;
-          currentFuseHolderId.current = fuseHolder.id;
-          return newState;
+        dispatch({
+          type: ACTIONS.SET_FUSEHOLDER,
+          payload: {
+            id: fuseHolder.id,
+            value,
+            currentFuseHolderId: currentFuseHolderId.current,
+          },
         });
+        currentFuseHolderId.current = fuseHolder.id;
 
         return true;
+        // setFuseHolders(prevState => {
+        //   const newState = [...prevState];
+        //   if (currentFuseHolderId.current !== null) {
+        //     newState[currentFuseHolderId.current].isBlank = true;
+        //     newState[currentFuseHolderId.current].inputValue = null;
+        //   }
+
+        //   newState[fuseHolder.id].isBlank = false;
+        //   newState[fuseHolder.id].inputValue = value;
+
+        //   return newState;
+        // });
       }
     });
 

@@ -1,40 +1,42 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {
-  PanResponder,
-  View,
-  Animated,
   StyleSheet,
   Text,
   TouchableOpacity,
+  ActivityIndicator,
+  View,
 } from 'react-native';
-import {constants, getFusePositions} from '../../utilities/FuseWire';
-import {FuseWireContext} from '../../providers/FuseWire.Provider';
 
+import {AuthContext} from '../../providers/AuthProvider';
+import CompletedPopup from '../../components/CompletedPopup';
+import {GameWrapper} from '../../components/GameWrapper';
+import {InfoLabel} from '../../components/InfoLabel';
+import db from '../../firebase/database';
+import BackgroundImage from '../../values/BackgroundImage';
+import {COLORS} from '../../values/Colors';
+import styles from './styles';
+
+import {getFusePositions, generateCloseValues} from '../../utilities/FuseWire';
+import {FuseWireContext} from '../../providers/FuseWire.Provider';
 import FuseHolder from '../../components/FuseWire/FuseHolder';
 import Fuse from '../../components/FuseWire/Fuse';
-const {FuseHeight, FuseWidth, FuseHolderHeight, FuseHolderWidth} = constants;
-
-function generateCloseValues(array) {
-  const result = [];
-
-  if (array.length === 0) {
-    return result;
-  }
-
-  for (let i = 1; i <= Math.floor(array.length / 2); i++) {
-    const newValue1 = array[0] * i + 1;
-    const newValue2 = array[array.length - 1] + i;
-    result.push(newValue1, newValue2);
-  }
-
-  return result;
-}
 
 const FuseWire = () => {
-  const {fuseHolders, blankValues} = useContext(FuseWireContext);
-  const [fuse, setFuse] = useState(
-    getFusePositions([...blankValues, ...generateCloseValues(blankValues)]),
-  );
+  const {
+    fuseHolders,
+    blankValues,
+    level,
+    lives,
+    loading,
+    completedPopup,
+    dispatch,
+    ACTIONS,
+  } = useContext(FuseWireContext);
+  const {user} = useContext(AuthContext);
+  const fuse = getFusePositions([
+    ...blankValues,
+    ...generateCloseValues(blankValues),
+  ]);
 
   const handleCheck = () => {
     const checkIfCorrect = () =>
@@ -42,39 +44,64 @@ const FuseWire = () => {
         .filter(fuseHolder => fuseHolder.initiallyBlank)
         .every(fuseHolder => fuseHolder.sequence === fuseHolder.inputValue);
     const result = checkIfCorrect();
-
-    console.log(result);
+    dispatch({action: ACTIONS.ON_CHECK, payload: {result, uid: user.uid}});
   };
 
-  return (
-    <View style={styles.mainContainer}>
-      {fuseHolders.map((fuseHolder, index) => (
-        <FuseHolder
-          key={index}
-          position={fuseHolder.position}
-          value={fuseHolder.sequence}
-          initiallyBlank={fuseHolder.initiallyBlank}
-        />
-      ))}
-      {fuse.map((row, rowIndex) =>
-        row.map((fuse, colIndex) => (
-          <Fuse
-            key={`${rowIndex}-${colIndex}`}
-            position={fuse.position}
-            value={fuse.value}
+  return loading ? (
+    <ActivityIndicator size="large" color="#0000ff" />
+  ) : completedPopup ? (
+    <CompletedPopup gameName="MemoryMatrix" />
+  ) : (
+    <GameWrapper
+      imageURL={BackgroundImage.MemoryMatrix}
+      backgroundGradient={COLORS.memoryMatrixBGGradient}
+      scoreboard={[
+        <InfoLabel
+          label={'Level'}
+          value={level}
+          style={styles.infoLabel}
+          key="time"
+          showAnimation={true}
+        />,
+        <InfoLabel
+          label={'Lives'}
+          value={lives > 0 ? '★'.repeat(lives) : '0'}
+          style={styles.infoLabel}
+          key="lives"
+          showAnimation={true}
+        />,
+      ]}>
+      <View style={stylest.mainContainer}>
+        {fuseHolders.map((fuseHolder, index) => (
+          <FuseHolder
+            key={index}
+            position={fuseHolder.position}
+            value={fuseHolder.sequence}
+            initiallyBlank={fuseHolder.initiallyBlank}
           />
-        )),
-      )}
-      <TouchableOpacity style={styles.button} onPressIn={handleCheck}>
-        <Text style={styles.text}>Check</Text>
-      </TouchableOpacity>
-    </View>
+        ))}
+        {fuse.map((row, rowIndex) =>
+          row.map((fuse, colIndex) => (
+            <Fuse
+              key={`${rowIndex}-${colIndex}`}
+              position={fuse.position}
+              value={fuse.value}
+            />
+          )),
+        )}
+        <TouchableOpacity style={stylest.button} onPressIn={handleCheck}>
+          <Text style={stylest.text}>Check</Text>
+        </TouchableOpacity>
+      </View>
+    </GameWrapper>
   );
 };
 
-const styles = StyleSheet.create({
+const stylest = StyleSheet.create({
   mainContainer: {
-    flex: 1,
+    position: 'absolute',
+    width: '100%',
+    top: 0,
   },
   button: {
     position: 'absolute',
