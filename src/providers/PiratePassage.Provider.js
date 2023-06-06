@@ -46,7 +46,7 @@ export const PiratePassageProvider = ({children}) => {
         [5, 2],
       ],
       color: 'rgba(201, 71, 39,0.9)',
-      initialShipLocation: [5, 2],
+      initialShipLocation: [5, 1],
       moveDirection: -1,
     },
     {
@@ -58,7 +58,7 @@ export const PiratePassageProvider = ({children}) => {
         [5, 1],
       ],
       color: 'rgba(155, 41, 81,0.9)',
-      initialShipLocation: [4, 0],
+      initialShipLocation: [4, 1],
       moveDirection: 1,
     },
     {
@@ -129,6 +129,32 @@ export const PiratePassageProvider = ({children}) => {
     return {component, coordinates};
   };
 
+  const checkIfLoop = path => {
+    const firstPoint = path[0];
+    const lastPoint = path[path.length - 1];
+    if (firstPoint.x === lastPoint.x && firstPoint.y === lastPoint.y) {
+      return true;
+    }
+    return false;
+  };
+
+  const getIndexOfInitialPositionOnPath = (
+    pathIndexes,
+    initialPositionIndex,
+  ) => {
+    let index = 0;
+    for (let i = 0; i < pathIndexes.length; i++) {
+      if (
+        pathIndexes[i][0] === initialPositionIndex[0] &&
+        pathIndexes[i][1] === initialPositionIndex[1]
+      ) {
+        index = i;
+        break;
+      }
+    }
+    return index;
+  };
+
   const [piratePathComponents, piratePathCoordinates] = useMemo(() => {
     const piratePathComponents = [];
     const piratePathCoordinates = [];
@@ -143,14 +169,25 @@ export const PiratePassageProvider = ({children}) => {
         piratePathsIndexes[i].color,
         offset,
       );
+      const initialShipCoordinates =
+        matrix[piratePathsIndexes[i].initialShipLocation[0]][
+          piratePathsIndexes[i].initialShipLocation[1]
+        ].position;
+
+      const offsetInitialShipCoordinates = {
+        x: initialShipCoordinates.x - offset,
+        y: initialShipCoordinates.y - offset,
+      };
 
       piratePathCoordinates.push({
         pathCoordinates: coordinates,
-        initialShipCoordinates:
-          matrix[piratePathsIndexes[i].initialShipLocation[0]][
-            piratePathsIndexes[i].initialShipLocation[1]
-          ].position,
+        initialShipCoordinates: offsetInitialShipCoordinates,
+        initialShipCoordinatesIndex: getIndexOfInitialPositionOnPath(
+          piratePathsIndexes[i].pathIndexes,
+          piratePathsIndexes[i].initialShipLocation,
+        ),
         color: piratePathsIndexes[i].color,
+        isLoop: checkIfLoop(coordinates),
       });
       piratePathComponents.push(component);
     }

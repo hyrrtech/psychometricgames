@@ -1,32 +1,35 @@
 import {View, Animated, Easing} from 'react-native';
-import {
-  useRef,
-  useImperativeHandle,
-  forwardRef,
-  useContext,
-  useEffect,
-} from 'react';
+import {useRef, useState, useContext, useEffect} from 'react';
 import {constants} from '../../utilities/Pirate Passage';
 import {PiratePassageContext} from '../../providers/PiratePassage.Provider';
 const {shipSize, time_to_cover_each_tile} = constants;
 
-const PirateShip = ({color, shipPath}) => {
+const PirateShip = ({
+  color,
+  shipPath,
+  initialPosition,
+  initialPositionIndex,
+  isLoop,
+}) => {
+  const path = useRef(shipPath);
   const {go} = useContext(PiratePassageContext);
-  const initialPosition = shipPath[0];
+
   const position = useRef(
     new Animated.ValueXY({
       x: initialPosition.x - shipSize / 2,
       y: initialPosition.y - shipSize / 2,
     }),
   ).current;
-  const currentIndex = useRef(1);
+  const currentIndex = useRef(initialPositionIndex);
 
   const moveShip = () => {
     let index = currentIndex.current;
-    if (index < shipPath.length) {
-      const nextPoint = shipPath[index];
-      const deltaX = nextPoint.x - shipPath[index - 1].x;
-      const deltaY = nextPoint.y - shipPath[index - 1].y;
+    const nextIndex = index + 1;
+
+    if (nextIndex < path.current.length) {
+      const nextPoint = path.current[nextIndex];
+      const deltaX = nextPoint.x - path.current[index].x;
+      const deltaY = nextPoint.y - path.current[index].y;
       const direction = Math.atan2(deltaY, deltaX);
       const directionInDegrees = Math.ceil((direction * 180) / Math.PI);
 
@@ -34,16 +37,26 @@ const PirateShip = ({color, shipPath}) => {
 
       Animated.timing(position, {
         toValue: {
-          x: shipPath[index].x - shipSize / 2,
-          y: shipPath[index].y - shipSize / 2,
+          x: path.current[nextIndex].x - shipSize / 2,
+          y: path.current[nextIndex].y - shipSize / 2,
         },
         duration: time_to_cover_each_tile,
         easing: Easing.linear,
         useNativeDriver: true,
       }).start(({finished}) => {
-        if (finished && index < shipPath.length) {
-          ++currentIndex.current;
-          moveShip();
+        if (finished) {
+          if (nextIndex === path.current.length - 1 && isLoop) {
+            currentIndex.current = 0; // Reset to the first index
+            moveShip();
+          } else if (nextIndex === path.current.length - 1 && !isLoop) {
+            const reversePath = [...path.current].reverse();
+            path.current = [...reversePath];
+            currentIndex.current = 0; // Reset to the first index
+            moveShip();
+          } else {
+            currentIndex.current = nextIndex;
+            moveShip();
+          }
         }
       });
     }
@@ -57,7 +70,7 @@ const PirateShip = ({color, shipPath}) => {
 
   return (
     <Animated.View
-      pointerEvents={'none'}
+      pointerEvents="none"
       style={{
         height: shipSize,
         width: shipSize,

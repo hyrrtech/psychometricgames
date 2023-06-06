@@ -69,6 +69,8 @@ const PiratePassage = () => {
             color={piratePath.color}
             shipPath={piratePath.pathCoordinates}
             initialPosition={piratePath.initialShipCoordinates}
+            initialPositionIndex={piratePath.initialShipCoordinatesIndex}
+            isLoop={piratePath.isLoop}
           />
         );
       })}
