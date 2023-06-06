@@ -1,11 +1,11 @@
-import {useRef, useContext} from 'react';
+import {useRef, useContext, useEffect} from 'react';
 import {PanResponder, Animated, StyleSheet, Text} from 'react-native';
 import {FuseWireContext} from '../../providers/FuseWire.Provider';
 import {constants} from '../../utilities/FuseWire';
 const {FuseHeight, FuseWidth, FuseHolderHeight, FuseHolderWidth} = constants;
 
 const Fuse = ({position, value}) => {
-  const {fuseHolders, dispatch, ACTIONS} = useContext(FuseWireContext);
+  const {fuseHolders, level, dispatch, ACTIONS} = useContext(FuseWireContext);
   const currentFuseHolderId = useRef(null);
   const pan = useRef(new Animated.ValueXY(position)).current;
 
@@ -42,7 +42,6 @@ const Fuse = ({position, value}) => {
       toValue: position,
       useNativeDriver: false,
     }).start();
-    console.log(currentFuseHolderId.current, 'currentfuseholderid');
     if (currentFuseHolderId.current !== null) {
       dispatch({
         type: ACTIONS.RESET_FUSEHOLDER,
@@ -50,15 +49,7 @@ const Fuse = ({position, value}) => {
           currentFuseHolderId: currentFuseHolderId.current,
         },
       });
-
       currentFuseHolderId.current = null;
-      // setFuseHolders(prevState => {
-      // const newState = [...prevState];
-      // newState[currentFuseHolderId.current].isBlank = true;
-      // newState[currentFuseHolderId.current].inputValue = null;
-      // currentFuseHolderId.current = null;
-      // return newState;
-      // });
     }
   };
   const isDropZone = gesture => {
@@ -87,23 +78,20 @@ const Fuse = ({position, value}) => {
         currentFuseHolderId.current = fuseHolder.id;
 
         return true;
-        // setFuseHolders(prevState => {
-        //   const newState = [...prevState];
-        //   if (currentFuseHolderId.current !== null) {
-        //     newState[currentFuseHolderId.current].isBlank = true;
-        //     newState[currentFuseHolderId.current].inputValue = null;
-        //   }
-
-        //   newState[fuseHolder.id].isBlank = false;
-        //   newState[fuseHolder.id].inputValue = value;
-
-        //   return newState;
-        // });
       }
     });
 
     return result;
   };
+
+  useEffect(() => {
+    pan.flattenOffset();
+    Animated.spring(pan, {
+      toValue: position,
+      useNativeDriver: false,
+    }).start();
+  }, [level]);
+
   return (
     <Animated.View
       style={[{transform: pan.getTranslateTransform()}, styles.fuse]}

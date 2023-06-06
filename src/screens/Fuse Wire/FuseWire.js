@@ -1,28 +1,27 @@
 import React, {useContext, useEffect} from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-  View,
-} from 'react-native';
+import {StyleSheet, ActivityIndicator, View} from 'react-native';
 
 import {AuthContext} from '../../providers/AuthProvider';
 import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
 import {InfoLabel} from '../../components/InfoLabel';
-import db from '../../firebase/database';
+import {Button} from '../../components/Button';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
 import styles from './styles';
 
-import {getFusePositions, generateCloseValues} from '../../utilities/FuseWire';
+import {
+  getFusePositions,
+  generateCloseValues,
+  gameRoundData,
+} from '../../utilities/FuseWire';
 import {FuseWireContext} from '../../providers/FuseWire.Provider';
 import FuseHolder from '../../components/FuseWire/FuseHolder';
 import Fuse from '../../components/FuseWire/Fuse';
 
-const FuseWire = () => {
+const FuseWire = ({navigation}) => {
   const {
+    state,
     fuseHolders,
     blankValues,
     level,
@@ -37,15 +36,41 @@ const FuseWire = () => {
     ...blankValues,
     ...generateCloseValues(blankValues),
   ]);
-
+  console.log(blankValues);
   const handleCheck = () => {
     const checkIfCorrect = () =>
       fuseHolders
         .filter(fuseHolder => fuseHolder.initiallyBlank)
         .every(fuseHolder => fuseHolder.sequence === fuseHolder.inputValue);
-    const result = checkIfCorrect();
-    dispatch({action: ACTIONS.ON_CHECK, payload: {result, uid: user.uid}});
+    if (
+      level === gameRoundData[gameRoundData.length - 1].level &&
+      checkIfCorrect()
+    ) {
+      dispatch({type: ACTIONS.GAME_OVER, payload: {uid: user.uid}});
+      navigation.navigate('Transition', {
+        state: state,
+        cameFrom: 'FuseWire',
+      });
+      return;
+    }
+    dispatch({
+      type: ACTIONS.ON_CHECK,
+      payload: {result: checkIfCorrect(), uid: user.uid},
+    });
   };
+
+  useEffect(() => {
+    if (lives === 0) {
+      dispatch({
+        type: ACTIONS.GAME_OVER,
+        payload: {uid: user.uid},
+      });
+      navigation.navigate('Transition', {
+        state: state,
+        cameFrom: 'FuseWire',
+      });
+    }
+  }, [lives]);
 
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
@@ -70,6 +95,14 @@ const FuseWire = () => {
           key="lives"
           showAnimation={true}
         />,
+      ]}
+      controllerButtons={[
+        <Button
+          key="check"
+          style={styles.button}
+          title={'Check'}
+          onPressIn={handleCheck}
+        />,
       ]}>
       <View style={stylest.mainContainer}>
         {fuseHolders.map((fuseHolder, index) => (
@@ -89,9 +122,6 @@ const FuseWire = () => {
             />
           )),
         )}
-        <TouchableOpacity style={stylest.button} onPressIn={handleCheck}>
-          <Text style={stylest.text}>Check</Text>
-        </TouchableOpacity>
       </View>
     </GameWrapper>
   );

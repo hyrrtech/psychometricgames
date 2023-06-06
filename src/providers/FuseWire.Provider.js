@@ -24,7 +24,7 @@ export const FuseWireProvider = ({children}) => {
       const exists = snapshot.exists();
       if (exists) {
         const data = snapshot.val();
-        let {level, status} = data;
+        let {level, status, lives} = data;
         if (status === 'COMPLETED') {
           setCompletedPopup(true);
           return;
@@ -34,6 +34,7 @@ export const FuseWireProvider = ({children}) => {
           type: ACTIONS.INIT_LEVEL,
           payload: {
             level: level,
+            lives: lives,
           },
         });
       }
@@ -45,6 +46,7 @@ export const FuseWireProvider = ({children}) => {
   return (
     <FuseWireContext.Provider
       value={{
+        state,
         fuseHolders: state.fuseHolders,
         blankValues: state.blankValues,
         level: state.level,

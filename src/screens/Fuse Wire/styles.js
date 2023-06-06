@@ -10,6 +10,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: '8%',
     paddingVertical: '2%',
   },
+  button: {
+    borderColor: COLORS.primary,
+    color: COLORS.textPrimary,
+    backgroundColor: 'rgba(7, 94, 84, 0.16)',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: '8%',
+    paddingVertical: '2.5%',
+  },
   icon: {
     marginRight: 0,
     height: 40,

@@ -69,6 +69,13 @@ const Transition = ({route, navigation}) => {
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press home to go back to home screen',
     },
+    FuseWire: {
+      backgroundGradient: COLORS.sharkBGGrandient,
+      imageURL: BackgroundImage.SHARK,
+      navigateTo: 'Home',
+      navigateButtonText: 'Home',
+      text: 'You have completed the game. Press home to go back to home screen',
+    },
   };
   //prevent navigation to gamescreen when back button is pressed if the game is over
   useEffect(() => {
