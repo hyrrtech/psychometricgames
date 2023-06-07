@@ -1,4 +1,4 @@
-import {useRef, useMemo, useContext} from 'react';
+import {useContext} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {Tile, Ship} from '../../components/Pirate Passage';
 import {PiratePassageContext} from '../../providers/PiratePassage.Provider';
@@ -19,6 +19,7 @@ const PiratePassage = () => {
   const handle_go = () => {
     setGo(true);
   };
+
   const handle_undo = () => {
     setPathIndexes(prev => {
       const prevIndexes = prev.indexes;

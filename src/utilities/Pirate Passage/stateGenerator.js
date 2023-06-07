@@ -1,0 +1,31 @@
+import generateMatrix from './generateMatrix';
+import generatePiratePathComponentsAndCoordiantes from './generatePiratePathComponentsAndCoordinates';
+import mapData from './mapData';
+
+const stateGenerator = level => {
+  console.log(level);
+  const matrix = generateMatrix(
+    mapData[level - 1].matrixSize.rows,
+    mapData[level - 1].matrixSize.columns,
+  );
+  const piratePathsIndexes = mapData[level - 1].piratePathsIndexes;
+  const {piratePathComponents, piratePathCoordinates} =
+    generatePiratePathComponentsAndCoordiantes(matrix, piratePathsIndexes);
+
+  return {
+    matrix,
+    initialShipIndex: mapData[level - 1].initialShipIndex,
+    shipPathIndexes: {
+      indexes: mapData[level - 1].initialShipIndex,
+      number_of_indexes_added: [1],
+    },
+    treasureIndex: mapData[level - 1].treasureIndex,
+    piratePathsIndexes,
+    level,
+    piratePathComponents,
+    piratePathCoordinates,
+    go: false,
+  };
+};
+
+export default stateGenerator;

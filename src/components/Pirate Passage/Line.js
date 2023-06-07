@@ -1,5 +1,5 @@
-import {View, Animated} from 'react-native';
-import {constants} from '../../utilities/Pirate Passage';
+import {View} from 'react-native';
+import constants from '../../utilities/Pirate Passage/constants';
 
 const {lineWidth, lineHeight, pirateLineWidth, pirateLineHeight} = constants;
 

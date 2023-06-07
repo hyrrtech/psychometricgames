@@ -19,6 +19,7 @@ export const FuseWireProvider = ({children}) => {
   const [loading, setLoading] = useState(true);
   const [completedPopup, setCompletedPopup] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
+
   useEffect(() => {
     GameRef.once('value', snapshot => {
       const exists = snapshot.exists();
