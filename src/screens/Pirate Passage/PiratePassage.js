@@ -10,10 +10,11 @@ const PiratePassage = () => {
     pathComponents,
     pathCoordinates,
     matrix,
-    setPathIndexes,
     piratePathCoordinates,
     piratePathComponents,
     setGo,
+    dispatch,
+    ACTIONS,
   } = useContext(PiratePassageContext);
 
   const handle_go = () => {
@@ -21,27 +22,7 @@ const PiratePassage = () => {
   };
 
   const handle_undo = () => {
-    setPathIndexes(prev => {
-      const prevIndexes = prev.indexes;
-      const prev_number_of_indexes_added = prev.number_of_indexes_added;
-      if (prevIndexes.length === 1) {
-        return prev;
-      }
-
-      const number_of_indexes_added_in_last_segment =
-        prev_number_of_indexes_added[prev_number_of_indexes_added.length - 1];
-      //remove number of indexes added in last segment from prevIndexes from end
-      prevIndexes.splice(
-        prevIndexes.length - number_of_indexes_added_in_last_segment,
-        number_of_indexes_added_in_last_segment,
-      );
-      //remove number of indexes added in last segment from prev_number_of_indexes_added from end
-      prev_number_of_indexes_added.pop();
-      return {
-        indexes: [...prevIndexes],
-        number_of_indexes_added: [...prev_number_of_indexes_added],
-      };
-    });
+    dispatch({type: ACTIONS.UNDO});
   };
 
   return (

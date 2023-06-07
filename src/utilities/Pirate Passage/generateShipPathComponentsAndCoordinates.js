@@ -1,8 +1,5 @@
 import Line from '../../components/Pirate Passage/Line';
 const generateShipPathComponentsAndCoordinates = (matrix, pathIndexes) => {
-  if (pathIndexes.length === 1) {
-    return [];
-  }
   const pathCoordinates = [];
   const pathComponents = [];
   for (let i = 0; i < pathIndexes.indexes.length - 1; i++) {
