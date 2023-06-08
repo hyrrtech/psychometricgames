@@ -9,7 +9,6 @@ import {AuthContext} from './AuthProvider';
 import db from '../firebase/database';
 import {reducer, ACTIONS} from '../screens/Fuse Wire/reducer';
 import initialState from '../screens/Fuse Wire/initialState';
-import functions from '@react-native-firebase/functions';
 
 export const FuseWireContext = createContext();
 

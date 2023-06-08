@@ -28,6 +28,7 @@ const stateGenerator = level => {
     treasureIndex: mapData[level - 1].treasureIndex,
     piratePathsIndexes,
     level,
+    piratePathIndexes: mapData[level - 1].piratePathsIndexes,
     piratePathComponents,
     piratePathCoordinates,
     pathComponents,

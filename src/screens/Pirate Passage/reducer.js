@@ -79,6 +79,10 @@ export function reducer(state, action) {
       newState.pathCoordinates = pathCoordinates;
 
       return newState;
+
+    case ACTIONS.GO:
+      newState.go = true;
+      return newState;
     default:
       return state;
   }

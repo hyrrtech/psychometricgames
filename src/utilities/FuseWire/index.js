@@ -2,7 +2,7 @@ import constants from './constants';
 import generateSequence from './generateSequence';
 import getHolderPositions from './getHolderPositions';
 import getFusePositions from './getFusePositions';
-import stateGenerator from './stateGenerator';
+import {stateGenerator, stateGeneratorAsync} from './stateGenerator';
 import gameRoundData from './gameRoundData';
 import generateCloseValues from './generateCloseValues';
 export {
@@ -11,6 +11,7 @@ export {
   getFusePositions,
   stateGenerator,
   generateCloseValues,
+  stateGeneratorAsync,
   gameRoundData,
   constants,
 };

@@ -58,6 +58,7 @@ const Ship = ({color, shipPath}) => {
         width: shipSize,
         backgroundColor: color,
         position: 'absolute',
+        zIndex: 999,
         transform: [{translateX: position.x}, {translateY: position.y}],
       }}></Animated.View>
   );

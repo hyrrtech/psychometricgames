@@ -1,6 +1,6 @@
 import {useContext} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {Tile, Ship} from '../../components/Pirate Passage';
+import {Tile, Ship, Treasure} from '../../components/Pirate Passage';
 import {PiratePassageContext} from '../../providers/PiratePassage.Provider';
 import {FontStyle} from '../../values/Font';
 import PirateShip from '../../components/Pirate Passage/PirateShip';
@@ -12,13 +12,13 @@ const PiratePassage = () => {
     matrix,
     piratePathCoordinates,
     piratePathComponents,
-    setGo,
+    treasureIndex,
     dispatch,
     ACTIONS,
   } = useContext(PiratePassageContext);
 
   const handle_go = () => {
-    setGo(true);
+    dispatch({type: ACTIONS.GO});
   };
 
   const handle_undo = () => {
@@ -38,10 +38,10 @@ const PiratePassage = () => {
           );
         });
       })}
-      {piratePathComponents.map((line, index) => {
+      {piratePathComponents.map(line => {
         return line.map(path => path);
       })}
-      {pathComponents.map((line, index) => {
+      {pathComponents.map(line => {
         return line;
       })}
       {piratePathCoordinates.map((piratePath, index) => {
@@ -58,7 +58,7 @@ const PiratePassage = () => {
       })}
 
       <Ship color="yellow" shipPath={pathCoordinates} />
-
+      <Treasure color="orange" index={treasureIndex} />
       <View style={styles.buttonContaienr}>
         <TouchableOpacity style={styles.button} onPress={handle_undo}>
           <Text style={styles.buttonText}>Undo</Text>
