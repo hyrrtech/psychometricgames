@@ -9,48 +9,75 @@ import {AuthContext} from './AuthProvider';
 import db from '../firebase/database';
 import {reducer, ACTIONS} from '../screens/Fuse Wire/reducer';
 import initialState from '../screens/Fuse Wire/initialState';
+import {stateGeneratorAsync} from '../utilities/FuseWire';
 
 export const FuseWireContext = createContext();
 
 export const FuseWireProvider = ({children}) => {
   const {user} = useContext(AuthContext);
   const GameRef = db.ref(`/users/${user.uid}/FuseWire/`);
-  const [loading, setLoading] = useState(true);
-  const [completedPopup, setCompletedPopup] = useState(false);
+
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const [loading, setLoading] = useState(true);
+  const [completedPopup, setCompletedPopup] = useState(false);
+
+  const {fuseHolders, blankValues, level, lives, fuse} = state;
+
   useEffect(() => {
-    GameRef.once('value', snapshot => {
-      const exists = snapshot.exists();
-      if (exists) {
-        const data = snapshot.val();
-        let {level, status, lives} = data;
-        if (status === 'COMPLETED') {
-          setCompletedPopup(true);
-          return;
+    const fetchData = async () => {
+      try {
+        let level = state.level;
+        let lives = state.lives;
+
+        const snapshot = await GameRef.once('value');
+        const exists = snapshot.exists();
+
+        if (exists) {
+          const data = snapshot.val();
+          level = data.level;
+          lives = data.lives;
+
+          if (data.status === 'COMPLETED') {
+            setCompletedPopup(true);
+            return;
+          }
+        } else {
+          await GameRef.set({
+            level: 1,
+            lives: state.lives,
+            status: 'IN_PROGRESS',
+          });
         }
-        level = level ? level : 1;
+
+        const newState = await stateGeneratorAsync(level);
+
         dispatch({
           type: ACTIONS.INIT_LEVEL,
           payload: {
-            level: level,
+            state: newState,
             lives: lives,
           },
         });
+
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+        //navigate to home (useeffect in fuseWire.js not provider)
       }
-    })
-      .then(() => setLoading(false))
-      .catch(err => console.log(err));
+    };
+    fetchData();
   }, []);
 
   return (
     <FuseWireContext.Provider
       value={{
         state,
-        fuseHolders: state.fuseHolders,
-        blankValues: state.blankValues,
-        level: state.level,
-        lives: state.lives,
+        fuseHolders,
+        blankValues,
+        level,
+        lives,
+        fuse,
         dispatch,
         ACTIONS,
         loading,

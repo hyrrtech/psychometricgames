@@ -4,6 +4,7 @@ import getShortestPath from './getShortestPath';
 import generatePiratePathComponentsAndCoordiantes from './generatePiratePathComponentsAndCoordinates';
 import generateShipPathComponentsAndCoordinates from './generateShipPathComponentsAndCoordinates';
 import stateGenerator from './stateGenerator';
+import collisionDetection from './collisionDetection';
 import mapData from './mapData';
 export {
   constants,
@@ -11,6 +12,7 @@ export {
   getShortestPath,
   generatePiratePathComponentsAndCoordiantes,
   generateShipPathComponentsAndCoordinates,
+  collisionDetection,
   mapData,
   stateGenerator,
 };

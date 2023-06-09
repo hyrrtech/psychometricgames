@@ -20,7 +20,7 @@ const mapData = [
           [1, 1],
         ],
         color: 'rgba(36, 180, 132,0.9)',
-        initialShipLocation: [3, 3],
+        initialShipLocation: [1, 1],
         moveDirection: 1,
       },
       {
@@ -83,7 +83,7 @@ const mapData = [
           [0, 2],
         ],
         color: 'pink',
-        initialShipLocation: [2, 2],
+        initialShipLocation: [0, 2],
         moveDirection: 1,
       },
     ],

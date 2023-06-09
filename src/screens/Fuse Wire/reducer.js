@@ -1,5 +1,5 @@
 import db from '../../firebase/database';
-import {stateGenerator, gameRoundData} from '../../utilities/FuseWire';
+import {gameRoundData} from '../../utilities/FuseWire';
 
 export const ACTIONS = {
   INIT_LEVEL: 'init_level',
@@ -39,7 +39,7 @@ export function reducer(state, action) {
   switch (action.type) {
     case ACTIONS.INIT_LEVEL:
       return {
-        ...stateGenerator(action.payload.level),
+        ...action.payload.state,
         lives: action.payload.lives,
       };
 
@@ -67,7 +67,7 @@ export function reducer(state, action) {
         updateLevel(state, action.payload.uid);
         return {
           ...state,
-          ...stateGenerator(state.level + 1),
+          ...action.payload.nextLevelState,
         };
       }
       updateLives(state.lives - 1, action.payload.uid);
@@ -75,6 +75,7 @@ export function reducer(state, action) {
         ...state,
         lives: state.lives - 1,
       };
+
     case ACTIONS.GAME_OVER:
       updateStatus(action.payload.uid);
       return state;

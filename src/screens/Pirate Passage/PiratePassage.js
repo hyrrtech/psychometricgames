@@ -1,6 +1,11 @@
 import {useContext} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {Tile, Ship, Treasure} from '../../components/Pirate Passage';
+import {
+  Tile,
+  Ship,
+  Treasure,
+  CollisionMark,
+} from '../../components/Pirate Passage';
 import {PiratePassageContext} from '../../providers/PiratePassage.Provider';
 import {FontStyle} from '../../values/Font';
 import PirateShip from '../../components/Pirate Passage/PirateShip';
@@ -15,6 +20,7 @@ const PiratePassage = () => {
     treasureIndex,
     dispatch,
     ACTIONS,
+    showCollision,
   } = useContext(PiratePassageContext);
 
   const handle_go = () => {
@@ -38,6 +44,7 @@ const PiratePassage = () => {
           );
         });
       })}
+
       {piratePathComponents.map(line => {
         return line.map(path => path);
       })}
@@ -59,6 +66,9 @@ const PiratePassage = () => {
 
       <Ship color="yellow" shipPath={pathCoordinates} />
       <Treasure color="orange" index={treasureIndex} />
+      {showCollision.collided && (
+        <CollisionMark position={showCollision.shipPosition} />
+      )}
       <View style={styles.buttonContaienr}>
         <TouchableOpacity style={styles.button} onPress={handle_undo}>
           <Text style={styles.buttonText}>Undo</Text>

@@ -10,11 +10,7 @@ import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
 import styles from './styles';
 
-import {
-  getFusePositions,
-  generateCloseValues,
-  gameRoundData,
-} from '../../utilities/FuseWire';
+import {gameRoundData, stateGeneratorAsync} from '../../utilities/FuseWire';
 import {FuseWireContext} from '../../providers/FuseWire.Provider';
 import FuseHolder from '../../components/FuseWire/FuseHolder';
 import Fuse from '../../components/FuseWire/Fuse';
@@ -23,7 +19,7 @@ const FuseWire = ({navigation}) => {
   const {
     state,
     fuseHolders,
-    blankValues,
+    fuse,
     level,
     lives,
     loading,
@@ -32,12 +28,8 @@ const FuseWire = ({navigation}) => {
     ACTIONS,
   } = useContext(FuseWireContext);
   const {user} = useContext(AuthContext);
-  const fuse = getFusePositions([
-    ...blankValues,
-    ...generateCloseValues(blankValues),
-  ]);
-  console.log(blankValues);
-  const handleCheck = () => {
+
+  const handleCheck = async () => {
     const checkIfCorrect = () =>
       fuseHolders
         .filter(fuseHolder => fuseHolder.initiallyBlank)
@@ -53,9 +45,14 @@ const FuseWire = ({navigation}) => {
       });
       return;
     }
+    const nextLevelState = await stateGeneratorAsync(level + 1);
     dispatch({
       type: ACTIONS.ON_CHECK,
-      payload: {result: checkIfCorrect(), uid: user.uid},
+      payload: {
+        result: checkIfCorrect(),
+        uid: user.uid,
+        nextLevelState: nextLevelState,
+      },
     });
   };
 

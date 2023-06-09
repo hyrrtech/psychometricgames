@@ -1,6 +1,10 @@
-import {stateGenerator} from '../../utilities/FuseWire';
-
 const lives = 5;
-const initialState = {...stateGenerator(1), lives: lives};
+const initialState = {
+  level: 1,
+  lives: lives,
+  fuseHolders: [],
+  blankValues: [],
+  fuse: [],
+};
 
 export default initialState;
