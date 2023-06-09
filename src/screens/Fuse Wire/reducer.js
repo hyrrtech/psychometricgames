@@ -9,8 +9,19 @@ export const ACTIONS = {
   GAME_OVER: 'game_over',
 };
 
-const updateLevel = (state, uid) => {
+const addData = (uid, state, levelCleared) => {
   const GameRef = db.ref(`/users/${uid}/FuseWire/`);
+  const newAttempt = {
+    level: state.level,
+    valueTimeArray: state.valueTimeArray,
+    startTime: state.startTime,
+    levelCleared,
+    timeTaken: Date.now() - state.startTime,
+  };
+  GameRef.child('attempts').push(newAttempt);
+};
+
+const updateLevel = (state, uid) => {
   let level =
     state.level === gameRoundData[gameRoundData.length - 1].level
       ? state.level
@@ -52,6 +63,11 @@ export function reducer(state, action) {
       }
       newState.fuseHolders[id].isBlank = false;
       newState.fuseHolders[id].inputValue = value;
+      newState.valueTimeArray.push({
+        value: value,
+        time: Date.now() - state.startTime,
+        fuseHolderPosition: id,
+      });
       return newState;
 
     case ACTIONS.RESET_FUSEHOLDER:
@@ -63,6 +79,7 @@ export function reducer(state, action) {
 
     case ACTIONS.ON_CHECK:
       const result = action.payload.result;
+      addData(action.payload.uid, state, result);
       if (result) {
         updateLevel(state, action.payload.uid);
         return {

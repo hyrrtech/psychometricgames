@@ -22,7 +22,16 @@ export const FuseWireProvider = ({children}) => {
   const [loading, setLoading] = useState(true);
   const [completedPopup, setCompletedPopup] = useState(false);
 
-  const {fuseHolders, blankValues, level, lives, fuse} = state;
+  const {
+    fuseHolders,
+    blankValues,
+    level,
+    lives,
+    fuse,
+    startTime,
+    valueTimeArray,
+  } = state;
+  console.log(valueTimeArray);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,6 +87,7 @@ export const FuseWireProvider = ({children}) => {
         level,
         lives,
         fuse,
+        startTime,
         dispatch,
         ACTIONS,
         loading,

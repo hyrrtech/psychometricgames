@@ -1,4 +1,5 @@
 import PlaySound from './PlaySound';
 import useDebounce from './useDebounce';
 import useCountdown from './useCountDown';
-export {PlaySound, useDebounce, useCountdown};
+import CircularBuffer from './CircularBuffer';
+export {PlaySound, useDebounce, useCountdown, CircularBuffer};

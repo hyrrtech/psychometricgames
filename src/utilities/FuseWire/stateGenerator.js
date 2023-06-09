@@ -3,6 +3,7 @@ import gameRoundData from './gameRoundData';
 import getFusePositions from './getFusePositions';
 import generateCloseValues from './generateCloseValues';
 import functions from '@react-native-firebase/functions';
+
 const fun = functions().httpsCallable('generateSequence');
 
 const stateGeneratorAsync = level => {
@@ -21,6 +22,8 @@ const stateGeneratorAsync = level => {
           blankValues: blankValues,
           fuse: fuse,
           level: level,
+          startTime: Date.now(),
+          valueTimeArray: [],
         });
       })
       .catch(err => reject(err));

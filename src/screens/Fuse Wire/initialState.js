@@ -5,6 +5,8 @@ const initialState = {
   fuseHolders: [],
   blankValues: [],
   fuse: [],
+  startTime: Date.now(),
+  valueTimeArray: [],
 };
 
 export default initialState;
