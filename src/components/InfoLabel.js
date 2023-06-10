@@ -6,7 +6,7 @@ export const InfoLabel = ({label, value, style, showAnimation}) => {
   useEffect(() => {
     Animated.sequence([
       Animated.timing(textScale, {
-        toValue: 1.3,
+        toValue: 1.15,
         duration: 300,
         useNativeDriver: true,
       }),

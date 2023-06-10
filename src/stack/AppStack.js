@@ -10,8 +10,11 @@ import KillTheSpider from '../screens/Kill The Spider/KillTheSpider';
 import TrainOfThoughts from '../screens/Train of Thoughts/';
 import CarGame from '../screens/Car/';
 import ColorMatch from '../screens/Color Match/ColorMatch';
-import Fish from '../screens/Fish/Fish';
+import FishGame from '../screens/Fish Game/';
+import PiratePassage from '../screens/Pirate Passage/';
+import FuseWire from '../screens/Fuse Wire/';
 import FrogJump from '../screens/Frog Jump/';
+import OrganicOrder from '../screens/Organic Order/';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
@@ -43,7 +46,6 @@ function MainStack() {
         component={TrainOfThoughts}
         options={screenOptions}
       />
-
       <Stack.Screen
         name="Transition"
         component={Transition}
@@ -55,12 +57,30 @@ function MainStack() {
         options={screenOptions}
       />
       <Stack.Screen
-        name="Frog Jump"
+        name="FishGame"
+        component={FishGame}
+        options={screenOptions}
+      />
+      <Stack.Screen
+        name="PiratePassage"
+        component={PiratePassage}
+        options={screenOptions}
+      />
+      <Stack.Screen
+        name="FuseWire"
+        component={FuseWire}
+        options={screenOptions}
+      />
+      <Stack.Screen
+        name="FrogJump"
         component={FrogJump}
         options={screenOptions}
       />
-
-      <Stack.Screen name="Fish" component={Fish} options={screenOptions} />
+      <Stack.Screen
+        name="OrganicOrder"
+        component={OrganicOrder}
+        options={screenOptions}
+      />
     </Stack.Navigator>
   );
 }

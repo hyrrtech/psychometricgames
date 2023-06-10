@@ -1,26 +1,20 @@
-import constants from './constants';
-const {leaderFrogSize, lillipadSize, followerFrogSize} = constants;
 const getInitialLeaderFrogPosition = (
-  frogPositions,
+  lillipadPositions,
   initialFrogPositionIndex,
 ) => {
   let leaderFrogPositionInitialIndex = Math.floor(
-    Math.random() * frogPositions.length,
+    Math.random() * lillipadPositions.length,
   );
   while (leaderFrogPositionInitialIndex === initialFrogPositionIndex) {
     leaderFrogPositionInitialIndex = Math.floor(
-      Math.random() * frogPositions.length,
+      Math.random() * lillipadPositions.length,
     );
   }
   return {
-    x:
-      frogPositions[leaderFrogPositionInitialIndex].x -
-      (lillipadSize - followerFrogSize) / 2 +
-      (lillipadSize - leaderFrogSize) / 2,
-    y:
-      frogPositions[leaderFrogPositionInitialIndex].y -
-      (lillipadSize - followerFrogSize) / 2 +
-      (lillipadSize - leaderFrogSize) / 2,
+    position: {
+      ...lillipadPositions[leaderFrogPositionInitialIndex].position,
+    },
+    id: leaderFrogPositionInitialIndex,
   };
 };
 

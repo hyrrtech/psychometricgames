@@ -13,13 +13,13 @@ const randomLillipadPositions = num_of_lillipads => {
     } while (
       lillipads.some(
         lillipad =>
-          lillipad.x + lillipadSize > lillipadX &&
-          lillipad.y + lillipadSize > lillipadY &&
-          lillipad.x < lillipadX + lillipadSize &&
-          lillipad.y < lillipadY + lillipadSize,
+          lillipad.position.x + lillipadSize > lillipadX &&
+          lillipad.position.y + lillipadSize > lillipadY &&
+          lillipad.position.x < lillipadX + lillipadSize &&
+          lillipad.position.y < lillipadY + lillipadSize,
       )
     );
-    newLillipad = {x: lillipadX, y: lillipadY};
+    newLillipad = {position: {x: lillipadX, y: lillipadY}, id: i};
     lillipads.push(newLillipad);
   }
   return lillipads;

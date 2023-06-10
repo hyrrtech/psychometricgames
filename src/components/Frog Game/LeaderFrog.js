@@ -2,62 +2,67 @@ import {Animated, StyleSheet} from 'react-native';
 import {useEffect, useRef, useContext} from 'react';
 import {constants} from '../../utilities/Frog Jump';
 import {FrogGameContext} from '../../providers/FrogGame.Provider';
-const {speed, leaderFrogSize, lillipadSize, followerFrogSize} = constants;
+const {speed, leaderFrogSize, lillipadSize} = constants;
 const LeaderFrog = () => {
   const {
     setDisabled,
     leaderFrogPosition,
     initialLeaderFrogPosition,
-    recentLeaderFrogPositions,
+    currentLeaderFrogPosition,
     followerFrogPosition,
-    frogPositions,
   } = useContext(FrogGameContext);
+
   const index = useRef(0);
+  const previousLeaderFrogPosition = useRef(initialLeaderFrogPosition);
+
   const animation = useRef(
     new Animated.ValueXY({
-      x: initialLeaderFrogPosition.x,
-      y: initialLeaderFrogPosition.y,
+      x:
+        previousLeaderFrogPosition.current.position.x +
+        (lillipadSize - leaderFrogSize) / 2,
+      y:
+        previousLeaderFrogPosition.current.position.y +
+        (lillipadSize - leaderFrogSize) / 2,
     }),
   ).current;
 
   const Animate = (from, to) => {
+    setDisabled(true);
     const distance = Math.sqrt(
-      Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2),
+      Math.pow(to.position.x - from.position.x, 2) +
+        Math.pow(to.position.y - from.position.y, 2),
     );
     const duration = (distance * 1000) / speed;
-    console.log(
-      frogPositions.findIndex(
-        frogPosition =>
-          frogPosition.x ===
-            to.x -
-              (lillipadSize - leaderFrogSize) / 2 +
-              (lillipadSize - followerFrogSize) / 2 &&
-          frogPosition.y ===
-            to.y -
-              (lillipadSize - leaderFrogSize) / 2 +
-              (lillipadSize - followerFrogSize) / 2,
-      ),
-    );
+    currentLeaderFrogPosition.current = to;
     Animated.sequence([
       Animated.delay(500),
       Animated.timing(animation, {
-        toValue: {x: to.x, y: to.y},
+        toValue: {
+          x: to.position.x + (lillipadSize - leaderFrogSize) / 2,
+          y: to.position.y + (lillipadSize - leaderFrogSize) / 2,
+        },
         duration: duration,
         useNativeDriver: true,
       }),
     ]).start(({finished}) => {
-      recentLeaderFrogPositions.current.push(leaderFrogPosition[index.current]);
-      if (finished && index.current < leaderFrogPosition.length - 1) {
-        index.current = index.current + 1;
-        Animate(to, leaderFrogPosition[index.current]);
+      if (finished) {
+        previousLeaderFrogPosition.current = to;
+        setDisabled(false);
+        if (index.current < leaderFrogPosition.length - 1) {
+          index.current = index.current + 1;
+          Animate(to, leaderFrogPosition[index.current]);
+        }
       }
     });
   };
 
   useEffect(() => {
     index.current = 0;
-    Animate(initialLeaderFrogPosition, leaderFrogPosition[index.current]);
-  }, [followerFrogPosition]);
+    Animate(
+      previousLeaderFrogPosition.current,
+      leaderFrogPosition[index.current],
+    );
+  }, [leaderFrogPosition]);
 
   return (
     <Animated.View

@@ -4,7 +4,6 @@ import {Button} from '../components/Button';
 import {AuthContext} from '../providers/AuthProvider';
 const TestScreen = ({navigation}) => {
   const {user, signout} = useContext(AuthContext);
-  // console.log(user);
   return (
     <View>
       <Button
@@ -59,17 +58,38 @@ const TestScreen = ({navigation}) => {
       />
       <Button
         onPress={() => {
-          navigation.navigate('Fish');
+          navigation.navigate('FishGame');
         }}
-        title="Fish"
+        title="Fish Game"
+        style={styles.button}
+      />
+      <Button
+        onPress={() => {
+          navigation.navigate('PiratePassage');
+        }}
+        title="Pirate Passage"
+        style={styles.button}
+      />
+      <Button
+        onPress={() => {
+          navigation.navigate('FuseWire');
+        }}
+        title="Fuse Wire"
         style={styles.button}
       />
 
       <Button
         onPress={() => {
-          navigation.navigate('Frog Jump');
+          navigation.navigate('FrogJump');
         }}
         title="Frog Jump"
+        style={styles.button}
+      />
+      <Button
+        onPress={() => {
+          navigation.navigate('OrganicOrder');
+        }}
+        title="OrganicOrder"
         style={styles.button}
       />
 

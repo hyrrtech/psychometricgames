@@ -1,82 +1,43 @@
-import React, {
-  createContext,
-  useState,
-  useMemo,
-  useRef,
-  useEffect,
-} from 'react';
+import React, {createContext, useState, useMemo, useRef} from 'react';
 import {
-  randomLillipadPositions,
-  constants,
-  getInitialLeaderFrogPosition,
-  generateSetOfLeaderFrogPositions,
-} from '../utilities/Frog Jump';
-import CircularBuffer from '../utilities/CircularBuffer';
-const {lillipadSize, followerFrogSize} = constants;
+  initialState,
+  MAX_NUM_OF_JUMPS,
+} from '../screens/Frog Jump/initialState';
 
 export const FrogGameContext = createContext();
 
 export const FrogGameProvider = ({children}) => {
+  const [disabled, setDisabled] = useState(true);
+  const [gameOver, setGameOver] = useState(false);
+
   const {
     initialFollowerFrogPosition,
     initialLeaderFrogPosition,
     lillipadPositions,
-    frogPositions,
     circularBuffer,
     initialSetOfLeaderFrogPositions,
-  } = useMemo(() => {
-    const lillipadPositions = randomLillipadPositions(10);
-    const frogPositions = lillipadPositions.map(lillipad => {
-      return {
-        x: lillipad.x + (lillipadSize - followerFrogSize) / 2,
-        y: lillipad.y + (lillipadSize - followerFrogSize) / 2,
-      };
-    });
-    const indexForIntialFrogPosition = Math.floor(
-      Math.random() * frogPositions.length,
-    );
-    const initialFollowerFrogPosition =
-      frogPositions[indexForIntialFrogPosition];
+  } = initialState;
 
-    const initialLeaderFrogPosition = getInitialLeaderFrogPosition(
-      frogPositions,
-      indexForIntialFrogPosition,
-    );
-    const circularBuffer = new CircularBuffer(3);
-    circularBuffer.push(initialLeaderFrogPosition);
-
-    const initialSetOfLeaderFrogPositions = generateSetOfLeaderFrogPositions(
-      initialFollowerFrogPosition,
-      circularBuffer,
-      frogPositions,
-      3,
-    );
-    return {
-      initialFollowerFrogPosition,
-      initialLeaderFrogPosition,
-      lillipadPositions,
-      frogPositions,
-      circularBuffer,
-      initialSetOfLeaderFrogPositions,
-    };
-  }, []);
-
-  const [followerFrogPosition, setFollowerFrogPosition] = useState({
-    x: initialFollowerFrogPosition.x,
-    y: initialFollowerFrogPosition.y,
-  });
-  const recentLeaderFrogPositions = useRef(circularBuffer);
-
+  const [followerFrogPosition, setFollowerFrogPosition] = useState(
+    initialFollowerFrogPosition,
+  );
   const [leaderFrogPosition, setLeaderFrogPosition] = useState(
     initialSetOfLeaderFrogPositions,
   );
 
-  const [disabled, setDisabled] = useState(true);
+  const currentAndFutureFollowerFrogPositions = useRef(circularBuffer);
+  const numberOfJumpsByFollowerFrog = useRef(0);
+
+  const leaderFrogPositionHistory = useRef([
+    initialLeaderFrogPosition.id,
+    ...initialSetOfLeaderFrogPositions.map(item => item.id),
+  ]);
+  const currentLeaderFrogPosition = useRef(initialLeaderFrogPosition);
+
   return (
     <FrogGameContext.Provider
       value={{
         lillipadPositions,
-        frogPositions,
         followerFrogPosition,
         initialFollowerFrogPosition,
         initialLeaderFrogPosition,
@@ -85,7 +46,13 @@ export const FrogGameProvider = ({children}) => {
         leaderFrogPosition,
         disabled,
         setDisabled,
-        recentLeaderFrogPositions,
+        currentAndFutureFollowerFrogPositions,
+        currentLeaderFrogPosition,
+        leaderFrogPositionHistory,
+        numberOfJumpsByFollowerFrog,
+        setGameOver,
+        gameOver,
+        MAX_NUM_OF_JUMPS,
       }}>
       {children}
     </FrogGameContext.Provider>

@@ -2,38 +2,50 @@ import React, {useRef, useEffect, useContext} from 'react';
 import {Animated, StyleSheet} from 'react-native';
 import {FrogGameContext} from '../../providers/FrogGame.Provider';
 import {constants} from '../../utilities/Frog Jump';
-const {followerFrogSize, speed} = constants;
+const {followerFrogSize, speed, lillipadSize} = constants;
 
 const FollowerFrog = () => {
   const {
-    followerFrogPosition: position,
+    followerFrogPosition: currentPosition,
     initialFollowerFrogPosition: initialPosition,
     setDisabled,
   } = useContext(FrogGameContext);
 
+  //navigation and check here if gameover
+
   const animation = useRef(
-    new Animated.ValueXY({x: initialPosition.x, y: initialPosition.y}),
+    new Animated.ValueXY({
+      x: initialPosition.position.x + (lillipadSize - followerFrogSize) / 2,
+      y: initialPosition.position.y + (lillipadSize - followerFrogSize) / 2,
+    }),
   ).current;
   const previousPosition = useRef(initialPosition);
   const distance = Math.sqrt(
-    Math.pow(position.x - previousPosition.current.x, 2) +
-      Math.pow(position.y - previousPosition.current.y, 2),
+    Math.pow(currentPosition.position.x - previousPosition.current.x, 2) +
+      Math.pow(currentPosition.position.y - previousPosition.current.y, 2),
   );
   const duration = (distance * 1000) / speed;
+
   useEffect(() => {
     setDisabled(true);
     Animated.timing(animation, {
-      toValue: {x: position.x, y: position.y},
+      toValue: {
+        x: currentPosition.position.x + (lillipadSize - followerFrogSize) / 2,
+        y: currentPosition.position.y + (lillipadSize - followerFrogSize) / 2,
+      },
       duration: duration,
       useNativeDriver: true,
     }).start(({finished}) => {
       if (finished) {
-        animation.setValue({x: position.x, y: position.y});
-        previousPosition.current = position;
+        animation.setValue({
+          x: currentPosition.position.x + (lillipadSize - followerFrogSize) / 2,
+          y: currentPosition.position.y + (lillipadSize - followerFrogSize) / 2,
+        });
+        previousPosition.current = currentPosition.position;
         setDisabled(false);
       }
     });
-  }, [position]);
+  }, [currentPosition]);
   return (
     <Animated.View
       style={[
