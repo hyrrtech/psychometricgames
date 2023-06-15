@@ -12,6 +12,7 @@ import PirateShip from '../../components/Pirate Passage/PirateShip';
 
 const PiratePassage = () => {
   const {
+    disableGo,
     pathComponents,
     pathCoordinates,
     matrix,
@@ -60,6 +61,7 @@ const PiratePassage = () => {
             initialPosition={piratePath.initialShipCoordinates}
             initialPositionIndex={piratePath.initialShipCoordinatesIndex}
             isLoop={piratePath.isLoop}
+            moveDirection={piratePath.moveDirection}
           />
         );
       })}
@@ -73,7 +75,10 @@ const PiratePassage = () => {
         <TouchableOpacity style={styles.button} onPress={handle_undo}>
           <Text style={styles.buttonText}>Undo</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handle_go}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handle_go}
+          disabled={disableGo}>
           <Text style={styles.buttonText}>Go</Text>
         </TouchableOpacity>
       </View>

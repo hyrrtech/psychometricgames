@@ -16,13 +16,12 @@ function getShipPosition(path, steps) {
 }
 
 function getPirateShipPosition(path, steps) {
+  console.log(path);
   if (checkIfLoop(path)) {
     let {pathIndexes, moveDirection} = path;
-    const reversedPathIndexes =
-      moveDirection === -1 ? [...pathIndexes].reverse() : [...pathIndexes];
+    const reversedPathIndexes = [...pathIndexes];
     reversedPathIndexes.pop();
     let index = steps % reversedPathIndexes.length;
-
     return reversedPathIndexes[index];
   } else {
     let index = -1;

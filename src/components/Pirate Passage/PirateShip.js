@@ -10,8 +10,10 @@ const PirateShip = ({
   initialPosition,
   initialPositionIndex,
   isLoop,
+  moveDirection,
 }) => {
   const path = useRef(shipPath);
+
   const {go} = useContext(PiratePassageContext);
 
   const position = useRef(
@@ -21,6 +23,7 @@ const PirateShip = ({
     }),
   ).current;
   const currentIndex = useRef(initialPositionIndex);
+  console.log(currentIndex.current, color);
 
   const moveShip = () => {
     let index = currentIndex.current;
@@ -59,6 +62,11 @@ const PirateShip = ({
           }
         }
       });
+    } else if (nextIndex === path.current.length && moveDirection === -1) {
+      const reversePath = [...path.current].reverse();
+      path.current = reversePath;
+      currentIndex.current = 0; // Reset to the first index
+      moveShip();
     }
   };
 

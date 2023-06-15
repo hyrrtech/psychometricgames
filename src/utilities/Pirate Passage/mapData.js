@@ -21,7 +21,7 @@ const mapData = [
         ],
         color: 'rgba(36, 180, 132,0.9)',
         initialShipLocation: [1, 1],
-        moveDirection: 1,
+        moveDirection: -1,
       },
       {
         pathIndexes: [
@@ -41,9 +41,10 @@ const mapData = [
           [3, 1],
           [4, 1],
           [5, 1],
+          [5, 2],
         ],
         color: 'rgba(155, 41, 81,0.9)',
-        initialShipLocation: [4, 1],
+        initialShipLocation: [5, 1],
         moveDirection: 1,
       },
       {
@@ -69,7 +70,7 @@ const mapData = [
         ],
         color: 'green',
         initialShipLocation: [4, 2],
-        moveDirection: 1,
+        moveDirection: -1,
       },
 
       {
