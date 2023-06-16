@@ -41,8 +41,8 @@ const Station = (point, prevPoint) => {
     <View
       key={`${stepX}-${stepY}-destination`}
       style={{
-        zIndex: 100,
         position: 'absolute',
+        zIndex: 999,
         left: stepX,
         top: stepY,
       }}>

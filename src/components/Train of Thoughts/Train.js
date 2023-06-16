@@ -171,6 +171,7 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
       });
     }
   };
+  console.log('trainDirection', trainDirection);
 
   useEffect(() => {
     moveTrain(PATH, TIME);
@@ -185,7 +186,7 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
           left: -trainSize / 2,
           top: -trainSize / 2,
           position: 'absolute',
-          zIndex: 999,
+          zIndex: 998,
         },
       ]}>
       {trainDirection === '-90deg' && (
@@ -208,6 +209,13 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
         />
       )}
       {trainDirection === '180deg' && (
+        <TrainHorizontalSvg
+          height={trainSize}
+          width={trainSize}
+          color={color}
+        />
+      )}
+      {trainDirection === '-179deg' && (
         <TrainHorizontalSvg
           height={trainSize}
           width={trainSize}
