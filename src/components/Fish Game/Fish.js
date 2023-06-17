@@ -1,11 +1,11 @@
-import {View, TouchableOpacity, Animated, Easing} from 'react-native';
+import {View, Text, TouchableOpacity, Animated, Easing} from 'react-native';
 import {useEffect, useState, useContext, useMemo, useRef} from 'react';
 import {FishGameContext} from '../../providers/FishGame.Provider';
 import {constants, getNewAngle, newToValue} from '../../utilities/Fish Game';
 const {poundAreaHeight, poundAreaWidth, fishHeight, fishWidth, speed} =
   constants;
 
-const Fish = () => {
+const Fish = ({id, ACTIONS, dispatch}) => {
   const {disabled, setDisabled} = useContext(FishGameContext);
   const [fed, setFed] = useState(false);
 
@@ -15,6 +15,20 @@ const Fish = () => {
     const rotateFrom = getNewAngle(initialFromValue, initialToValue);
     return {rotateFrom, initialFromValue, initialToValue};
   }, []);
+
+  const fedAnimation = useRef(new Animated.Value(0)).current;
+
+  const showFedAnimation = () => {
+    Animated.timing(fedAnimation, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start(({finished}) => {
+      if (finished) {
+        fedAnimation.setValue(0);
+      }
+    });
+  };
 
   const [rotationAngle, setRotationAngle] = useState({
     from: rotateFrom,
@@ -41,7 +55,7 @@ const Fish = () => {
     Animated.parallel([
       Animated.timing(rotationAnimation, {
         toValue: 1,
-        duration: 500,
+        duration: 700,
         easing: Easing.linear,
         useNativeDriver: true,
       }),
@@ -65,11 +79,14 @@ const Fish = () => {
   }, []);
 
   const handlePress = () => {
+    console.log('pressed', id, fed);
     if (fed) {
-      //game over dispatch method
+      dispatch({type: ACTIONS.DECREASE_LIVES});
     } else {
+      showFedAnimation();
       setFed(true);
       setDisabled(true);
+      dispatch({type: ACTIONS.ON_FED});
     }
   };
 
@@ -82,9 +99,9 @@ const Fish = () => {
         position: 'absolute',
         height: fishHeight,
         width: fishWidth,
-        borderRadius: 10,
         overflow: 'hidden',
-        backgroundColor: 'green',
+        borderWidth: 1,
+
         transform: [
           {translateX: translateAnimation.x},
           {translateY: translateAnimation.y},
@@ -97,7 +114,28 @@ const Fish = () => {
         ],
       }}>
       {/* head */}
-      <View style={{height: '100%', width: '20%', backgroundColor: 'red'}} />
+      <Text style={{position: 'absolute', zIndex: 2, color: 'white'}}>
+        {id}
+      </Text>
+
+      <Animated.View
+        style={{
+          position: 'absolute',
+          zIndex: 1,
+          height: '100%',
+          width: '30%',
+          backgroundColor: 'blue',
+        }}
+      />
+      <Animated.View
+        style={{
+          position: 'absolute',
+          height: '100%',
+          width: '40%',
+          backgroundColor: 'red',
+          opacity: fedAnimation,
+        }}
+      />
     </TouchableOpacity>
   );
 };
