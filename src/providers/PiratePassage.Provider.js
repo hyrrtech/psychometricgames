@@ -17,6 +17,8 @@ export const PiratePassageProvider = ({children}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [showCollision, setShowCollision] = useState({collided: false});
   const [disableGo, setDisableGo] = useState(true);
+  const [completedPopup, setCompletedPopup] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const checkPathToTreasure = () => {
     const {indexes} = state.shipPathIndexes;
@@ -70,6 +72,8 @@ export const PiratePassageProvider = ({children}) => {
         dispatch,
         ACTIONS,
         showCollision,
+        loading,
+        completedPopup,
       }}>
       {children}
     </PiratePassageContext.Provider>

@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: lillipadSize,
     height: lillipadSize,
-    backgroundColor: '#569e53',
+    backgroundColor: '#a9d26c',
     borderColor: '#0f3730',
     borderWidth: 5,
     borderRadius: lillipadSize / 2,

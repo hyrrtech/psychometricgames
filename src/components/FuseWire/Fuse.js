@@ -2,7 +2,15 @@ import {useRef, useContext, useEffect} from 'react';
 import {PanResponder, Animated, StyleSheet, Text} from 'react-native';
 import {FuseWireContext} from '../../providers/FuseWire.Provider';
 import {constants} from '../../utilities/FuseWire';
-const {FuseHeight, FuseWidth, FuseHolderHeight, FuseHolderWidth} = constants;
+import FuseSvg from './SVG/FuseSVG';
+import FuseFitSvg from './SVG/FuseFitSvg';
+const {
+  FuseHeight,
+  FuseWidth,
+  FuseHolderHeight,
+  FuseHolderWidth,
+  FuseHeightUnPlugged,
+} = constants;
 
 const Fuse = ({position, value}) => {
   const {fuseHolders, level, dispatch, ACTIONS} = useContext(FuseWireContext);
@@ -91,11 +99,16 @@ const Fuse = ({position, value}) => {
       useNativeDriver: false,
     }).start();
   }, [level]);
-
+  console.log(currentFuseHolderId.current);
   return (
     <Animated.View
       style={[{transform: pan.getTranslateTransform()}, styles.fuse]}
       {...panResponder.panHandlers}>
+      {currentFuseHolderId.current ? (
+        <FuseFitSvg height={FuseHeight} width={FuseWidth} color={'#FFB906'} />
+      ) : (
+        <FuseSvg height={FuseHeightUnPlugged} width={FuseWidth} />
+      )}
       <Text style={styles.text}>{value}</Text>
     </Animated.View>
   );
@@ -104,15 +117,14 @@ const Fuse = ({position, value}) => {
 const styles = StyleSheet.create({
   fuse: {
     position: 'absolute',
-    backgroundColor: '#1abc9c',
-    width: FuseWidth,
-    height: FuseHeight,
     alignItems: 'center',
     justifyContent: 'center',
   },
   text: {
     color: '#fff',
     fontSize: 25,
+    position: 'absolute',
+    textAlign: 'center',
   },
 });
 export default Fuse;

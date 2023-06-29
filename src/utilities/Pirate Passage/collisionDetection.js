@@ -33,13 +33,13 @@ function getPirateShipPosition(path, steps) {
       }
     }
 
-    if (index === 0) {
-      moveDirection = 1;
-    } else if (index === pathIndexes.length - 1) {
-      moveDirection = -1;
-    } else {
-      moveDirection *= -1;
-    }
+    // if (index === 0) {
+    //   moveDirection = 1;
+    // } else if (index === pathIndexes.length - 1) {
+    //   moveDirection = -1;
+    // } else {
+    //   moveDirection *= -1;
+    // }
     for (let i = 0; i < steps; i++) {
       index += moveDirection;
       if (index === pathIndexes.length - 1 || index === 0) {
