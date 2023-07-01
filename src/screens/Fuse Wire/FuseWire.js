@@ -14,6 +14,9 @@ import {gameRoundData, stateGeneratorAsync} from '../../utilities/FuseWire';
 import {FuseWireContext} from '../../providers/FuseWire.Provider';
 import FuseHolder from '../../components/FuseWire/FuseHolder';
 import Fuse from '../../components/FuseWire/Fuse';
+import HolderBoard from '../../components/FuseWire/HolderBoard';
+import FuseBoard from '../../components/FuseWire/FuseBoard';
+import BatteryContainer from '../../components/FuseWire/BatteryContainer';
 
 const FuseWire = ({navigation}) => {
   const {
@@ -102,6 +105,9 @@ const FuseWire = ({navigation}) => {
         />,
       ]}>
       <View style={stylest.mainContainer}>
+        <HolderBoard />
+        <FuseBoard />
+        <BatteryContainer />
         {fuseHolders.map((fuseHolder, index) => (
           <FuseHolder
             key={index}
@@ -126,9 +132,8 @@ const FuseWire = ({navigation}) => {
 
 const stylest = StyleSheet.create({
   mainContainer: {
-    position: 'absolute',
     width: '100%',
-    top: 0,
+    flex: 1,
   },
   button: {
     position: 'absolute',

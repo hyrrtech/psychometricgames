@@ -1,16 +1,21 @@
 import constants from './constants';
-const {WindowHeight, WindowWidth, FuseHeight, FuseWidth} = constants;
+const {
+  WindowHeight,
+  WindowWidth,
+  FuseHeight,
+  fuseComponentLeftOffset,
+  FuseWidth,
+  horizontal_gap,
+  vertical_gap,
+} = constants;
 
 const getFusePositions = values => {
-  const horizontal_gap = WindowWidth * 0.05;
-  const vertical_gap = WindowHeight * 0.05;
-
   const numberOfElements = values.length;
   const numberOfRows = Math.ceil(numberOfElements / 2);
 
   const totalHeight =
     FuseHeight * numberOfRows + vertical_gap * (numberOfRows - 1);
-  const initialX = FuseWidth * 0.7;
+  const initialX = fuseComponentLeftOffset;
   const initialY = WindowHeight / 2 - totalHeight / 2 + FuseHeight / 2;
 
   const matrix = [];

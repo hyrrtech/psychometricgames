@@ -1,12 +1,19 @@
 import constants from './constants';
-const {WindowHeight, WindowWidth, FuseHolderHeight, FuseHolderWidth} =
-  constants;
+const {
+  WindowHeight,
+  WindowWidth,
+  FuseHolderHeight,
+  FuseHolderWidth,
+  vertical_gap,
+  holderComponentRightOffset,
+} = constants;
 
 const getHolderPositions = rowData => {
   const rowLength = rowData.sequence.length;
-  const gap = WindowHeight * 0.04;
-  const totalHeight = FuseHolderHeight * rowLength + gap * (rowLength - 1);
-  const initialX = WindowWidth - FuseHolderWidth * 1.1;
+
+  const totalHeight =
+    FuseHolderHeight * rowLength + vertical_gap * (rowLength - 1);
+  const initialX = WindowWidth - holderComponentRightOffset;
   const initialY = WindowHeight / 2 - totalHeight / 2 + FuseHolderHeight / 2;
 
   const number_of_blank_positions = Math.floor(rowData.sequence.length / 2);
@@ -26,7 +33,7 @@ const getHolderPositions = rowData => {
     newRowData.push({
       position: {
         x: initialX,
-        y: initialY + j * (FuseHolderHeight + gap),
+        y: initialY + j * (FuseHolderHeight + vertical_gap),
       },
       sequence: rowData.sequence[j],
       pattern: rowData.pattern[j],
