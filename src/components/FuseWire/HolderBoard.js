@@ -20,10 +20,30 @@ const Circle = ({size}) => {
       }}></View>
   );
 };
+
+const Handle = ({height, width}) => {
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        height: height,
+        width: width,
+        borderWidth: 4,
+        borderColor: '#07715d',
+        borderBottomLeftRadius: width * 0.2,
+        borderBottomRightRadius: width * 0.2,
+        borderTopWidth: 0,
+        alignSelf: 'center',
+      }}></View>
+  );
+};
+
 const HolderBoard = () => {
   const initialX = WindowWidth - holderComponentRightOffset;
   const verticalCenter = WindowHeight / 2;
   const circleSize = HolderBoardWidth * 0.1;
+  const handleHeight = HolderBoardWidth * 0.12;
+  const handleWidth = HolderBoardWidth * 0.4;
 
   return (
     <View
@@ -37,6 +57,7 @@ const HolderBoard = () => {
         backgroundColor: '#rgb(42, 154, 130)',
         borderRadius: HolderBoardWidth * 0.1,
       }}>
+      <Handle height={handleHeight} width={handleWidth} />
       <View
         style={{
           justifyContent: 'space-between',

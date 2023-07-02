@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, ActivityIndicator, View} from 'react-native';
 
 import {AuthContext} from '../../providers/AuthProvider';
@@ -29,6 +29,7 @@ const FuseWire = ({navigation}) => {
     completedPopup,
     dispatch,
     ACTIONS,
+    setIfAnswerCorrect,
   } = useContext(FuseWireContext);
   const {user} = useContext(AuthContext);
 
@@ -37,10 +38,9 @@ const FuseWire = ({navigation}) => {
       fuseHolders
         .filter(fuseHolder => fuseHolder.initiallyBlank)
         .every(fuseHolder => fuseHolder.sequence === fuseHolder.inputValue);
-    if (
-      level === gameRoundData[gameRoundData.length - 1].level &&
-      checkIfCorrect()
-    ) {
+    const ifCorrect = checkIfCorrect();
+    setIfAnswerCorrect(ifCorrect);
+    if (level === gameRoundData[gameRoundData.length - 1].level && ifCorrect) {
       dispatch({type: ACTIONS.GAME_OVER, payload: {uid: user.uid}});
       navigation.navigate('Transition', {
         state: state,
@@ -52,7 +52,7 @@ const FuseWire = ({navigation}) => {
     dispatch({
       type: ACTIONS.ON_CHECK,
       payload: {
-        result: checkIfCorrect(),
+        result: ifCorrect,
         uid: user.uid,
         nextLevelState: nextLevelState,
       },
