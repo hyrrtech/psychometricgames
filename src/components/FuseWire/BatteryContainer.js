@@ -62,6 +62,7 @@ const BatteryContainer = () => {
       left: leftOffset,
       top: topOffset,
       justifyContent: 'space-between',
+      borderRadius: containerWidth * 0.1,
     },
     row: {
       justifyContent: 'space-between',
