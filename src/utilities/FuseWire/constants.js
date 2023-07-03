@@ -12,6 +12,7 @@ const fuseComponentLeftOffset = WindowWidth * 0.06;
 const horizontal_gap = WindowWidth * 0.05;
 const vertical_gap = WindowHeight * 0.03;
 const fuseBoardWidth = 2.5 * FuseWidth + horizontal_gap;
+const lives = 5;
 
 export default {
   FuseHeight,
@@ -27,4 +28,5 @@ export default {
   horizontal_gap,
   vertical_gap,
   fuseBoardWidth,
+  lives,
 };

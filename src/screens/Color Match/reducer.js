@@ -1,5 +1,5 @@
-import {newColorSetGenerator} from '../../utilities/Color Match';
-import {colors} from './initialState';
+import {newColorSetGenerator, constants} from '../../utilities/Color Match';
+const {colors} = constants;
 import db from '../../firebase/database';
 export const ACTIONS = {
   NEXT_COLOR_SET: 'next_color_set',

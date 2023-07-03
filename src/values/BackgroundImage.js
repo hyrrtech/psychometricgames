@@ -6,6 +6,7 @@ import SharkBG from '../assets/SharkBG.png';
 import MemoryMatrixBG from '../assets/MemoryMatrixBG.png';
 import KillTheSpiderBG from '../assets/KillTheSpiderBG.png';
 import TrainofThoughtsBG from '../assets/TrainofThoughtsBG.png';
+import FuseWireBG from '../assets/FuseWireBG.png';
 
 const BackgroundImage = {
   login: bg2,
@@ -16,6 +17,7 @@ const BackgroundImage = {
   MemoryMatrix: MemoryMatrixBG,
   KillTheSpider: KillTheSpiderBG,
   TrainofThoughts: TrainofThoughtsBG,
+  FuseWire: FuseWireBG,
 };
 
 export default BackgroundImage;

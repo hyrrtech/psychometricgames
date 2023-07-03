@@ -1,6 +1,5 @@
 import {Dimensions} from 'react-native';
-import {interpolate} from 'flubber';
-import {frames} from '../../components/Frog Game/frames';
+
 const {width: WINDOW_WIDTH, height: WINDOW_HEIGHT} = Dimensions.get('window');
 const spawnAreaHeight = WINDOW_HEIGHT * 0.7;
 const spawnAreaWidth = WINDOW_WIDTH * 0.9;
@@ -8,12 +7,8 @@ const lillipadSize = spawnAreaHeight * 0.15;
 const followerFrogSize = lillipadSize * 1;
 const leaderFrogSize = lillipadSize * 1.3;
 const speed = 200;
-// const start = performance.now();
-
-// const interpolations = ;
-
-// const end = performance.now();
-// console.log(end - start);
+const MAX_NUM_OF_JUMPS = 40;
+const NUM_OF_LILLIPADS = 10;
 
 export default {
   spawnAreaHeight,
@@ -22,5 +17,6 @@ export default {
   followerFrogSize,
   leaderFrogSize,
   speed,
-  // interpolations,
+  MAX_NUM_OF_JUMPS,
+  NUM_OF_LILLIPADS,
 };

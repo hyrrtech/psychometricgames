@@ -2,7 +2,12 @@ import React, {useContext} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Button} from '../components/Button';
 import {AuthContext} from '../providers/AuthProvider';
+import data from '../values/GameVariables';
 const TestScreen = ({navigation}) => {
+  setTimeout(() => {
+    console.log(data);
+  }, 5000);
+
   const {user, signout} = useContext(AuthContext);
   return (
     <View>

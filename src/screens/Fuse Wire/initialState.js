@@ -1,4 +1,5 @@
-const lives = 5;
+import {constants} from '../../utilities/FuseWire';
+const {lives} = constants;
 const initialState = {
   level: 1,
   lives: lives,

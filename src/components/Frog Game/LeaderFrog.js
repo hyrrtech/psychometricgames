@@ -8,7 +8,7 @@ const {speed, leaderFrogSize, lillipadSize, interpolations} = constants;
 
 const getNewAngle = (a, b) => {
   const angle = Math.atan2(b.y - a.y, b.x - a.x) * (180 / Math.PI);
-  return `${angle - 60}deg`;
+  return `${angle}deg`;
 };
 const LeaderFrog = ({interpolations}) => {
   const {
@@ -20,8 +20,8 @@ const LeaderFrog = ({interpolations}) => {
   } = useContext(FrogGameContext);
 
   const [rotationAngle, setRotationAngle] = useState({
-    from: '-60deg',
-    to: '-60deg',
+    from: '0deg',
+    to: '0deg',
   });
   const index = useRef(0);
   const previousLeaderFrogPosition = useRef(initialLeaderFrogPosition);
@@ -143,7 +143,11 @@ const LeaderFrog = ({interpolations}) => {
           ],
         },
       ]}>
-      <Svg width={leaderFrogSize} height={leaderFrogSize} viewBox="0 0 453 453">
+      <Svg
+        width={leaderFrogSize}
+        height={leaderFrogSize}
+        viewBox="0 0 453 453"
+        style={{transform: [{rotateZ: '30deg'}]}}>
         {Object.keys(frames[0]).map(key => (
           <Path
             key={key}

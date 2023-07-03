@@ -78,7 +78,7 @@ const FuseWire = ({navigation}) => {
     <CompletedPopup gameName="MemoryMatrix" />
   ) : (
     <GameWrapper
-      imageURL={BackgroundImage.MemoryMatrix}
+      imageURL={BackgroundImage.FuseWire}
       backgroundGradient={COLORS.memoryMatrixBGGradient}
       scoreboard={[
         <InfoLabel
