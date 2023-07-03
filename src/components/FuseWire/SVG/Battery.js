@@ -51,7 +51,17 @@ const Battery = ({height, width, styles}) => {
           useNativeDriver: false,
         }),
       ]).start(({finished}) => {
-        if (finished) setIfAnswerCorrect(null);
+        if (finished) {
+          setIfAnswerCorrect(null);
+          Animated.timing(widthAnimation, {
+            toValue: 0,
+            duration: 1000,
+            easing: Easing.linear,
+            useNativeDriver: false,
+          }).start(({finished}) => {
+            if (finished) setBatteryFilled(false);
+          });
+        }
       });
     } else if (ifAnswerCorrect === false) {
       Animated.sequence([

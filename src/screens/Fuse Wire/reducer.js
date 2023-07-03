@@ -22,6 +22,7 @@ const addData = (uid, state, levelCleared) => {
 };
 
 const updateLevel = (state, uid) => {
+  const GameRef = db.ref(`/users/${uid}/FuseWire/`);
   let level =
     state.level === gameRoundData[gameRoundData.length - 1].level
       ? state.level
