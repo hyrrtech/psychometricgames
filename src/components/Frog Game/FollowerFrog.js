@@ -4,10 +4,10 @@ import {FrogGameContext} from '../../providers/FrogGame.Provider';
 import {constants} from '../../utilities/Frog Jump';
 import {followerElementColors as elementColors, frames} from './frames';
 import Svg, {Path} from 'react-native-svg';
-const {followerFrogSize, speed, lillipadSize, interpolations} = constants;
+const {followerFrogSize, speed, lillipadSize, spawnAreaHeight} = constants;
 const getNewAngle = (a, b) => {
   const angle = Math.atan2(b.y - a.y, b.x - a.x) * (180 / Math.PI);
-  return `${angle - 60}deg`;
+  return `${angle}deg`;
 };
 const FollowerFrog = ({interpolations}) => {
   const {
@@ -15,8 +15,6 @@ const FollowerFrog = ({interpolations}) => {
     initialFollowerFrogPosition: initialPosition,
     setDisabled,
   } = useContext(FrogGameContext);
-
-  //navigation and check here if gameover
 
   const animation = useRef(
     new Animated.ValueXY({
@@ -26,7 +24,7 @@ const FollowerFrog = ({interpolations}) => {
   ).current;
   const previousPosition = useRef(initialPosition);
   const rotationAnimation = useRef(new Animated.Value(0)).current;
-  const rotationAngle = useRef({from: '-60deg', to: '-60deg'});
+  const rotationAngle = useRef({from: '30deg', to: '30deg'});
   const interpolateAnimation = useRef(new Animated.Value(0)).current;
 
   const refs = useRef(
@@ -35,25 +33,6 @@ const FollowerFrog = ({interpolations}) => {
       return acc;
     }, {}),
   ).current;
-
-  const distance = Math.sqrt(
-    Math.pow(
-      currentPosition.position.x - previousPosition.current.position.x,
-      2,
-    ) +
-      Math.pow(
-        currentPosition.position.y - previousPosition.current.position.y,
-        2,
-      ),
-  );
-  const duration = (distance * 1000) / speed;
-  const rotateTo = getNewAngle(
-    previousPosition.current.position,
-    currentPosition.position,
-  );
-
-  rotationAngle.current.from = rotationAngle.current.to;
-  rotationAngle.current.to = rotateTo;
 
   useEffect(() => {
     const listener = ({value}) => {
@@ -76,6 +55,23 @@ const FollowerFrog = ({interpolations}) => {
   }, []);
 
   useEffect(() => {
+    const distance = Math.sqrt(
+      Math.pow(
+        currentPosition.position.x - previousPosition.current.position.x,
+        2,
+      ) +
+        Math.pow(
+          currentPosition.position.y - previousPosition.current.position.y,
+          2,
+        ),
+    );
+    const duration = (distance * spawnAreaHeight) / speed;
+    const rotateTo = getNewAngle(
+      previousPosition.current.position,
+      currentPosition.position,
+    );
+
+    rotationAngle.current.to = rotateTo;
     setDisabled(true);
     Animated.sequence([
       Animated.timing(rotationAnimation, {
@@ -112,6 +108,7 @@ const FollowerFrog = ({interpolations}) => {
         interpolateAnimation.setValue(0);
         rotationAnimation.setValue(0);
         previousPosition.current = currentPosition;
+        rotationAngle.current.from = rotationAngle.current.to;
         setDisabled(false);
       }
     });
@@ -140,7 +137,8 @@ const FollowerFrog = ({interpolations}) => {
       <Svg
         width={followerFrogSize}
         height={followerFrogSize}
-        viewBox="0 0 453 453">
+        viewBox="0 0 453 453"
+        style={{transform: [{rotateZ: '30deg'}]}}>
         {Object.keys(frames[0]).map(key => (
           <Path
             key={key}

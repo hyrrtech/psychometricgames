@@ -48,7 +48,7 @@ const FrogJump = ({navigation}) => {
     setInterpolations(interpolations);
     setLoading(false);
   };
-  console.log(interpolations);
+
   useEffect(() => {
     GameRef.once('value', snapshot => {
       const exists = snapshot.exists();

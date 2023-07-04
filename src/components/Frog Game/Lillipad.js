@@ -51,10 +51,8 @@ const Lillipad = ({position, id}) => {
     );
     numberOfJumpsByFollowerFrog.current =
       numberOfJumpsByFollowerFrog.current + 1;
-    console.log(numberOfJumpsByFollowerFrog.current);
     if (numberOfJumpsByFollowerFrog.current >= 2) {
       setLeaderFrogPosition(() => {
-        console.log('chla');
         const newPositions = generateSetOfLeaderFrogPositions(
           currentLeaderFrogPosition.current,
           currentAndFutureFollowerFrogPositions.current,

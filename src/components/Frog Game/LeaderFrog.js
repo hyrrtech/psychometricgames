@@ -4,7 +4,7 @@ import {constants} from '../../utilities/Frog Jump';
 import {FrogGameContext} from '../../providers/FrogGame.Provider';
 import Svg, {Path} from 'react-native-svg';
 import {leaderElementColors as elementColors, frames} from './frames';
-const {speed, leaderFrogSize, lillipadSize, interpolations} = constants;
+const {speed, leaderFrogSize, lillipadSize, spawnAreaHeight} = constants;
 
 const getNewAngle = (a, b) => {
   const angle = Math.atan2(b.y - a.y, b.x - a.x) * (180 / Math.PI);
@@ -52,11 +52,11 @@ const LeaderFrog = ({interpolations}) => {
       Math.pow(to.position.x - from.position.x, 2) +
         Math.pow(to.position.y - from.position.y, 2),
     );
-    const duration = (distance * 1000) / speed;
+    const duration = (distance * spawnAreaHeight) / speed;
     const rotateTo = getNewAngle(from.position, to.position);
 
     setRotationAngle(rotationAngle => {
-      return {from: rotationAngle.to, to: rotateTo};
+      return {...rotationAngle, to: rotateTo};
     });
     currentLeaderFrogPosition.current = to;
 
@@ -89,6 +89,9 @@ const LeaderFrog = ({interpolations}) => {
         setDisabled(false);
         interpolateAnimation.setValue(0);
         rotationAnimation.setValue(0);
+        setRotationAngle(rotationAngle => {
+          return {...rotationAngle, from: rotationAngle.to};
+        });
         if (index.current < leaderFrogPosition.length - 1) {
           index.current = index.current + 1;
           Animate(to, leaderFrogPosition[index.current]);

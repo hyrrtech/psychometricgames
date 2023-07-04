@@ -75,19 +75,19 @@ const Battery = ({height, width, styles}) => {
           toValue: shakeOffset,
           duration: 100,
           easing: Easing.linear,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
         Animated.timing(shakeAnimation, {
           toValue: -shakeOffset * 2,
           duration: 100,
           easing: Easing.linear,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
         Animated.timing(shakeAnimation, {
           toValue: 0,
           duration: 100,
           easing: Easing.linear,
-          useNativeDriver: true,
+          useNativeDriver: false,
         }),
         Animated.timing(widthAnimation, {
           toValue: 0,
