@@ -5,6 +5,7 @@ import generatePiratePathComponentsAndCoordiantes from './generatePiratePathComp
 import generateShipPathComponentsAndCoordinates from './generateShipPathComponentsAndCoordinates';
 import stateGenerator from './stateGenerator';
 import collisionDetection from './collisionDetection';
+import getInitialRotation from './getInitialRotation';
 import mapData from './mapData';
 export {
   constants,
@@ -15,4 +16,5 @@ export {
   collisionDetection,
   mapData,
   stateGenerator,
+  getInitialRotation,
 };

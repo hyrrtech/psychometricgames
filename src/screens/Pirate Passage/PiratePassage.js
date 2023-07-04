@@ -112,8 +112,8 @@ const PiratePassage = () => {
           );
         })}
 
-        <Ship color="yellow" shipPath={pathCoordinates} />
-        <Treasure color="orange" index={treasureIndex} />
+        <Ship shipPath={pathCoordinates} />
+        <Treasure index={treasureIndex} />
         {showCollision.collided && (
           <CollisionMark position={showCollision.shipPosition} />
         )}
