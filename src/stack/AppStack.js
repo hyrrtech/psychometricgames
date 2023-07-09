@@ -15,6 +15,7 @@ import PiratePassage from '../screens/Pirate Passage/';
 import FuseWire from '../screens/Fuse Wire/';
 import FrogJump from '../screens/Frog Jump/';
 import OrganicOrder from '../screens/Organic Order/';
+import Masterpiece from '../screens/Masterpiece/Masterpiece';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
@@ -79,6 +80,11 @@ function MainStack() {
       <Stack.Screen
         name="OrganicOrder"
         component={OrganicOrder}
+        options={screenOptions}
+      />
+      <Stack.Screen
+        name="Masterpiece"
+        component={Masterpiece}
         options={screenOptions}
       />
     </Stack.Navigator>

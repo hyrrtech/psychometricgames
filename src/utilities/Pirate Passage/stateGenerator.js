@@ -4,7 +4,6 @@ import generateShipPathComponentsAndCoordinates from './generateShipPathComponen
 import mapData from './mapData';
 
 const stateGenerator = level => {
-  console.log(level);
   const matrix = generateMatrix(
     mapData[level - 1].matrixSize.rows,
     mapData[level - 1].matrixSize.columns,

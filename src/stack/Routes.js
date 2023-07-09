@@ -5,13 +5,16 @@ import {AuthContext} from '../providers/AuthProvider';
 import AppStack from './AppStack';
 import AuthStack from './AuthStack';
 import {View, Text} from 'react-native';
+import fetchData from '../values/GameVariables';
+fetchData();
 
 const Routes = () => {
   const {user, setUser} = useContext(AuthContext);
   const [initializing, setInitializing] = useState(true);
 
-  const onAuthStateChanged = user => {
+  const onAuthStateChanged = async user => {
     setUser(user);
+
     if (!!initializing) {
       setInitializing(false);
     }

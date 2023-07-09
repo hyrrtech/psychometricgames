@@ -1,5 +1,4 @@
 import {Dimensions} from 'react-native';
-
 const {height: WindowHeight, width: WindowWidth} = Dimensions.get('window');
 const FuseHeight = WindowHeight * 0.055;
 const FuseWidth = WindowWidth * 0.15;

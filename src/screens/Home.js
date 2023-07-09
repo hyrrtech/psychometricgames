@@ -97,6 +97,13 @@ const TestScreen = ({navigation}) => {
         title="OrganicOrder"
         style={styles.button}
       />
+      <Button
+        onPress={() => {
+          navigation.navigate('Masterpiece');
+        }}
+        title="Masterpiece"
+        style={styles.button}
+      />
 
       <Button onPress={signout} title="signout" />
     </View>
