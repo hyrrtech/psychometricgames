@@ -15,7 +15,7 @@ import PiratePassage from '../screens/Pirate Passage/';
 import FuseWire from '../screens/Fuse Wire/';
 import FrogJump from '../screens/Frog Jump/';
 import OrganicOrder from '../screens/Organic Order/';
-import Masterpiece from '../screens/Masterpiece/Masterpiece';
+import Masterpiece from '../screens/Masterpiece/';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
