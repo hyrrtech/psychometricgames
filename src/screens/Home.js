@@ -2,12 +2,7 @@ import React, {useContext} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Button} from '../components/Button';
 import {AuthContext} from '../providers/AuthProvider';
-import data from '../values/GameVariables';
-const TestScreen = ({navigation}) => {
-  setTimeout(() => {
-    console.log(data);
-  }, 5000);
-
+const Home = ({navigation}) => {
   const {user, signout} = useContext(AuthContext);
   return (
     <View>
@@ -104,6 +99,13 @@ const TestScreen = ({navigation}) => {
         title="Masterpiece"
         style={styles.button}
       />
+      <Button
+        onPress={() => {
+          navigation.navigate('StarSearch');
+        }}
+        title="Star Search"
+        style={styles.button}
+      />
 
       <Button onPress={signout} title="signout" />
     </View>
@@ -114,6 +116,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     marginVertical: 15,
     marginHorizontal: 15,
+    color: 'black',
   },
 });
-export default TestScreen;
+export default Home;
