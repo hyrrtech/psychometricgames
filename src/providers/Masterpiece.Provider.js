@@ -54,8 +54,9 @@ export const MasterpieceProvider = ({children}) => {
       };
     }, []);
   const [positionsState, setPositionsState] = useState(
-    populatePositions(elementsData),
+    populatePositions(elementsData), //modify positions state to add initial Rotation
   );
+  const [recentlyPickedZindex, setRecentlyPickedZindex] = useState(1);
   return (
     <MasterpieceContext.Provider
       value={{
@@ -67,6 +68,8 @@ export const MasterpieceProvider = ({children}) => {
         setPositionsState,
         data,
         combinedPieceDimensions,
+        recentlyPickedZindex,
+        setRecentlyPickedZindex,
       }}>
       {children}
     </MasterpieceContext.Provider>

@@ -6,7 +6,12 @@ import {MasterpieceContext} from '../../providers/Masterpiece.Provider';
 const {ratio} = constants;
 
 const Piece = ({pathD, viewBox, initialPosition, id}) => {
-  const {positionsState, setPositionsState} = useContext(MasterpieceContext);
+  const {
+    positionsState,
+    setPositionsState,
+    recentlyPickedZindex,
+    setRecentlyPickedZindex,
+  } = useContext(MasterpieceContext);
   const {x, y, width, height} = viewBox;
   const [pieceHeight, pieceWidth] = [height * ratio, width * ratio];
   const calibratedInitialPosition = {
@@ -17,23 +22,33 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
   const currentPositionId = useRef(null);
   const pan = useRef(new Animated.ValueXY(calibratedInitialPosition)).current;
   const [piecePicked, setPiecePicked] = useState(false);
+  const [zIndex, setZindex] = useState(1);
+
+  const whenPiecePicked = () => {
+    setPiecePicked(true);
+    setZindex(recentlyPickedZindex + 1);
+    setRecentlyPickedZindex(prev => prev + 1);
+  };
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant: () => {
       pan.setOffset(pan.__getValue());
       pan.setValue({x: 0, y: 0});
-      setPiecePicked(true);
+      whenPiecePicked();
     },
     onPanResponderMove: Animated.event([null, {dx: pan.x, dy: pan.y}], {
       useNativeDriver: false,
     }),
 
     onPanResponderRelease: (e, gesture) => {
+      if (gesture.moveX === 0 && gesture.moveY === 0) return;
       pan.flattenOffset();
       const {exist, position} = isDropZone(gesture);
       setPiecePicked(false);
+
       if (exist) {
+        //move to a valid position
         const {x, y} = position;
         Animated.spring(pan, {
           toValue: {
@@ -43,14 +58,18 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
           useNativeDriver: false,
         }).start();
       } else {
-        resetPosition();
+        dropAtCurrentPosition(gesture);
       }
     },
   });
 
-  const resetPosition = () => {
+  const dropAtCurrentPosition = gesture => {
+    const {moveX, moveY} = gesture;
     Animated.spring(pan, {
-      toValue: calibratedInitialPosition,
+      toValue: {
+        x: moveX - pieceWidth / 2,
+        y: moveY - pieceHeight / 2,
+      },
       useNativeDriver: false,
     }).start();
     if (currentPositionId.current !== null) {
@@ -60,10 +79,9 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
           ...newState[currentPositionId.current],
           isBlank: true,
         };
+        currentPositionId.current = null;
         return newState;
       });
-
-      currentPositionId.current = null;
     }
   };
   const isDropZone = gesture => {
@@ -71,12 +89,16 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
 
     positionsState.some(validPosition => {
       if (
-        gesture.moveY > validPosition.position.y - pieceHeight / 2 &&
+        gesture.moveY > validPosition.position.y - (pieceHeight / 2) * 0.5 &&
         gesture.moveY <
-          validPosition.position.y - pieceHeight / 2 + pieceHeight &&
-        gesture.moveX > validPosition.position.x - pieceWidth / 2 &&
+          validPosition.position.y -
+            (pieceHeight / 2) * 0.5 +
+            pieceHeight * 0.5 &&
+        gesture.moveX > validPosition.position.x - (pieceWidth / 2) * 0.5 &&
         gesture.moveX <
-          validPosition.position.x - pieceWidth / 2 + pieceWidth &&
+          validPosition.position.x -
+            (pieceWidth / 2) * 0.5 +
+            pieceWidth * 0.5 &&
         validPosition.isBlank
       ) {
         result = {exist: true, position: validPosition.position};
@@ -93,11 +115,10 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
             ...newState[validPosition.id],
             isBlank: false,
           };
+          currentPositionId.current = validPosition.id;
 
           return newState;
         });
-
-        currentPositionId.current = validPosition.id;
 
         return true;
       }
@@ -121,6 +142,7 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
           position: 'absolute',
           alignItems: 'center',
           justifyContent: 'center',
+          zIndex: zIndex,
         },
         {transform: pan.getTranslateTransform()},
       ]}
@@ -133,7 +155,7 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
           d={pathD}
           fill="#4C4ACF"
           stroke={'white'}
-          strokeWidth={piecePicked ? 4 : 2}
+          strokeWidth={piecePicked ? 2 : 1}
         />
       </Svg>
     </Animated.View>
