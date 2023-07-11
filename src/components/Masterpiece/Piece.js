@@ -49,7 +49,6 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
   });
 
   const resetPosition = () => {
-    console.log('fired');
     Animated.spring(pan, {
       toValue: calibratedInitialPosition,
       useNativeDriver: false,

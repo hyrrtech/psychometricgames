@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "998672992934",
+    "firebase_url": "https://hyra-720a2-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "hyra-720a2",
     "storage_bucket": "hyra-720a2.appspot.com"
   },
@@ -13,6 +14,22 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "998672992934-2ka2ff3ri4ce17qcr48aeufi0trofu8t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hyra",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "998672992934-90s9j7gbpod3aqct03cv4vfnpm1san55.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hyra",
+            "certificate_hash": "9ce42e0948afca1b7ad9920a69eda572ef3a78df"
+          }
+        },
         {
           "client_id": "998672992934-q0erdvpim3i5ku28jgnqf9n83858ist6.apps.googleusercontent.com",
           "client_type": 3
@@ -29,6 +46,13 @@
             {
               "client_id": "998672992934-mht3qgjqndqdnufmtjf30tss5ggv6ai2.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "998672992934-1b977prj6hgt8302nofqaoqg3ta031vt.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hyra"
+              }
             }
           ]
         }
