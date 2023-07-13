@@ -1,4 +1,4 @@
-import {useContext} from 'react';
+import {useContext, useEffect} from 'react';
 import {View, StyleSheet, Button} from 'react-native';
 import Piece from '../../components/Masterpiece/Piece';
 import CombinedPiece from '../../components/Masterpiece/CombinedPiece';
@@ -24,17 +24,12 @@ const Masterpiece = () => {
     combinedPieceDimensions,
   } = useContext(MasterpieceContext);
 
-  // const getCorrespondingPiecePositionFromId = id => {
-  //   const item = piecesPosition.find(piece => piece.id === id);
-  //   return item ? item.position : null;
-  // }; not needed
-
   const handleRotate = direction => {
     const newElementsData = elementsData.map(element => {
       if (element.id === pickedPieceId) {
         let newRotation = element.pieceRotationAngle;
-        if (direction === 'left') newRotation -= 30;
-        if (direction === 'right') newRotation += 30;
+        if (direction === 'left') newRotation -= 72;
+        if (direction === 'right') newRotation += 72;
         return {
           ...element,
           pieceRotationAngle: newRotation,

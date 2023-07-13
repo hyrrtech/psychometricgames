@@ -56,6 +56,16 @@ export const MasterpieceProvider = ({children}) => {
   );
   const [pickedPieceId, setPickedPieceId] = useState(null);
 
+  const isCorrect = useMemo(() => {
+    const isAtCorrectPosition = positionsState.every(
+      position => position.id === position.idOfPieceAtThisPosition,
+    );
+    const isAt0deg = elementsData.every(
+      element => element.pieceRotationAngle % 360 === 0, //-0===0
+    );
+    return isAt0deg && isAtCorrectPosition;
+  }, [elementsData, positionsState]);
+  console.log(isCorrect);
   return (
     <MasterpieceContext.Provider
       value={{
@@ -70,6 +80,7 @@ export const MasterpieceProvider = ({children}) => {
         combinedPieceDimensions,
         pickedPieceId,
         setPickedPieceId,
+        isCorrect,
       }}>
       {children}
     </MasterpieceContext.Provider>

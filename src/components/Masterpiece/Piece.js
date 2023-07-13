@@ -1,7 +1,7 @@
 import {PanResponder, Animated} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import {constants} from '../../utilities/Masterpiece';
-import {useContext, useRef, useState, useEffect} from 'react';
+import {useContext, useRef, useState, useEffect, useMemo} from 'react';
 import {MasterpieceContext} from '../../providers/Masterpiece.Provider';
 const {ratio} = constants;
 
@@ -12,7 +12,9 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
     setPositionsState,
     pickedPieceId,
     setPickedPieceId,
+    isCorrect,
   } = useContext(MasterpieceContext);
+  const [strokeWidth, setStrokeWidth] = useState(pickedPieceId == id ? 2 : 1);
   const {x, y, width, height} = viewBox;
   const [pieceHeight, pieceWidth] = [height * ratio, width * ratio];
   const calibratedInitialPosition = {
@@ -21,6 +23,8 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
   };
   const currentPositionId = useRef(null);
   const pan = useRef(new Animated.ValueXY(calibratedInitialPosition)).current;
+  const colorAnimation = useRef(new Animated.Value(0)).current;
+
   const rotation = elementsData.find(
     element => element.id === id,
   ).pieceRotationAngle;
@@ -28,6 +32,33 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
   const whenPiecePicked = () => {
     setPickedPieceId(id);
   };
+
+  useEffect(() => {
+    if (isCorrect) {
+      setStrokeWidth(1);
+      Animated.sequence([
+        Animated.delay(500),
+        Animated.timing(colorAnimation, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    }
+  }, [isCorrect]);
+
+  const colorInterpolate = colorAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['yellow', '#00FF00'],
+  });
+
+  const getColor = () => {
+    if (isCorrect) {
+      return colorInterpolate;
+    }
+    return pickedPieceId == id ? 'yellow' : '#4C4ACF';
+  };
+  const color = useMemo(() => getColor(), [isCorrect, pickedPieceId]);
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
@@ -112,6 +143,7 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
           newState[validPosition.id] = {
             ...newState[validPosition.id],
             isBlank: false,
+            idOfPieceAtThisPosition: id,
           };
           currentPositionId.current = validPosition.id;
 
@@ -132,6 +164,7 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
       useNativeDriver: false,
     }).start();
   }, []);
+  const AnimatedPath = Animated.createAnimatedComponent(Path);
 
   return (
     <Animated.View
@@ -154,11 +187,11 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
         width={pieceWidth}
         height={pieceHeight}
         viewBox={`${x} ${y} ${width} ${height}`}>
-        <Path
+        <AnimatedPath
           d={pathD}
-          fill={pickedPieceId == id ? 'yellow' : '#4C4ACF'}
+          fill={color}
           stroke={'white'}
-          strokeWidth={pickedPieceId == id ? 2 : 1}
+          strokeWidth={strokeWidth}
         />
       </Svg>
     </Animated.View>
