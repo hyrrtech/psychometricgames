@@ -1,6 +1,6 @@
 import constants from './constants';
 import getBBoxFromD from '../getBBoxFromD';
-const {ratio} = constants;
+const {ratio, angles} = constants;
 
 export const getDimFromViewBox = viewBox => {
   const [width, height] = viewBox.split(' ').filter(dim => {
@@ -20,7 +20,6 @@ export const getPathsData = (
     combinedPieceDimensions;
   for (const key in paths) {
     const viewBox = getBBoxFromD(paths[key]);
-
     const pieceCorrectPositon = {
       x:
         x +
@@ -33,7 +32,15 @@ export const getPathsData = (
         (viewBox.height * ratio) / 2 -
         (combinedPieceHeight * ratio) / 2,
     };
-    data.push({id: key, path: paths[key], viewBox, pieceCorrectPositon});
+    const pieceRotationAngle =
+      angles[Math.floor(Math.random() * angles.length)];
+    data.push({
+      id: key,
+      path: paths[key],
+      viewBox,
+      pieceCorrectPositon,
+      pieceRotationAngle,
+    });
   }
   return data;
 };

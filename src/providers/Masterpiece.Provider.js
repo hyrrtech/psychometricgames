@@ -30,46 +30,46 @@ export const MasterpieceProvider = ({children}) => {
   //   const [ifAnswerCorrect, setIfAnswerCorrect] = useState(null);
   //   const [loading, setLoading] = useState(true);
   //   const [completedPopup, setCompletedPopup] = useState(false);
-  const {combinedPieceDimensions, elementsData, piecesPosition} =
-    useMemo(() => {
-      const combinedPieceDimensions = viewBoxUtils.getDimFromViewBox(
-        data.fullSVGComponent.viewBox,
-      );
-      const elementsData = viewBoxUtils.getPathsData(
-        data.fullSVGComponent.paths,
-        combinedPiecePosition,
-        combinedPieceDimensions,
-      );
-
-      const piecesPosition = getPiecesPosition(
-        elementsData,
-        combinedPiecePosition,
-        combinedPieceDimensions,
-      );
-
-      return {
-        combinedPieceDimensions,
-        elementsData,
-        piecesPosition,
-      };
-    }, []);
+  const {combinedPieceDimensions, pathsData, piecesPosition} = useMemo(() => {
+    const combinedPieceDimensions = viewBoxUtils.getDimFromViewBox(
+      data.fullSVGComponent.viewBox,
+    );
+    const pathsData = viewBoxUtils.getPathsData(
+      data.fullSVGComponent.paths,
+      combinedPiecePosition,
+      combinedPieceDimensions,
+    );
+    const piecesPosition = getPiecesPosition(
+      pathsData,
+      combinedPiecePosition,
+      combinedPieceDimensions,
+    );
+    return {
+      combinedPieceDimensions,
+      pathsData,
+      piecesPosition,
+    };
+  }, []);
+  const [elementsData, setElementsData] = useState(pathsData);
   const [positionsState, setPositionsState] = useState(
-    populatePositions(elementsData), //modify positions state to add initial Rotation
+    populatePositions(elementsData),
   );
-  const [recentlyPickedZindex, setRecentlyPickedZindex] = useState(1);
+  const [pickedPieceId, setPickedPieceId] = useState(null);
+
   return (
     <MasterpieceContext.Provider
       value={{
         combinedPieceDimensions,
         elementsData,
+        setElementsData,
         piecesPosition,
         elementsData,
         positionsState,
         setPositionsState,
         data,
         combinedPieceDimensions,
-        recentlyPickedZindex,
-        setRecentlyPickedZindex,
+        pickedPieceId,
+        setPickedPieceId,
       }}>
       {children}
     </MasterpieceContext.Provider>

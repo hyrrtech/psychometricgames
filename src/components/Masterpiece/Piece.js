@@ -8,9 +8,10 @@ const {ratio} = constants;
 const Piece = ({pathD, viewBox, initialPosition, id}) => {
   const {
     positionsState,
+    elementsData,
     setPositionsState,
-    recentlyPickedZindex,
-    setRecentlyPickedZindex,
+    pickedPieceId,
+    setPickedPieceId,
   } = useContext(MasterpieceContext);
   const {x, y, width, height} = viewBox;
   const [pieceHeight, pieceWidth] = [height * ratio, width * ratio];
@@ -18,16 +19,14 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
     x: initialPosition.x - pieceWidth / 2,
     y: initialPosition.y - pieceHeight / 2,
   };
-
   const currentPositionId = useRef(null);
   const pan = useRef(new Animated.ValueXY(calibratedInitialPosition)).current;
-  const [piecePicked, setPiecePicked] = useState(false);
-  const [zIndex, setZindex] = useState(1);
+  const rotation = elementsData.find(
+    element => element.id === id,
+  ).pieceRotationAngle;
 
   const whenPiecePicked = () => {
-    setPiecePicked(true);
-    setZindex(recentlyPickedZindex + 1);
-    setRecentlyPickedZindex(prev => prev + 1);
+    setPickedPieceId(id);
   };
 
   const panResponder = PanResponder.create({
@@ -45,7 +44,6 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
       if (gesture.moveX === 0 && gesture.moveY === 0) return;
       pan.flattenOffset();
       const {exist, position} = isDropZone(gesture);
-      setPiecePicked(false);
 
       if (exist) {
         //move to a valid position
@@ -142,9 +140,14 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
           position: 'absolute',
           alignItems: 'center',
           justifyContent: 'center',
-          zIndex: zIndex,
+          zIndex: pickedPieceId == id ? 2 : 1,
         },
-        {transform: pan.getTranslateTransform()},
+        {
+          transform: [
+            ...pan.getTranslateTransform(),
+            {rotate: `${rotation}deg`},
+          ],
+        },
       ]}
       {...panResponder.panHandlers}>
       <Svg
@@ -153,9 +156,9 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
         viewBox={`${x} ${y} ${width} ${height}`}>
         <Path
           d={pathD}
-          fill="#4C4ACF"
+          fill={pickedPieceId == id ? 'yellow' : '#4C4ACF'}
           stroke={'white'}
-          strokeWidth={piecePicked ? 2 : 1}
+          strokeWidth={pickedPieceId == id ? 2 : 1}
         />
       </Svg>
     </Animated.View>

@@ -1,7 +1,7 @@
-import {View, StyleSheet} from 'react-native';
+import {useContext} from 'react';
+import {View, StyleSheet, Button} from 'react-native';
 import Piece from '../../components/Masterpiece/Piece';
 import CombinedPiece from '../../components/Masterpiece/CombinedPiece';
-import {useContext} from 'react';
 import {MasterpieceContext} from '../../providers/Masterpiece.Provider';
 import {constants} from '../../utilities/Masterpiece';
 const {
@@ -18,13 +18,33 @@ const Masterpiece = () => {
     data,
     piecesPosition,
     elementsData,
+    setElementsData,
+    pickedPieceId,
     positionsState,
     combinedPieceDimensions,
   } = useContext(MasterpieceContext);
-  const getCorrespondingPiecePositionFromId = id => {
-    const item = piecesPosition.find(piece => piece.id === id);
-    return item ? item.position : null;
+
+  // const getCorrespondingPiecePositionFromId = id => {
+  //   const item = piecesPosition.find(piece => piece.id === id);
+  //   return item ? item.position : null;
+  // }; not needed
+
+  const handleRotate = direction => {
+    const newElementsData = elementsData.map(element => {
+      if (element.id === pickedPieceId) {
+        let newRotation = element.pieceRotationAngle;
+        if (direction === 'left') newRotation -= 30;
+        if (direction === 'right') newRotation += 30;
+        return {
+          ...element,
+          pieceRotationAngle: newRotation,
+        };
+      }
+      return element;
+    });
+    setElementsData(newElementsData);
   };
+
   return (
     <View style={styles.container}>
       <CombinedPiece
@@ -52,11 +72,12 @@ const Masterpiece = () => {
           key={element.id}
           pathD={element.path}
           viewBox={element.viewBox}
-          initialPosition={getCorrespondingPiecePositionFromId(element.id)}
+          initialPosition={piecesPosition[element.id].position}
           pieceCorrectPositon={element.pieceCorrectPositon}
+          rotation={element.pieceRotationAngle}
         />
       ))}
-      {positionsState.map((element, index) => (
+      {/* {positionsState.map((element, index) => (
         <View
           key={element.id}
           style={{
@@ -68,7 +89,18 @@ const Masterpiece = () => {
             top: element.position.y - (ratio * 3) / 2,
           }}
         />
-      ))}
+      ))} */}
+      <View
+        style={{
+          flexDirection: 'row',
+          bottom: 0,
+          position: 'absolute',
+          width: '100%',
+          justifyContent: 'space-around',
+        }}>
+        <Button title="rotate left" onPress={() => handleRotate('left')} />
+        <Button title="rotate right" onPress={() => handleRotate('right')} />
+      </View>
     </View>
   );
 };

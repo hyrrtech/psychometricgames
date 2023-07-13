@@ -87,7 +87,7 @@ const getPiecesPosition = (
           )
         ) {
           isOverlapping = true;
-          break; // Restart the loop to generate new positions
+          break;
         }
       }
     } while (isOverlapping);
