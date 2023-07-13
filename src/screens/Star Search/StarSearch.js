@@ -1,37 +1,38 @@
 import {useEffect, useRef} from 'react';
-import {View, Animated, Easing} from 'react-native';
-
-import {svgData} from '../../utilities/Star Search';
+import {View, Animated, Easing, TouchableOpacity} from 'react-native';
 
 import Svg, {Path} from 'react-native-svg';
 import adjustHexColor from '../../utilities/adjustHexColor';
+import {
+  constants,
+  generateShapeData,
+  getShapePositions,
+  svgData,
+} from '../../utilities/Star Search';
 
-const getToValue = rotationAnimation => {
-  if (rotationAnimation === 'clockwise') return 1;
-  if (rotationAnimation === 'anticlockwise') return -1;
-  if (rotationAnimation === 'none') return 0;
-};
-
-const getInterpolatedValue = (value, angle) => {
-  if (value === 0)
+const getInterpolatedValue = (rotationAnimation, angle) => {
+  if (rotationAnimation === 'none')
     return {
       inputRange: [0, 1],
       outputRange: [`${angle}deg`, `${angle}deg`],
     };
+  const rotationAngle =
+    rotationAnimation === 'clockwise' ? angle + 360 : angle - 360;
+
   return {
     inputRange: [0, 1],
-    outputRange: [`${angle}deg`, `${(360 + angle) * value}deg`],
+    outputRange: [`${angle}deg`, `${rotationAngle}deg`],
   };
 };
 
 const SvgComponent = ({
-  width,
-  height,
   hasPattern,
+  hasReflection,
   initialRotationAngle,
   rotationAnimation,
   color,
   shape,
+  position,
 }) => {
   const shapeData = svgData[shape];
   const {
@@ -42,10 +43,11 @@ const SvgComponent = ({
     patternStrokeColor,
     patternStrokeWidth,
   } = shapeData;
+  const {shapeSize} = constants;
 
   const darkenColor = adjustHexColor(color, 20).darkened;
   const rotateAnimation = useRef(new Animated.Value(0)).current;
-  const value = getToValue(rotationAnimation);
+
   useEffect(() => {
     Animated.loop(
       Animated.timing(rotateAnimation, {
@@ -58,18 +60,22 @@ const SvgComponent = ({
   }, []);
 
   const rotate = rotateAnimation.interpolate(
-    getInterpolatedValue(value, initialRotationAngle),
+    getInterpolatedValue(rotationAnimation, initialRotationAngle),
   );
-
+  const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
   return (
-    <Animated.View
+    <AnimatedTouchable
       style={{
-        borderWidth: 1,
-        borderColor: 'red',
-        transform: [{rotate: rotate}],
+        height: shapeSize,
+        width: shapeSize,
+        transform: [{rotateZ: rotate}, {scaleY: hasReflection ? -1 : 1}],
+        position: 'absolute',
+        left: position.x,
+        top: position.y,
       }}>
-      <Svg width={width} height={height} viewBox={viewBox} fill="none">
+      <Svg width={shapeSize} height={shapeSize} viewBox={viewBox} fill="none">
         <Path d={lightPath} fill={color} />
+
         {hasPattern &&
           patternPaths.map((path, index) => (
             <Path
@@ -79,48 +85,63 @@ const SvgComponent = ({
               strokeWidth={patternStrokeWidth}
             />
           ))}
+
         {darkPaths.map((path, index) => (
           <Path key={index} d={path} fill={darkenColor} />
         ))}
       </Svg>
-    </Animated.View>
+    </AnimatedTouchable>
   );
 };
 
 const StarSearch = () => {
+  const {spawnAreaHeight, spawnAreaWidth} = constants;
+  const shapePositions = getShapePositions(10);
+  const shapeStyles = generateShapeData(10, 3, 3, 2, true, true, false);
+  console.log(shapeStyles);
+  const combinePositionAndStyle = (shapePositions, shapeStyles) => {
+    let combinedArray = [];
+    let j = 0;
+    for (let i = 0; i < shapeStyles.length; i++) {
+      for (let k = 0; k < shapeStyles[i].count; k++) {
+        combinedArray.push({
+          position: shapePositions[j].position,
+          id: shapePositions[j].id,
+          ...shapeStyles[i],
+        });
+        j++;
+      }
+    }
+
+    return combinedArray;
+  };
+  const shapeData = combinePositionAndStyle(shapePositions, shapeStyles);
+
   return (
     <View
       style={{
         flex: 1,
-        alignItems: 'flex-start',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}>
-      <SvgComponent
-        width={150}
-        height={150}
-        hasPattern={true}
-        initialRotationAngle={30} //in degree
-        rotationAnimation="clockwise"
-        color="#c2a9f3"
-        shape="shape2"
-      />
-      <SvgComponent
-        width={150}
-        height={150}
-        hasPattern={true}
-        initialRotationAngle={90} //in degree
-        rotationAnimation="clockwise"
-        color="#c2a9f3"
-        shape="shape2"
-      />
-      <SvgComponent
-        width={150}
-        height={150}
-        hasPattern={true}
-        initialRotationAngle={0} //in degree
-        rotationAnimation="clockwise"
-        color="#c2a9f3"
-        shape="shape2"
-      />
+      <View
+        style={{
+          height: spawnAreaHeight,
+          width: spawnAreaWidth,
+          backgroundColor: '#1b5256',
+        }}>
+        {shapeData.map(shape => (
+          <SvgComponent
+            hasPattern={shape.hasPattern}
+            hasReflection={shape.hasReflection}
+            initialRotationAngle={shape.initialRotationAngle}
+            rotationAnimation={shape.rotationAnimation}
+            color={shape.color}
+            shape={shape.shape}
+            position={shape.position}
+          />
+        ))}
+      </View>
     </View>
   );
 };
