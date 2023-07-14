@@ -7,7 +7,13 @@ export const Button = ({title, style, icon, iconProps, ...restProps}) => {
       style={[style, styles.buttonContainer]}
       {...restProps}>
       {icon ? <Image source={icon} style={[styles.icon, iconProps]} /> : null}
-      <Text style={[FontStyle.h4, {color: style?.color}]}>{title}</Text>
+      <Text
+        style={[
+          FontStyle.h4,
+          {color: style?.color, fontSize: style?.fontSize},
+        ]}>
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 };

@@ -4,6 +4,10 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Tabs from './Tabs';
 
 import Home from '../screens/Home';
+import Games from '../screens/Games';
+import Jobs from '../screens/Jobs';
+import Inbox from '../screens/Inbox';
+import Profile from '../screens/Profile';
 import BART from '../screens/BART/BART';
 import SHARK from '../screens/SHARK/SHARK';
 import MemoryMatrix from '../screens/Memory Matrix/MemoryMatrix';
@@ -29,6 +33,14 @@ function MainStack() {
       screenOptions={{headerShown: false, animation: 'slide_from_right'}}>
       <Stack.Screen name="Tabs" component={Tabs} options={screenOptions} />
       <Stack.Screen name="Home" component={Home} options={screenOptions} />
+      <Stack.Screen name="Games" component={Games} options={screenOptions} />
+      <Stack.Screen name="Jobs" component={Jobs} options={screenOptions} />
+      <Stack.Screen name="Inbox" component={Inbox} options={screenOptions} />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={screenOptions}
+      />
       <Stack.Screen name="BART" component={BART} options={screenOptions} />
       <Stack.Screen name="SHARK" component={SHARK} options={screenOptions} />
       <Stack.Screen

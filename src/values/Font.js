@@ -1,4 +1,4 @@
-export const PrimaryFont = 'Montaga';
+export const PrimaryFont = 'Poppins';
 
 export const FontStyle = {
   h1: {fontSize: 50, fontFamily: PrimaryFont},
