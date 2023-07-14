@@ -1,6 +1,8 @@
 import * as React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
+import Tabs from './Tabs';
+
 import Home from '../screens/Home';
 import BART from '../screens/BART/BART';
 import SHARK from '../screens/SHARK/SHARK';
@@ -25,6 +27,7 @@ function MainStack() {
   return (
     <Stack.Navigator
       screenOptions={{headerShown: false, animation: 'slide_from_right'}}>
+      <Stack.Screen name="Tabs" component={Tabs} options={screenOptions} />
       <Stack.Screen name="Home" component={Home} options={screenOptions} />
       <Stack.Screen name="BART" component={BART} options={screenOptions} />
       <Stack.Screen name="SHARK" component={SHARK} options={screenOptions} />

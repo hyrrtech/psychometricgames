@@ -54,6 +54,24 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Montaga.ttf</string>
+		<string>Poppins_Black.ttf</string>
+		<string>Poppins_BlackItalic.ttf</string>
+		<string>Poppins_Bold.ttf</string>
+		<string>Poppins_BoldItalic.ttf</string>
+		<string>Poppins_ExtraBold.ttf</string>
+		<string>Poppins_ExtraBoldItalic.ttf</string>
+		<string>Poppins_ExtraLight.ttf</string>
+		<string>Poppins_ExtraLightItalic.ttf</string>
+		<string>Poppins_Italic.ttf</string>
+		<string>Poppins_Light.ttf</string>
+		<string>Poppins_LightItalic.ttf</string>
+		<string>Poppins_Medium.ttf</string>
+		<string>Poppins_MediumItalic.ttf</string>
+		<string>Poppins_Regular.ttf</string>
+		<string>Poppins_SemiBold.ttf</string>
+		<string>Poppins_SemiBoldItalic.ttf</string>
+		<string>Poppins_Thin.ttf</string>
+		<string>Poppins_ThinItalic.ttf</string>
 	</array>
 </dict>
 </plist>
