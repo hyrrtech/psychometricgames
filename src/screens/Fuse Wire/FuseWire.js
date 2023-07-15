@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, ActivityIndicator, View} from 'react-native';
 
 import {AuthContext} from '../../providers/AuthProvider';
@@ -14,6 +14,9 @@ import {gameRoundData, stateGeneratorAsync} from '../../utilities/FuseWire';
 import {FuseWireContext} from '../../providers/FuseWire.Provider';
 import FuseHolder from '../../components/FuseWire/FuseHolder';
 import Fuse from '../../components/FuseWire/Fuse';
+import HolderBoard from '../../components/FuseWire/HolderBoard';
+import FuseBoard from '../../components/FuseWire/FuseBoard';
+import BatteryContainer from '../../components/FuseWire/BatteryContainer';
 
 const FuseWire = ({navigation}) => {
   const {
@@ -26,6 +29,7 @@ const FuseWire = ({navigation}) => {
     completedPopup,
     dispatch,
     ACTIONS,
+    setIfAnswerCorrect,
   } = useContext(FuseWireContext);
   const {user} = useContext(AuthContext);
 
@@ -34,10 +38,9 @@ const FuseWire = ({navigation}) => {
       fuseHolders
         .filter(fuseHolder => fuseHolder.initiallyBlank)
         .every(fuseHolder => fuseHolder.sequence === fuseHolder.inputValue);
-    if (
-      level === gameRoundData[gameRoundData.length - 1].level &&
-      checkIfCorrect()
-    ) {
+    const ifCorrect = checkIfCorrect();
+    setIfAnswerCorrect(ifCorrect);
+    if (level === gameRoundData[gameRoundData.length - 1].level && ifCorrect) {
       dispatch({type: ACTIONS.GAME_OVER, payload: {uid: user.uid}});
       navigation.navigate('Transition', {
         state: state,
@@ -49,7 +52,7 @@ const FuseWire = ({navigation}) => {
     dispatch({
       type: ACTIONS.ON_CHECK,
       payload: {
-        result: checkIfCorrect(),
+        result: ifCorrect,
         uid: user.uid,
         nextLevelState: nextLevelState,
       },
@@ -75,7 +78,7 @@ const FuseWire = ({navigation}) => {
     <CompletedPopup gameName="MemoryMatrix" />
   ) : (
     <GameWrapper
-      imageURL={BackgroundImage.MemoryMatrix}
+      imageURL={BackgroundImage.FuseWire}
       backgroundGradient={COLORS.memoryMatrixBGGradient}
       scoreboard={[
         <InfoLabel
@@ -102,6 +105,9 @@ const FuseWire = ({navigation}) => {
         />,
       ]}>
       <View style={stylest.mainContainer}>
+        <HolderBoard />
+        <FuseBoard />
+        <BatteryContainer />
         {fuseHolders.map((fuseHolder, index) => (
           <FuseHolder
             key={index}
@@ -126,9 +132,8 @@ const FuseWire = ({navigation}) => {
 
 const stylest = StyleSheet.create({
   mainContainer: {
-    position: 'absolute',
     width: '100%',
-    top: 0,
+    flex: 1,
   },
   button: {
     position: 'absolute',

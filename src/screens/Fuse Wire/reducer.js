@@ -22,6 +22,7 @@ const addData = (uid, state, levelCleared) => {
 };
 
 const updateLevel = (state, uid) => {
+  const GameRef = db.ref(`/users/${uid}/FuseWire/`);
   let level =
     state.level === gameRoundData[gameRoundData.length - 1].level
       ? state.level
@@ -47,6 +48,7 @@ const updateStatus = uid => {
 };
 
 export function reducer(state, action) {
+  let newState = {...state};
   switch (action.type) {
     case ACTIONS.INIT_LEVEL:
       return {
@@ -55,7 +57,6 @@ export function reducer(state, action) {
       };
 
     case ACTIONS.SET_FUSEHOLDER:
-      var newState = {...state};
       var {currentFuseHolderId, id, value} = action.payload;
       if (currentFuseHolderId !== null) {
         newState.fuseHolders[currentFuseHolderId].isBlank = true;
@@ -63,15 +64,17 @@ export function reducer(state, action) {
       }
       newState.fuseHolders[id].isBlank = false;
       newState.fuseHolders[id].inputValue = value;
-      newState.valueTimeArray.push({
-        value: value,
-        time: Date.now() - state.startTime,
-        fuseHolderPosition: id,
-      });
+      newState.valueTimeArray = [
+        ...newState.valueTimeArray,
+        {
+          value: value,
+          time: Date.now() - state.startTime,
+          fuseHolderPosition: id,
+        },
+      ];
       return newState;
 
     case ACTIONS.RESET_FUSEHOLDER:
-      var newState = {...state};
       var {currentFuseHolderId} = action.payload;
       newState.fuseHolders[currentFuseHolderId].isBlank = true;
       newState.fuseHolders[currentFuseHolderId].inputValue = null;

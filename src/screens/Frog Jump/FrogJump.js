@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from 'react';
+import {useContext, useEffect, useState, useMemo} from 'react';
 import {View, ActivityIndicator} from 'react-native';
 import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
@@ -11,6 +11,8 @@ import {AuthContext} from '../../providers/AuthProvider';
 import {FollowerFrog, Lillipad, LeaderFrog} from '../../components/Frog Game';
 import {FrogGameContext} from '../../providers/FrogGame.Provider';
 import {constants} from '../../utilities/Frog Jump';
+import {interpolate} from 'flubber';
+import {frames} from '../../components/Frog Game/frames';
 
 const {spawnAreaHeight, spawnAreaWidth} = constants;
 
@@ -25,16 +27,38 @@ const FrogJump = ({navigation}) => {
   } = useContext(FrogGameContext);
   const [loading, setLoading] = useState(true);
   const [completedPopup, setCompletedPopup] = useState(false);
+  const [interpolations, setInterpolations] = useState({});
+
+  const calculateInterpolations = async () => {
+    const interpolations = await new Promise(resolve => {
+      setTimeout(() => {
+        const result = Object.keys(frames[0]).reduce((acc, key) => {
+          acc[key] = frames.map((frame, index) =>
+            interpolate(frame[key], frames[(index + 1) % frames.length][key], {
+              maxSegmentLength: 7,
+            }),
+          );
+
+          return acc;
+        }, {});
+
+        resolve(result);
+      }, 0);
+    });
+    setInterpolations(interpolations);
+    setLoading(false);
+  };
 
   useEffect(() => {
     GameRef.once('value', snapshot => {
       const exists = snapshot.exists();
       if (exists) {
         setCompletedPopup(true);
+        setLoading(false);
+      } else {
+        calculateInterpolations();
       }
-    })
-      .then(() => setLoading(false))
-      .catch(err => console.log(err));
+    }).catch(err => console.log(err));
   }, []);
 
   useEffect(() => {
@@ -80,8 +104,8 @@ const FrogJump = ({navigation}) => {
             />
           );
         })}
-        <FollowerFrog />
-        <LeaderFrog />
+        <FollowerFrog interpolations={interpolations} />
+        <LeaderFrog interpolations={interpolations} />
       </View>
     </GameWrapper>
   );

@@ -16,16 +16,38 @@ export const PiratePassageContext = createContext();
 export const PiratePassageProvider = ({children}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [showCollision, setShowCollision] = useState({collided: false});
-  const time = useRef(0);
+  const [disableGo, setDisableGo] = useState(true);
+  const [completedPopup, setCompletedPopup] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const checkPathToTreasure = () => {
+    const {indexes} = state.shipPathIndexes;
+    const {treasureIndex} = state;
+    const lastPosition = indexes[indexes.length - 1];
+    if (
+      lastPosition[0] === treasureIndex[0] &&
+      lastPosition[1] === treasureIndex[1]
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    if (checkPathToTreasure()) {
+      setDisableGo(false);
+    }
+  }, [state.shipPathIndexes.indexes]);
 
   useEffect(() => {
     if (state.go) {
+      let time = 0;
       const interval = setInterval(() => {
-        time.current += 1;
+        time++;
         const {collided, shipPosition} = collisionDetection(
           state.shipPathIndexes.indexes,
           state.piratePathIndexes,
-          time.current,
+          time,
         );
         if (collided) {
           setShowCollision({collided: true, shipPosition});
@@ -45,10 +67,13 @@ export const PiratePassageProvider = ({children}) => {
         piratePathComponents: state.piratePathComponents,
         piratePathCoordinates: state.piratePathCoordinates,
         go: state.go,
+        disableGo,
         treasureIndex: state.treasureIndex,
         dispatch,
         ACTIONS,
         showCollision,
+        loading,
+        completedPopup,
       }}>
       {children}
     </PiratePassageContext.Provider>

@@ -1,2 +1,3 @@
 import Fish from './Fish';
-export {Fish};
+import BaitContainer from './BaitContainer';
+export {Fish, BaitContainer};

@@ -28,6 +28,7 @@ const Switch = (point, id, directions) => {
     <TouchableOpacity
       onPress={handlePress}
       activeOpacity={0.8}
+      disabled={directions.length === 1}
       key={`${stepX}-${stepY}-switch`}
       style={{
         position: 'absolute',
@@ -42,6 +43,7 @@ const Switch = (point, id, directions) => {
           height={switchSize}
           width={switchSize}
           rotation={'0deg'}
+          showOnlyTrack={directions.length === 1}
         />
       )}
       {direction === 'horizontal' && (
@@ -49,6 +51,7 @@ const Switch = (point, id, directions) => {
           height={switchSize}
           width={switchSize}
           rotation={'90deg'}
+          showOnlyTrack={directions.length === 1}
         />
       )}
       {direction === 'horizontal_left' && (
@@ -56,6 +59,7 @@ const Switch = (point, id, directions) => {
           height={switchSize}
           width={switchSize}
           rotation={'270deg'}
+          showOnlyTrack={directions.length === 1}
         />
       )}
       {direction === 'vertical_left_down' && (
@@ -63,6 +67,7 @@ const Switch = (point, id, directions) => {
           height={switchSize}
           width={switchSize}
           rotation={'90deg'}
+          showOnlyTrack={directions.length === 1}
         />
       )}
       {direction === 'horizontal_right' && (
@@ -70,6 +75,7 @@ const Switch = (point, id, directions) => {
           height={switchSize}
           width={switchSize}
           rotation={'180deg'}
+          showOnlyTrack={directions.length === 1}
         />
       )}
       {direction === 'vertical_right' && (
@@ -77,6 +83,7 @@ const Switch = (point, id, directions) => {
           height={switchSize}
           width={switchSize}
           rotation={'270deg'}
+          showOnlyTrack={directions.length === 1}
         />
       )}
       {direction === 'vertical_left' && (
@@ -84,6 +91,7 @@ const Switch = (point, id, directions) => {
           height={switchSize}
           width={switchSize}
           rotation={'0deg'}
+          showOnlyTrack={directions.length === 1}
         />
       )}
       {direction === 'horizontal_left_up' && (
@@ -92,6 +100,7 @@ const Switch = (point, id, directions) => {
           width={switchSize}
           rotation={'180deg'}
           scaleX={-1}
+          showOnlyTrack={directions.length === 1}
         />
       )}
     </TouchableOpacity>

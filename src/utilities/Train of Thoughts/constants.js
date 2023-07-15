@@ -11,19 +11,21 @@ export const initialSpawnSpeed = 4000;
 export const time = {minutes: 4, seconds: 0};
 
 export const originalSwitchDirections = {
-  1: ['horizontal_left', 'horizontal'],
-  2: ['horizontal', 'horizontal_right'],
-  3: ['vertical_left_down', 'vertical'],
-  4: ['horizontal', 'horizontal_left'],
+  1: ['vertical'],
+  2: ['vertical_left'],
+  3: ['horizontal_left', 'horizontal'],
+  4: ['horizontal', 'horizontal_right'],
   5: ['vertical_left_down', 'vertical'],
-  6: ['vertical', 'vertical_right'],
-  7: ['horizontal', 'horizontal_left_up'],
-  8: ['vertical_right', 'vertical'],
-  9: ['vertical_right', 'vertical'],
-  10: ['vertical_left', 'vertical'],
-  11: ['horizontal_left', 'horizontal'],
-  12: ['vertical', 'vertical_left'],
-  13: ['horizontal_right', 'horizontal'],
+  6: ['horizontal', 'horizontal_left'],
+  7: ['vertical_left_down', 'vertical'],
+  8: ['vertical', 'vertical_right'],
+  9: ['horizontal', 'horizontal_left_up'],
+  10: ['vertical_right', 'vertical'],
+  11: ['vertical_right', 'vertical'],
+  12: ['vertical_left', 'vertical'],
+  13: ['horizontal_left', 'horizontal'],
+  14: ['vertical', 'vertical_left'],
+  15: ['horizontal_right', 'horizontal'],
 };
 
 export const switchDirectionArray = Object.values(originalSwitchDirections).map(

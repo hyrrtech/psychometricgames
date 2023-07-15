@@ -19,9 +19,9 @@ const mapData = [
           [2, 1],
           [1, 1],
         ],
-        color: 'rgba(36, 180, 132,0.9)',
+        color: '#2daf84',
         initialShipLocation: [1, 1],
-        moveDirection: 1,
+        moveDirection: -1,
       },
       {
         pathIndexes: [
@@ -30,7 +30,7 @@ const mapData = [
           [5, 1],
           [5, 2],
         ],
-        color: 'rgba(201, 71, 39,0.9)',
+        color: '#c14c2f',
         initialShipLocation: [5, 1],
         moveDirection: 1,
       },
@@ -41,10 +41,11 @@ const mapData = [
           [3, 1],
           [4, 1],
           [5, 1],
+          [5, 2],
         ],
-        color: 'rgba(155, 41, 81,0.9)',
-        initialShipLocation: [4, 1],
-        moveDirection: 1,
+        color: '#962f53',
+        initialShipLocation: [5, 1],
+        moveDirection: -1,
       },
       {
         pathIndexes: [
@@ -54,9 +55,9 @@ const mapData = [
           [4, 3],
           [5, 3],
         ],
-        color: 'blue',
+        color: '#41a5ee',
         initialShipLocation: [1, 3],
-        moveDirection: 1,
+        moveDirection: -1,
       },
       {
         pathIndexes: [
@@ -67,9 +68,9 @@ const mapData = [
           [5, 3],
           [5, 2],
         ],
-        color: 'green',
+        color: '#159944',
         initialShipLocation: [4, 2],
-        moveDirection: 1,
+        moveDirection: -1,
       },
 
       {
@@ -82,7 +83,7 @@ const mapData = [
           [1, 2],
           [0, 2],
         ],
-        color: 'pink',
+        color: '#ffc0cb',
         initialShipLocation: [0, 2],
         moveDirection: 1,
       },

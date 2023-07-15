@@ -18,20 +18,11 @@ export const FuseWireProvider = ({children}) => {
   const GameRef = db.ref(`/users/${user.uid}/FuseWire/`);
 
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  const [ifAnswerCorrect, setIfAnswerCorrect] = useState(null);
   const [loading, setLoading] = useState(true);
   const [completedPopup, setCompletedPopup] = useState(false);
 
-  const {
-    fuseHolders,
-    blankValues,
-    level,
-    lives,
-    fuse,
-    startTime,
-    valueTimeArray,
-  } = state;
-  console.log(valueTimeArray);
+  const {fuseHolders, blankValues, level, lives, fuse, startTime} = state;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,6 +40,7 @@ export const FuseWireProvider = ({children}) => {
 
           if (data.status === 'COMPLETED') {
             setCompletedPopup(true);
+            setLoading(false);
             return;
           }
         } else {
@@ -92,6 +84,8 @@ export const FuseWireProvider = ({children}) => {
         ACTIONS,
         loading,
         completedPopup,
+        ifAnswerCorrect,
+        setIfAnswerCorrect,
       }}>
       {children}
     </FuseWireContext.Provider>

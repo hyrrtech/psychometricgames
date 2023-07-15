@@ -1,21 +1,27 @@
 import db from '../../firebase/database';
+import {stateGenerator} from '../../utilities/Fish Game';
+
 export const ACTIONS = {
-  NEXT_COLOR_SET: 'next_color_set',
-  ON_TIME_UP: 'time_up',
+  ON_FED: 'on_fed',
+  NEXT_LEVEL: 'next_level',
+  DECREASE_LIVES: 'decrease_lives',
+  GAME_OVER: 'game_over',
 };
-// const updateDB = (uid, state) => {
-//   const GameRef = db.ref(`/users/${uid}/ColorMatch/`);
-//   GameRef.update({
-//     roundsResult: state.roundsResult,
-//     status: 'COMPLETED',
-//     time: state.time,
-//   });
-// };
 
 export function reducer(state, action) {
+  let newState = {...state};
   switch (action.type) {
-    case ACTIONS.NEXT_COLOR_SET:
-      return state;
+    case ACTIONS.ON_FED:
+      newState.baitCount = newState.baitCount - 1;
+      return newState;
+    case ACTIONS.NEXT_LEVEL:
+      newState = stateGenerator(newState.level + 1);
+      return newState;
+    case ACTIONS.DECREASE_LIVES:
+      newState.lives = newState.lives - 1;
+      return newState;
+    case ACTIONS.GAME_OVER:
+      return newState;
 
     default:
       return state;

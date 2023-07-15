@@ -15,11 +15,13 @@ import {InfoLabel} from '../../components/InfoLabel';
 import BackgroundImage from '../../values/BackgroundImage';
 import useCountDown from '../../utilities/useCountDown';
 import useDebounce from '../../utilities/useDebounce';
-import initialState, {time, timeout} from './initialState';
+import initialState from './initialState';
 import {reducer, ACTIONS} from './reducer';
+import {constants} from '../../utilities/Color Match';
 import {ResultPopup} from '../../components/ResultPopup';
 import db from '../../firebase/database';
 import {AuthContext} from '../../providers/AuthProvider';
+const {time, timeout} = constants;
 
 const ColorMatch = ({navigation}) => {
   const {user} = useContext(AuthContext);

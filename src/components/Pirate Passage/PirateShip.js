@@ -1,7 +1,8 @@
 import {View, Animated, Easing} from 'react-native';
 import {useRef, useState, useContext, useEffect} from 'react';
-import {constants} from '../../utilities/Pirate Passage';
+import {constants, getInitialRotation} from '../../utilities/Pirate Passage';
 import {PiratePassageContext} from '../../providers/PiratePassage.Provider';
+import PirateShipSvg from './SVG/PirateShipSvg';
 const {shipSize, time_to_cover_each_tile} = constants;
 
 const PirateShip = ({
@@ -10,8 +11,17 @@ const PirateShip = ({
   initialPosition,
   initialPositionIndex,
   isLoop,
+  moveDirection,
 }) => {
   const path = useRef(shipPath);
+  const initialRotation = getInitialRotation(
+    moveDirection,
+    initialPosition,
+    initialPositionIndex,
+    shipPath,
+  );
+
+  const [rotation, setRotation] = useState(initialRotation);
   const {go} = useContext(PiratePassageContext);
 
   const position = useRef(
@@ -23,7 +33,7 @@ const PirateShip = ({
   const currentIndex = useRef(initialPositionIndex);
 
   const moveShip = () => {
-    let index = currentIndex.current;
+    const index = currentIndex.current;
     const nextIndex = index + 1;
 
     if (nextIndex < path.current.length) {
@@ -33,7 +43,7 @@ const PirateShip = ({
       const direction = Math.atan2(deltaY, deltaX);
       const directionInDegrees = Math.ceil((direction * 180) / Math.PI);
 
-      let trainDirectionProps = `${directionInDegrees}deg`;
+      setRotation(`${directionInDegrees + 90}deg`);
 
       Animated.timing(position, {
         toValue: {
@@ -59,6 +69,11 @@ const PirateShip = ({
           }
         }
       });
+    } else if (nextIndex === path.current.length && moveDirection === -1) {
+      const reversePath = [...path.current].reverse();
+      path.current = reversePath;
+      currentIndex.current = 0;
+      moveShip();
     }
   };
 
@@ -74,10 +89,15 @@ const PirateShip = ({
       style={{
         height: shipSize,
         width: shipSize,
-        backgroundColor: color,
         position: 'absolute',
-        transform: [{translateX: position.x}, {translateY: position.y}],
-      }}></Animated.View>
+        transform: [
+          {translateX: position.x},
+          {translateY: position.y},
+          {rotateZ: rotation},
+        ],
+      }}>
+      <PirateShipSvg height={shipSize} width={shipSize} color={color} />
+    </Animated.View>
   );
 };
 

@@ -13,12 +13,6 @@ import {
   constants,
   path,
 } from '../../utilities/Train of Thoughts';
-import {pathSize} from '../../utilities/Train of Thoughts/constants';
-
-const initialSegment = [
-  adjustCoordinates({x: 375 + 15, y: 850}),
-  adjustCoordinates({x: 375 + 15, y: 637.5}),
-];
 
 const {trainSize, switchSize, speed} = constants;
 const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
@@ -30,6 +24,7 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
   let segmentStartTime = useRef(Date.now());
   const pathFollowed = useRef([]);
   const [trainDirection, setTrainDirection] = useState('0rad');
+  console.log(SwitchDirections.current);
 
   // const switchesPassedExclusive = id => {
   //   //might not be needed
@@ -68,10 +63,7 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
     return path;
   };
 
-  const [PATH, setPATH] = useState([
-    ...initialSegment,
-    ...generatePath(path.switch),
-  ]);
+  const [PATH, setPATH] = useState(generatePath(path.switch));
 
   const currentIndex = useRef(1);
   const trainPosition = useRef(
@@ -94,7 +86,7 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
       SwitchDirections.current[changedSwitchIndex - 1] =
         switchDirections[changedSwitchIndex - 1];
 
-      setPATH([...initialSegment, ...generatePath(path.switch)]);
+      setPATH(generatePath(path.switch));
     }
   }, [switchDirections]);
 
@@ -179,28 +171,55 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
       });
     }
   };
+  console.log('trainDirection', trainDirection);
 
   useEffect(() => {
     moveTrain(PATH, TIME);
   }, [PATH, TIME]);
-  console.log(trainDirection);
+
   return (
     <Animated.View
+      pointerEvents={'none'}
       style={[
         trainPosition.getTranslateTransform(),
         {
           left: -trainSize / 2,
-          top: 0,
+          top: -trainSize / 2,
           position: 'absolute',
-          zIndex: 20,
+          zIndex: 998,
         },
       ]}>
       {trainDirection === '-90deg' && (
+        <TrainVerticalSvg height={trainSize} width={trainSize} color={color} />
+      )}
+      {trainDirection === '0deg' && (
+        <TrainHorizontalSvg
+          height={trainSize}
+          width={trainSize}
+          color={color}
+          styles={{transform: [{scaleX: -1}]}}
+        />
+      )}
+      {trainDirection === '90deg' && (
         <TrainVerticalSvg
           height={trainSize}
           width={trainSize}
           color={color}
-          styles={{}}
+          styles={{transform: [{scaleY: -1}]}}
+        />
+      )}
+      {trainDirection === '180deg' && (
+        <TrainHorizontalSvg
+          height={trainSize}
+          width={trainSize}
+          color={color}
+        />
+      )}
+      {trainDirection === '-179deg' && (
+        <TrainHorizontalSvg
+          height={trainSize}
+          width={trainSize}
+          color={color}
         />
       )}
     </Animated.View>

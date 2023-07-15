@@ -1,13 +1,16 @@
 import {View, Animated, Easing} from 'react-native';
-import {useRef, useContext, useEffect} from 'react';
+import {useRef, useContext, useEffect, useState} from 'react';
 import {constants} from '../../utilities/Pirate Passage';
 import {PiratePassageContext} from '../../providers/PiratePassage.Provider';
+import ShipSvg from './SVG/ShipSvg';
 
 const {shipSize, time_to_cover_each_tile} = constants;
 
 const Ship = ({color, shipPath}) => {
   const {go} = useContext(PiratePassageContext);
   const intialPosition = shipPath[0];
+
+  const [rotation, setRotation] = useState('0deg');
 
   const position = useRef(
     new Animated.ValueXY({
@@ -26,7 +29,7 @@ const Ship = ({color, shipPath}) => {
       const direction = Math.atan2(deltaY, deltaX);
       const directionInDegrees = Math.ceil((direction * 180) / Math.PI);
 
-      let trainDirectionProps = `${directionInDegrees}deg`;
+      setRotation(`${directionInDegrees + 90}deg`);
 
       Animated.timing(position, {
         toValue: {
@@ -59,8 +62,14 @@ const Ship = ({color, shipPath}) => {
         backgroundColor: color,
         position: 'absolute',
         zIndex: 999,
-        transform: [{translateX: position.x}, {translateY: position.y}],
-      }}></Animated.View>
+        transform: [
+          {translateX: position.x},
+          {translateY: position.y},
+          {rotateZ: rotation},
+        ],
+      }}>
+      <ShipSvg height={shipSize} width={shipSize} />
+    </Animated.View>
   );
 };
 

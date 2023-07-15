@@ -32,6 +32,10 @@ const generatePiratePathComponentsAndCoordiantes = (
   const piratePathComponents = [];
   const piratePathCoordinates = [];
   for (let i = 0; i < piratePathsIndexes.length; i++) {
+    const pathIndexes =
+      piratePathsIndexes[i].moveDirection === -1
+        ? piratePathsIndexes[i].pathIndexes.reverse()
+        : piratePathsIndexes[i].pathIndexes;
     const pivotPoint = piratePathsIndexes.length / 2;
     const offset =
       i < pivotPoint
@@ -39,7 +43,7 @@ const generatePiratePathComponentsAndCoordiantes = (
         : -(i - pivotPoint) * pirateLineWidth * 1.1;
     const {component, coordinates} = generatePiratePath(
       matrix,
-      piratePathsIndexes[i].pathIndexes,
+      pathIndexes,
       piratePathsIndexes[i].color,
       offset,
     );
@@ -57,11 +61,12 @@ const generatePiratePathComponentsAndCoordiantes = (
       pathCoordinates: coordinates,
       initialShipCoordinates: offsetInitialShipCoordinates,
       initialShipCoordinatesIndex: getIndexOfInitialPositionOnPath(
-        piratePathsIndexes[i].pathIndexes,
+        pathIndexes,
         piratePathsIndexes[i].initialShipLocation,
       ),
       color: piratePathsIndexes[i].color,
       isLoop: checkIfLoop(coordinates),
+      moveDirection: piratePathsIndexes[i].moveDirection,
     });
     piratePathComponents.push(component);
   }

@@ -1,2 +1,3 @@
 import newColorSetGenerator from './generateNewColorSet';
-export {newColorSetGenerator};
+import constants from './constants';
+export {newColorSetGenerator, constants};
