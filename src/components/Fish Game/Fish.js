@@ -83,10 +83,14 @@ const Fish = ({id, ACTIONS, dispatch}) => {
     if (fed) {
       dispatch({type: ACTIONS.DECREASE_LIVES});
     } else {
-      showFedAnimation();
-      setFed(true);
-      setDisabled(true);
-      dispatch({type: ACTIONS.ON_FED});
+      translateAnimation.stopAnimation(async value => {
+        showFedAnimation();
+        setFed(true);
+        setDisabled(true);
+        dispatch({type: ACTIONS.ON_FED});
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        Animate(value, initialToValue);
+      });
     }
   };
 

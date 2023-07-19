@@ -1,5 +1,5 @@
 import {useEffect, useRef} from 'react';
-import {View, Animated, Easing, TouchableOpacity} from 'react-native';
+import {View, Animated, Easing, Text, TouchableOpacity} from 'react-native';
 
 import Svg, {Path} from 'react-native-svg';
 import adjustHexColor from '../../utilities/adjustHexColor';
@@ -27,12 +27,12 @@ const getInterpolatedValue = (rotationAnimation, angle) => {
 
 const SvgComponent = ({
   hasPattern,
-  hasReflection,
   initialRotationAngle,
   rotationAnimation,
   color,
   shape,
   position,
+  count,
 }) => {
   const shapeData = svgData[shape];
   const {
@@ -40,12 +40,16 @@ const SvgComponent = ({
     lightPath,
     darkPaths,
     patternPaths,
-    patternStrokeColor,
+    // patternStrokeColor,
     patternStrokeWidth,
   } = shapeData;
   const {shapeSize} = constants;
 
-  const darkenColor = adjustHexColor(color, 20).darkened;
+  const {darkened: darkenColor, lightened: lightenColor} = adjustHexColor(
+    color,
+    20,
+    50,
+  );
   const rotateAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -68,7 +72,7 @@ const SvgComponent = ({
       style={{
         height: shapeSize,
         width: shapeSize,
-        transform: [{rotateZ: rotate}, {scaleY: hasReflection ? -1 : 1}],
+        transform: [{rotateZ: rotate}],
         position: 'absolute',
         left: position.x,
         top: position.y,
@@ -81,8 +85,9 @@ const SvgComponent = ({
             <Path
               key={index}
               d={path}
-              stroke={patternStrokeColor}
+              stroke={lightenColor}
               strokeWidth={patternStrokeWidth}
+              strokeMiterlimit={10}
             />
           ))}
 
@@ -90,24 +95,25 @@ const SvgComponent = ({
           <Path key={index} d={path} fill={darkenColor} />
         ))}
       </Svg>
+      <Text style={{position: 'absolute'}}>{count}</Text>
     </AnimatedTouchable>
   );
 };
 
 const StarSearch = () => {
   const {spawnAreaHeight, spawnAreaWidth} = constants;
-  const shapePositions = getShapePositions(10);
-  const shapeStyles = generateShapeData(10, 3, 3, 2, true, true, false);
-  console.log(shapeStyles);
+  const shapePositions = getShapePositions(20);
+  const shapeStyles = generateShapeData(20, 3, 2, 3, false, false, true);
+
   const combinePositionAndStyle = (shapePositions, shapeStyles) => {
     let combinedArray = [];
     let j = 0;
-    for (let i = 0; i < shapeStyles.length; i++) {
-      for (let k = 0; k < shapeStyles[i].count; k++) {
+    for (let [key, value] of shapeStyles) {
+      for (let k = 0; k < value.count; k++) {
         combinedArray.push({
           position: shapePositions[j].position,
           id: shapePositions[j].id,
-          ...shapeStyles[i],
+          ...value,
         });
         j++;
       }
@@ -115,6 +121,7 @@ const StarSearch = () => {
 
     return combinedArray;
   };
+
   const shapeData = combinePositionAndStyle(shapePositions, shapeStyles);
 
   return (
@@ -123,22 +130,23 @@ const StarSearch = () => {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: '#1b5256',
       }}>
       <View
         style={{
           height: spawnAreaHeight,
           width: spawnAreaWidth,
-          backgroundColor: '#1b5256',
         }}>
         {shapeData.map(shape => (
           <SvgComponent
+            key={shape.id}
             hasPattern={shape.hasPattern}
-            hasReflection={shape.hasReflection}
             initialRotationAngle={shape.initialRotationAngle}
             rotationAnimation={shape.rotationAnimation}
             color={shape.color}
             shape={shape.shape}
             position={shape.position}
+            count={shape.count}
           />
         ))}
       </View>

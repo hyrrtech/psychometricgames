@@ -104,7 +104,9 @@ const Fuse = ({position, value}) => {
         height={FuseHeight}
         width={FuseWidth}
         color={'#FFB906'}
-        showPlugs={!fusePicked && currentFuseHolderId.current ? false : true}
+        showPlugs={
+          !fusePicked && currentFuseHolderId.current !== null ? false : true
+        }
       />
       <Text style={styles.text}>{value}</Text>
     </Animated.View>
