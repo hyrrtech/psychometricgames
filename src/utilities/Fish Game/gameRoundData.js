@@ -1,7 +1,7 @@
 const gameRoundData = [
   {
     level: 1,
-    fishCount: 5,
+    fishCount: 1,
     baitCount: 4,
     lives: 2,
   },
