@@ -29,9 +29,12 @@ const Fish = ({id, ACTIONS, dispatch, interpolations}) => {
     to: rotateFrom,
   });
   const lastToValue = useRef(initialToValue);
-
   const fedAnimation = useRef(new Animated.Value(0)).current;
   const interpolateAnimation = useRef(new Animated.Value(0)).current;
+  const translateAnimation = useRef(
+    new Animated.ValueXY({x: initialFromValue.x, y: initialFromValue.y}),
+  ).current;
+  const rotationAnimation = useRef(new Animated.Value(0)).current;
 
   const refs = useRef(
     Object.keys(frames[0]).reduce((acc, key) => {
@@ -82,11 +85,6 @@ const Fish = ({id, ACTIONS, dispatch, interpolations}) => {
   //   });
   // };
 
-  const translateAnimation = useRef(
-    new Animated.ValueXY({x: initialFromValue.x, y: initialFromValue.y}),
-  ).current;
-  const rotationAnimation = useRef(new Animated.Value(0)).current;
-
   const Animate = (from, to) => {
     const distance = Math.sqrt(
       Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2),
@@ -98,20 +96,23 @@ const Fish = ({id, ACTIONS, dispatch, interpolations}) => {
       return {from: rotationAngle.to, to: rotateTo};
     });
 
-    Animated.parallel([
-      Animated.timing(rotationAnimation, {
-        toValue: 1,
-        duration: 700,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }),
-      Animated.timing(translateAnimation, {
-        toValue: {x: to.x, y: to.y},
-        duration: duration,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }),
-    ]).start(({finished}) => {
+    Animated.parallel(
+      [
+        Animated.timing(rotationAnimation, {
+          toValue: 1,
+          duration: 700,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(translateAnimation, {
+          toValue: {x: to.x, y: to.y},
+          duration: duration,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+      ],
+      {stopTogether: false},
+    ).start(({finished}) => {
       if (finished) {
         const newTo = newToValue(lastToValue.current);
         rotationAnimation.setValue(0);

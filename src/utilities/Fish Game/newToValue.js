@@ -11,8 +11,8 @@ const newToValue = prev => {
 
   while (
     prev &&
-    Math.abs(x - prev.x) < maxX * 0.4 &&
-    Math.abs(y - prev.y) < maxY * 0.4
+    Math.abs(x - prev.x) < maxX * 0.3 &&
+    Math.abs(y - prev.y) < maxY * 0.3
   ) {
     x = Math.random() * (maxX - minX) + minX;
     y = Math.random() * (maxY - minY) + minY;
