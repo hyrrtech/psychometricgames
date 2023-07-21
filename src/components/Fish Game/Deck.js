@@ -1,5 +1,5 @@
 import {Animated, View, StyleSheet, Dimensions} from 'react-native';
-import {useEffect, useMemo} from 'react';
+import {useEffect, useMemo, useRef} from 'react';
 
 const {height} = Dimensions.get('window');
 const containerHeight = height * 0.2;
@@ -8,15 +8,42 @@ const TimerContainerSize = containerHeight * 0.5;
 const TimeElementSize = TimerContainerSize * 0.8;
 
 const baitSize = BaitContainerHeight * 0.7;
-// const
 
-const Bait = () => {
+const Baits = ({baitCount}) => {
+  const originalBaitCount = useMemo(() => baitCount, []);
+  const scaleAnimations = useMemo(
+    () => new Array(originalBaitCount).fill(1).map(() => new Animated.Value(1)),
+    [originalBaitCount],
+  );
+
+  useEffect(() => {
+    if (baitCount < originalBaitCount) {
+      const lastElementIndex = baitCount;
+      if (lastElementIndex >= 0 && lastElementIndex < scaleAnimations.length) {
+        Animated.timing(scaleAnimations[lastElementIndex], {
+          toValue: 0,
+          duration: 1000,
+          useNativeDriver: true,
+        }).start();
+      }
+    }
+  }, [baitCount, originalBaitCount, scaleAnimations]);
+
   return (
-    <View
-      style={[
-        styles.bait,
-        {marginLeft: baitSize * 0.2, marginRight: baitSize * 0.2},
-      ]}></View>
+    <View style={styles.baitContainer}>
+      {scaleAnimations.map((scaleAnimation, index) => (
+        <Animated.View
+          key={index}
+          style={[
+            styles.bait,
+            {
+              marginLeft: baitSize * 0.2,
+              marginRight: baitSize * 0.2,
+              transform: [{scale: scaleAnimation}],
+            },
+          ]}></Animated.View>
+      ))}
+    </View>
   );
 };
 
@@ -37,11 +64,9 @@ const Deck = ({baitCount}) => {
       <View
         style={[styles.timeContainerBGSquare, {left: TimeContainerCenterX}]}
       />
-      <View style={styles.baitContainer}>
-        {new Array(baitCount).fill(0).map((_, index) => (
-          <Bait key={index} />
-        ))}
-      </View>
+
+      <Baits baitCount={baitCount} />
+
       <View style={[styles.timeContainer, {left: TimeContainerCenterX}]}>
         <View
           style={{

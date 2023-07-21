@@ -44,9 +44,11 @@ const FishGame = ({navigation}) => {
     setInterpolations(interpolations);
     setLoading(false);
   };
-
   useEffect(() => {
     calculateInterpolations();
+  }, []);
+
+  useEffect(() => {
     const lastLevel = gameRoundData.length - 1;
     if (state.baitCount === 0 && state.level !== lastLevel) {
       dispatch({type: ACTIONS.NEXT_LEVEL});

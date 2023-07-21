@@ -3,7 +3,7 @@ import Svg, {Path} from 'react-native-svg';
 import adjustHexColor from '../../../utilities/adjustHexColor';
 
 const PirateShipSvg = ({height, width, color}) => {
-  const {darkened, lightened} = adjustHexColor(color, 20);
+  const {darkened, lightened} = adjustHexColor(color, 20, 20);
 
   return (
     <Svg width={width} height={height} viewBox="0 0 100 121" fill="none">

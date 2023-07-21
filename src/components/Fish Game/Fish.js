@@ -28,9 +28,9 @@ const Fish = ({id, ACTIONS, dispatch, interpolations}) => {
     from: rotateFrom,
     to: rotateFrom,
   });
+  const lastToValue = useRef(initialToValue);
 
   const fedAnimation = useRef(new Animated.Value(0)).current;
-
   const interpolateAnimation = useRef(new Animated.Value(0)).current;
 
   const refs = useRef(
@@ -113,8 +113,9 @@ const Fish = ({id, ACTIONS, dispatch, interpolations}) => {
       }),
     ]).start(({finished}) => {
       if (finished) {
-        let newTo = newToValue();
+        const newTo = newToValue(lastToValue.current);
         rotationAnimation.setValue(0);
+        lastToValue.current = newTo;
         Animate(to, newTo);
       }
     });
@@ -129,13 +130,14 @@ const Fish = ({id, ACTIONS, dispatch, interpolations}) => {
     if (fed) {
       dispatch({type: ACTIONS.DECREASE_LIVES});
     } else {
-      translateAnimation.stopAnimation(async value => {
+      translateAnimation.stopAnimation(value => {
         // showFedAnimation();
         setFed(true);
         setDisabled(true);
         dispatch({type: ACTIONS.ON_FED});
-        // await new Promise(resolve => setTimeout(resolve, 5000));
-        // Animate(value, initialToValue);
+        setTimeout(() => {
+          Animate(value, lastToValue.current);
+        }, 2000);
       });
     }
   };
@@ -146,7 +148,7 @@ const Fish = ({id, ACTIONS, dispatch, interpolations}) => {
     'bottom_right_branch',
     'top_right_branch',
   ];
-
+  const AnimatedPath = Animated.createAnimatedComponent(Path);
   return (
     <TouchableOpacity
       disabled={disabled}
