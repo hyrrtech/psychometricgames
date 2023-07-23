@@ -10,17 +10,43 @@ import {InfoLabel} from '../../components/InfoLabel';
 import BackgroundImage from '../../values/BackgroundImage';
 import {reducer, ACTIONS} from './reducer';
 import initialState from './initialState';
-import {Fish, BaitContainer} from '../../components/Fish Game';
+import {Fish, Deck} from '../../components/Fish Game';
 import {constants, gameRoundData} from '../../utilities/Fish Game';
+import {interpolate} from 'flubber';
+import {frames} from '../../components/Fish Game/frames';
 
 const {poundAreaHeight, poundAreaWidth} = constants;
 
 const FishGame = ({navigation}) => {
   const {user} = useContext(AuthContext);
   const GameRef = db.ref(`/users/${user.uid}/ColorMatch/`);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [completedPopup, setCompletedPopup] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [interpolations, setInterpolations] = useState({});
+
+  const calculateInterpolations = async () => {
+    const interpolations = await new Promise(resolve => {
+      setTimeout(() => {
+        const result = Object.keys(frames[0]).reduce((acc, key) => {
+          acc[key] = frames.map((frame, index) =>
+            interpolate(frame[key], frames[(index + 1) % frames.length][key], {
+              maxSegmentLength: 7,
+            }),
+          );
+
+          return acc;
+        }, {});
+
+        resolve(result);
+      }, 0);
+    });
+    setInterpolations(interpolations);
+    setLoading(false);
+  };
+  useEffect(() => {
+    calculateInterpolations();
+  }, []);
 
   useEffect(() => {
     const lastLevel = gameRoundData.length - 1;
@@ -77,19 +103,18 @@ const FishGame = ({navigation}) => {
             ACTIONS={ACTIONS}
             dispatch={dispatch}
             id={index}
+            interpolations={interpolations}
           />
         ))}
       </View>
       <View
         style={{
           position: 'absolute',
-          backgroundColor: 'gray',
           bottom: 0,
           width: '100%',
-          height: 100,
-          justifyContent: 'center',
+          alignItems: 'center',
         }}>
-        <BaitContainer number_of_bait={state.baitCount} />
+        <Deck baitCount={state.baitCount} />
       </View>
     </GameWrapper>
   );

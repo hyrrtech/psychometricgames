@@ -1,20 +1,42 @@
 import svgData from './svgData';
-const shapes = Object.keys(svgData);
+const shapes = ['shape8'];
+
+const color_palette = {
+  2: [
+    ['#b2d5cb', '#92b9c5'],
+    ['#eea888', '#e37059'],
+  ],
+  3: [
+    ['#72adc4', '#b2d5cb', '#709a9b'],
+    ['#9183b0', '#6849c0', '#8fa5d0'],
+    ['#978c89', '#ab8287', '#935d6c'],
+  ],
+};
 
 const rotationAnimations = ['none', 'clockwise', 'anticlockwise'];
-const colors = ['#6093cc', '#2fd046', '#cf392c'];
-const rotationAngles = [45, 90];
+// const colors = ['#6093cc', '#2fd046', '#cf392c', '#ffd354'];
+const rotationAngles = [0, 60];
 
-const generateShapeData = (
-  num_of_shapes,
-  num_of_unique_styles,
-  num_of_unique_colors,
-  num_of_unique_shapes,
-  isAnimated,
-  isRotated,
-  isFlippedY, //wont work for flipped shapes
-) => {
-  //count distribution
+const filterShapes = num => {
+  const filteredShapes = [];
+  for (let i = 0; i < num; i++) {
+    let shape = shapes[Math.floor(Math.random() * shapes.length)];
+    while (filteredShapes.includes(shape)) {
+      shape = shapes[Math.floor(Math.random() * shapes.length)];
+    }
+    filteredShapes.push(shape);
+  }
+  return filteredShapes;
+};
+
+const filterColors = num => {
+  const colorSets = color_palette[num];
+  return colorSets[Math.floor(Math.random() * colorSets.length)];
+};
+
+const getCountDistribution = (num_of_shapes, num_of_unique_styles) => {
+  const count_distribution_array = [];
+
   const num_of_shapes_styles_excluding_unique_shape = num_of_unique_styles - 1;
   const num_of_shapes_excluding_unique_shape = num_of_shapes - 1;
   const count_distribution = Math.floor(
@@ -25,7 +47,6 @@ const generateShapeData = (
     num_of_shapes_excluding_unique_shape %
     num_of_shapes_styles_excluding_unique_shape;
 
-  const count_distribution_array = [];
   for (let i = 0; i < num_of_shapes_styles_excluding_unique_shape; i++) {
     count_distribution_array.push(count_distribution);
   }
@@ -33,114 +54,69 @@ const generateShapeData = (
     count_distribution_array[i] += 1;
   }
 
-  const available_shapes = [];
-  for (let i = 0; i < num_of_unique_shapes; i++) {
-    let shape = shapes[Math.floor(Math.random() * shapes.length)];
-    while (available_shapes.includes(shape)) {
-      shape = shapes[Math.floor(Math.random() * shapes.length)];
-    }
-    available_shapes.push(shape);
-  }
+  //push for shape with count=1
+  count_distribution_array.push(1);
 
-  const available_colors = [];
-  for (let i = 0; i < num_of_unique_colors; i++) {
-    let color = colors[Math.floor(Math.random() * colors.length)];
-    while (available_colors.includes(color)) {
-      color = colors[Math.floor(Math.random() * colors.length)];
-    }
-    available_colors.push(color);
-  }
+  return count_distribution_array;
+};
 
-  const shape_styles = [];
-  for (let i = 0; i < count_distribution_array.length; i++) {
+const generateShapeData = (
+  num_of_shapes,
+  num_of_unique_styles,
+  num_of_unique_colors,
+  num_of_unique_shapes,
+  isAnimated = false,
+  isRotated = false,
+  hasPattern = false,
+) => {
+  //calculate count for each style
+  const count_distribution_array = getCountDistribution(
+    num_of_shapes,
+    num_of_unique_styles,
+  );
+
+  const available_shapes = filterShapes(num_of_unique_shapes);
+  const available_colors = filterColors(num_of_unique_colors);
+
+  const generateStyle = count => {
+    const rotation = isRotated
+      ? rotationAngles[Math.floor(Math.random() * rotationAngles.length)]
+      : 0;
     let shape = {
       shape:
         available_shapes[Math.floor(Math.random() * available_shapes.length)],
       color:
         available_colors[Math.floor(Math.random() * available_colors.length)],
-      initialRotationAngle: isRotated
-        ? rotationAngles[Math.floor(Math.random() * rotationAngles.length)]
-        : 0,
-      rotationAnimation: isAnimated
-        ? rotationAnimations[
-            Math.floor(Math.random() * rotationAnimations.length)
-          ]
-        : 'none',
-      hasReflection: isFlippedY
+      initialRotationAngle: rotation,
+      rotationAnimation:
+        isAnimated && rotation != 0
+          ? rotationAnimations[
+              Math.floor(Math.random() * rotationAnimations.length)
+            ]
+          : 'none',
+      hasPattern: hasPattern
         ? Math.floor(Math.random() * 2)
           ? true
           : false
         : false,
-      hasPattern: Math.floor(Math.random() * 2) ? true : false,
-      count: count_distribution_array[i],
+      count,
     };
-    shape_styles.push(shape);
-  }
+    return shape;
+  };
 
-  const last_shape_style = {...shape_styles[shape_styles.length - 1]};
-  const last_shape_style_properties = Object.keys(last_shape_style);
+  const shape_styles = new Map();
 
-  if (!isAnimated) {
-    last_shape_style_properties.splice(
-      last_shape_style_properties.indexOf('rotationAnimation'),
-      1,
-    );
-  }
-  if (!isRotated) {
-    last_shape_style_properties.splice(
-      last_shape_style_properties.indexOf('initialRotationAngle'),
-      1,
-    );
-  }
-  if (!isFlippedY) {
-    last_shape_style_properties.splice(
-      last_shape_style_properties.indexOf('hasReflection'),
-      1,
-    );
-  }
+  for (let i = 0; i < count_distribution_array.length; i++) {
+    let shape = generateStyle(count_distribution_array[i]);
+    let key = `${shape.shape},${shape.color},${shape.initialRotationAngle},${shape.rotationAnimation},${shape.hasPattern}`;
 
-  const last_shape_style_property_to_modify =
-    last_shape_style_properties[
-      Math.floor(Math.random() * last_shape_style_properties.length)
-    ];
-  last_shape_style['count'] = 1;
-  switch (last_shape_style_property_to_modify) {
-    case 'shape':
-      last_shape_style[last_shape_style_property_to_modify] =
-        available_shapes[Math.floor(Math.random() * available_shapes.length)];
-      break;
-    case 'color':
-      last_shape_style[last_shape_style_property_to_modify] =
-        available_colors[Math.floor(Math.random() * available_colors.length)];
-      break;
-    case 'initialRotationAngle':
-      last_shape_style[last_shape_style_property_to_modify] =
-        rotationAngles[Math.floor(Math.random() * rotationAngles.length)];
-      break;
-    case 'rotationAnimation':
-      last_shape_style[last_shape_style_property_to_modify] =
-        rotationAnimations[
-          Math.floor(Math.random() * rotationAnimations.length)
-        ];
-      break;
-    case 'hasPattern':
-      last_shape_style[last_shape_style_property_to_modify] = Math.floor(
-        Math.random() * 2,
-      )
-        ? true
-        : false;
-      break;
-    case 'hasReflection':
-      last_shape_style[last_shape_style_property_to_modify] = Math.floor(
-        Math.random() * 2,
-      )
-        ? true
-        : false;
-      break;
-    default:
-      break;
+    while (shape_styles.has(key)) {
+      shape = generateStyle(count_distribution_array[i]);
+      key = `${shape.shape},${shape.color},${shape.initialRotationAngle},${shape.rotationAnimation},${shape.hasPattern}`;
+    }
+
+    shape_styles.set(key, shape);
   }
-  shape_styles.push(last_shape_style);
 
   return shape_styles;
 };

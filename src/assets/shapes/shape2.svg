@@ -1,0 +1,48 @@
+<svg width="381" height="285" viewBox="0 0 381 285" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M380.44 0H2V203.57H380.44V0Z" fill="lightenColor"/>
+<path d="M333.05 223.64C360.22 212.1 380.45 203.57 380.45 203.57H2C2 203.57 19.67 210.9 44.25 221.17C45.334 221.527 46.3959 221.947 47.43 222.43C47.61 222.51 47.77 222.61 47.94 222.7L60.36 227.9C60.9211 228.011 61.4546 228.232 61.93 228.55L80.53 236.34C81.7077 236.359 82.8326 236.832 83.67 237.66C112.75 249.86 143.56 262.88 165.02 272.17C165.745 272.284 166.431 272.572 167.02 273.01C181.79 279.42 191.71 283.9 192.83 284.82C193.849 284.156 194.919 283.574 196.03 283.08C196.381 282.842 196.765 282.656 197.17 282.53C201.29 280.53 208.11 277.47 216.72 273.66C216.896 273.559 217.08 273.472 217.27 273.4C217.446 273.304 217.63 273.223 217.82 273.16C226.31 269.41 236.47 264.98 247.51 260.22C247.684 260.128 247.865 260.048 248.05 259.98C274.31 248.63 305.45 235.36 330.92 224.54C331.539 224.059 332.273 223.749 333.05 223.64Z" fill="lightenColor"/>
+<mask id="mask0_241_2565" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="2" y="0" width="379" height="285">
+<path d="M380.44 0H2V203.57H380.44V0Z" fill="lightenColor"/>
+<path d="M333.05 223.64C360.22 212.1 380.45 203.57 380.45 203.57H2C2 203.57 19.67 210.9 44.25 221.17C45.334 221.527 46.3959 221.947 47.43 222.43C47.61 222.51 47.77 222.61 47.94 222.7L60.36 227.9C60.9211 228.011 61.4546 228.232 61.93 228.55L80.53 236.34C81.7077 236.359 82.8326 236.832 83.67 237.66C112.75 249.86 143.56 262.88 165.02 272.17C165.745 272.284 166.431 272.572 167.02 273.01C181.79 279.42 191.71 283.9 192.83 284.82C193.849 284.156 194.919 283.574 196.03 283.08C196.381 282.842 196.765 282.656 197.17 282.53C201.29 280.53 208.11 277.47 216.72 273.66C216.896 273.559 217.08 273.472 217.27 273.4C217.446 273.304 217.63 273.223 217.82 273.16C226.31 269.41 236.47 264.98 247.51 260.22C247.684 260.128 247.865 260.048 248.05 259.98C274.31 248.63 305.45 235.36 330.92 224.54C331.539 224.059 332.273 223.749 333.05 223.64Z" fill="lightenColor"/>
+</mask>
+<g mask="url(#mask0_241_2565)">
+<path d="M252.406 8C252.346 101.28 252.346 193.4 252.406 286.94V8Z" fill="patternColor"/>
+<path d="M252.406 8C252.346 101.28 252.346 193.4 252.406 286.94" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M333.121 8C333.171 95.27 333.171 181.38 333.121 268.18V8Z" fill="patternColor"/>
+<path d="M333.121 8C333.171 95.27 333.171 181.38 333.121 268.18" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M313.121 8C312.641 96.27 312.641 185.38 313.121 273.25V8Z" fill="patternColor"/>
+<path d="M313.121 8C312.641 96.27 312.641 185.38 313.121 273.25" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M353.474 8C353.054 93.2733 353.054 178.46 353.474 263.56V8Z" fill="patternColor"/>
+<path d="M353.474 8C353.054 93.2733 353.054 178.46 353.474 263.56" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M272.406 8C272.88 99.28 272.88 190.483 272.406 281.61V8Z" fill="patternColor"/>
+<path d="M272.406 8C272.88 99.28 272.88 190.483 272.406 281.61" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M373.474 0.5C373.574 84.77 373.574 175.37 373.474 259.51V0.5Z" fill="patternColor"/>
+<path d="M373.474 0.5C373.574 84.77 373.574 175.37 373.474 259.51" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M292.761 8V278V8Z" fill="patternColor"/>
+<path d="M292.761 8V278" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M10 244.979V1C10 82.2716 10 164.315 10 245V244.979Z" fill="patternColor" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M30.2738 8C30.4238 88.26 30.4238 169.36 30.2738 249.86V8Z" fill="patternColor"/>
+<path d="M30.2738 8C30.4238 88.26 30.4238 169.36 30.2738 249.86" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M110.986 8C111.246 94.27 111.246 181.38 110.986 268V8Z" fill="patternColor"/>
+<path d="M110.986 8C111.246 94.27 111.246 181.38 110.986 268" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M90.9863 8C90.7163 93.27 90.7163 178.38 90.9863 263.81V8Z" fill="patternColor"/>
+<path d="M90.9863 8C90.7163 93.27 90.7163 178.38 90.9863 263.81" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M131.339 8C131.129 96.27 131.129 184.38 131.339 272.8V8Z" fill="patternColor"/>
+<path d="M131.339 8C131.129 96.27 131.129 184.38 131.339 272.8" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M211.956 9.96997C211.842 104.25 211.842 198.38 211.956 292.36V9.96997Z" fill="patternColor"/>
+<path d="M211.956 9.96997C211.842 104.25 211.842 198.38 211.956 292.36" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M50.6262 8C50.3062 90.26 50.3062 172.337 50.6262 254.23V8Z" fill="patternColor"/>
+<path d="M50.6262 8C50.3062 90.26 50.3062 172.337 50.6262 254.23" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M232.046 8C232.466 102.28 232.466 197.4 232.046 291.16V8Z" fill="patternColor"/>
+<path d="M232.046 8C232.466 102.28 232.466 197.4 232.046 291.16" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M151.339 8C151.649 97.27 151.649 187.39 151.339 276.73V8Z" fill="patternColor"/>
+<path d="M151.339 8C151.649 97.27 151.649 187.39 151.339 276.73" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M70.6262 8C70.8362 92.27 70.8362 175.37 70.6262 259V8Z" fill="patternColor"/>
+<path d="M70.6262 8C70.8362 92.27 70.8362 175.37 70.6262 259" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M191.691 8C192.051 100.28 192.051 193.4 191.691 285.71V8Z" fill="patternColor"/>
+<path d="M191.691 8C192.051 100.28 192.051 193.4 191.691 285.71" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M171.691 8C171.531 99.28 171.531 189.39 171.691 280.63V8Z" fill="patternColor"/>
+<path d="M171.691 8C171.531 99.28 171.531 189.39 171.691 280.63" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+</g>
+<path d="M0 0.5H378.45C378.45 0.5 185.35 81.93 190.82 81.93C196.29 81.93 0 0.5 0 0.5Z" fill="darkenColor"/>
+</svg>

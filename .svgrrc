@@ -1,5 +1,10 @@
 {
   "replaceAttrValues": {
-    "@fill": "{props.fill}"
+    "#000": "{props.fill}",
+    "#000000": "{props.fill}",
+    "@fill": "{props.fill}",
+    "darkenColor": "{props.darkenColor}",
+    "lightenColor": "{props.lightenColor}",
+    "patternColor": "{props.patternColor}"
   }
 }

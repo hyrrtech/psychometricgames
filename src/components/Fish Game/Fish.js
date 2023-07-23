@@ -1,11 +1,19 @@
 import {View, Text, TouchableOpacity, Animated, Easing} from 'react-native';
-import {useEffect, useState, useContext, useMemo, useRef} from 'react';
+import {
+  useEffect,
+  useState,
+  useContext,
+  useMemo,
+  useRef,
+  createRef,
+} from 'react';
 import {FishGameContext} from '../../providers/FishGame.Provider';
 import {constants, getNewAngle, newToValue} from '../../utilities/Fish Game';
-const {poundAreaHeight, poundAreaWidth, fishHeight, fishWidth, speed} =
-  constants;
+import Svg, {Path} from 'react-native-svg';
+import {fishColors as elementColors, frames} from './frames';
+const {fishSize, speed} = constants;
 
-const Fish = ({id, ACTIONS, dispatch}) => {
+const Fish = ({id, ACTIONS, dispatch, interpolations}) => {
   const {disabled, setDisabled} = useContext(FishGameContext);
   const [fed, setFed] = useState(false);
 
@@ -16,59 +24,99 @@ const Fish = ({id, ACTIONS, dispatch}) => {
     return {rotateFrom, initialFromValue, initialToValue};
   }, []);
 
-  const fedAnimation = useRef(new Animated.Value(0)).current;
-
-  const showFedAnimation = () => {
-    Animated.timing(fedAnimation, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start(({finished}) => {
-      if (finished) {
-        fedAnimation.setValue(0);
-      }
-    });
-  };
-
   const [rotationAngle, setRotationAngle] = useState({
     from: rotateFrom,
     to: rotateFrom,
   });
-
+  const lastToValue = useRef(initialToValue);
+  const fedAnimation = useRef(new Animated.Value(0)).current;
+  const interpolateAnimation = useRef(new Animated.Value(0)).current;
   const translateAnimation = useRef(
     new Animated.ValueXY({x: initialFromValue.x, y: initialFromValue.y}),
   ).current;
   const rotationAnimation = useRef(new Animated.Value(0)).current;
+
+  const refs = useRef(
+    Object.keys(frames[0]).reduce((acc, key) => {
+      acc[key] = createRef();
+      return acc;
+    }, {}),
+  ).current;
+
+  useEffect(() => {
+    const listener = ({value}) => {
+      const frameIndex = Math.floor(value * (frames.length - 1));
+      const progress = value * (frames.length - 1) - frameIndex;
+
+      Object.keys(frames[0]).forEach(key => {
+        if (refs[key].current) {
+          const path = interpolations[key][frameIndex](progress);
+          refs[key].current.setNativeProps({d: path});
+        }
+      });
+    };
+
+    interpolateAnimation.addListener(listener);
+
+    return () => {
+      interpolateAnimation.removeListener(listener);
+    };
+  }, []);
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(interpolateAnimation, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+        easing: Easing.linear,
+      }),
+    ).start();
+  }, []);
+  // const showFedAnimation = () => {
+  //   Animated.timing(fedAnimation, {
+  //     toValue: 1,
+  //     duration: 500,
+  //     useNativeDriver: true,
+  //   }).start(({finished}) => {
+  //     if (finished) {
+  //       fedAnimation.setValue(0);
+  //     }
+  //   });
+  // };
 
   const Animate = (from, to) => {
     const distance = Math.sqrt(
       Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2),
     );
     const duration = (distance / speed) * 1000;
-
     let rotateTo = getNewAngle(from, to);
 
     setRotationAngle(rotationAngle => {
       return {from: rotationAngle.to, to: rotateTo};
     });
 
-    Animated.parallel([
-      Animated.timing(rotationAnimation, {
-        toValue: 1,
-        duration: 700,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }),
-      Animated.timing(translateAnimation, {
-        toValue: {x: to.x, y: to.y},
-        duration: duration,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }),
-    ]).start(({finished}) => {
+    Animated.parallel(
+      [
+        Animated.timing(rotationAnimation, {
+          toValue: 1,
+          duration: 700,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(translateAnimation, {
+          toValue: {x: to.x, y: to.y},
+          duration: duration,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+      ],
+      {stopTogether: false},
+    ).start(({finished}) => {
       if (finished) {
-        let newTo = newToValue();
+        const newTo = newToValue(lastToValue.current);
         rotationAnimation.setValue(0);
+        lastToValue.current = newTo;
         Animate(to, newTo);
       }
     });
@@ -79,17 +127,29 @@ const Fish = ({id, ACTIONS, dispatch}) => {
   }, []);
 
   const handlePress = () => {
-    console.log('pressed', id, fed);
+    // console.log('pressed', id, fed);
     if (fed) {
       dispatch({type: ACTIONS.DECREASE_LIVES});
     } else {
-      showFedAnimation();
-      setFed(true);
-      setDisabled(true);
-      dispatch({type: ACTIONS.ON_FED});
+      translateAnimation.stopAnimation(value => {
+        // showFedAnimation();
+        setFed(true);
+        setDisabled(true);
+        dispatch({type: ACTIONS.ON_FED});
+        setTimeout(() => {
+          Animate(value, lastToValue.current);
+        }, 2000);
+      });
     }
   };
 
+  const strokeKeys = [
+    'bottom_left_branch',
+    'top_left_branch',
+    'bottom_right_branch',
+    'top_right_branch',
+  ];
+  const AnimatedPath = Animated.createAnimatedComponent(Path);
   return (
     <TouchableOpacity
       disabled={disabled}
@@ -97,10 +157,8 @@ const Fish = ({id, ACTIONS, dispatch}) => {
       onPressIn={handlePress}
       style={{
         position: 'absolute',
-        height: fishHeight,
-        width: fishWidth,
-        overflow: 'hidden',
-        borderWidth: 1,
+        height: fishSize,
+        width: fishSize,
 
         transform: [
           {translateX: translateAnimation.x},
@@ -113,29 +171,22 @@ const Fish = ({id, ACTIONS, dispatch}) => {
           },
         ],
       }}>
-      {/* head */}
-      <Text style={{position: 'absolute', zIndex: 2, color: 'white'}}>
-        {id}
-      </Text>
-
-      <Animated.View
-        style={{
-          position: 'absolute',
-          zIndex: 1,
-          height: '100%',
-          width: '30%',
-          backgroundColor: 'blue',
-        }}
-      />
-      <Animated.View
-        style={{
-          position: 'absolute',
-          height: '100%',
-          width: '40%',
-          backgroundColor: 'red',
-          opacity: fedAnimation,
-        }}
-      />
+      <Svg
+        width={fishSize}
+        height={fishSize}
+        viewBox="0 0 224 340"
+        style={{transform: [{rotateZ: '-90deg'}]}}>
+        {Object.keys(frames[0]).map(key => (
+          <Path
+            key={key}
+            d={frames[0][key]}
+            ref={refs[key]}
+            stroke={strokeKeys.includes(key) ? elementColors[key] : 'none'}
+            fill={elementColors[key]}
+            opacity={key === 'body' ? 0.8 : 1}
+          />
+        ))}
+      </Svg>
     </TouchableOpacity>
   );
 };

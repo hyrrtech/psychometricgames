@@ -1,3 +1,4 @@
 import Fish from './Fish';
-import BaitContainer from './BaitContainer';
-export {Fish, BaitContainer};
+import Deck from './Deck';
+
+export {Fish, Deck};
