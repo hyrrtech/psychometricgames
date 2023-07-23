@@ -1,0 +1,31 @@
+<svg width="239" height="287" viewBox="0 0 239 287" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M168.37 0H69.74L40.93 28.81C38.55 31.47 36.05 33.9 33.44 36.3L0 69.74V168.36L56.44 224.8C57.4456 225.25 58.2501 226.054 58.7 227.06L64.27 232.63C65.2756 233.08 66.0801 233.884 66.53 234.89L69.74 238.1H168.37L220.76 185.71C221.025 185.345 221.345 185.025 221.71 184.76L238.1 168.36V69.74L168.37 0Z" fill="lightenColor"/>
+<path d="M5.77002 174.13L56.44 224.8C57.4506 225.251 58.259 226.059 58.71 227.07L64.27 232.63C65.2806 233.081 66.089 233.889 66.54 234.9L94.78 263.14C95.5823 263.826 96.328 264.575 97.01 265.38L106.93 275.3C107.316 275.576 107.654 275.914 107.93 276.3L115.61 283.98C117.147 284.61 118.517 285.589 119.61 286.84L145.08 261.38C147.08 257.91 150.74 254.89 154.31 252.14L220.72 185.73C220.999 185.347 221.337 185.009 221.72 184.73L232.34 174.11L5.77002 174.13Z" fill="lightenColor"/>
+<mask id="mask0_177_2597" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="239" height="287">
+<path d="M168.37 0H69.74L40.93 28.81C38.55 31.47 36.05 33.9 33.44 36.3L0 69.74V168.36L56.44 224.8C57.4456 225.25 58.2501 226.054 58.7 227.06L64.27 232.63C65.2756 233.08 66.0801 233.884 66.53 234.89L69.74 238.1H168.37L220.76 185.71C221.025 185.345 221.345 185.025 221.71 184.76L238.1 168.36V69.74L168.37 0Z" fill="lightenColor"/>
+<path d="M5.77002 174.13L56.44 224.8C57.4506 225.251 58.259 226.059 58.71 227.07L64.27 232.63C65.2806 233.081 66.089 233.889 66.54 234.9L94.78 263.14C95.5823 263.826 96.328 264.575 97.01 265.38L106.93 275.3C107.316 275.576 107.654 275.914 107.93 276.3L115.61 283.98C117.147 284.61 118.517 285.589 119.61 286.84L145.08 261.38C147.08 257.91 150.74 254.89 154.31 252.14L220.72 185.73C220.999 185.347 221.337 185.009 221.72 184.73L232.34 174.11L5.77002 174.13Z" fill="lightenColor"/>
+</mask>
+<g mask="url(#mask0_177_2597)">
+<path d="M142 -56C142 65.44 142 188.413 142 310V-56Z" fill="patternColor"/>
+<path d="M142 -56C142 65.44 142 188.413 142 310" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M222 207.993C226 147.99 226 87.5693 222 28V208V207.993Z" fill="patternColor" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M203 237.99C201.647 158.207 201.687 79.4961 203 0V238V237.99Z" fill="patternColor" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M162 -56C162 62.5951 162 180.072 162 299V-56Z" fill="patternColor"/>
+<path d="M162 -56C162 62.5951 162 180.072 162 299" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M181 271.988V-36C183.633 66.2727 183.7 169.872 181 272V271.988Z" fill="patternColor" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M21 19C19.6667 85.1937 19.6667 150.719 21 217V19Z" fill="patternColor"/>
+<path d="M21 19C19.6667 85.1937 19.6667 150.719 21 217" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M101 -56C101 67.9519 101 193.409 101 318V-56Z" fill="patternColor"/>
+<path d="M101 -56C101 67.9519 101 193.409 101 318" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M121 -56C122.333 69.2587 122.333 196.036 121 322V-56Z" fill="patternColor"/>
+<path d="M121 -56C122.333 69.2587 122.333 196.036 121 322" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M41 -10C39.6667 74.7625 39.6667 160.67 41 246V-10Z" fill="patternColor"/>
+<path d="M41 -10C39.6667 74.7625 39.6667 160.67 41 246" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M81 307.96V-56C81 64.6397 81 186.773 81 308V307.96Z" fill="patternColor" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M60.5303 -41.7983C60.5325 63.8962 60.5347 169.759 60.537 275.225L60.5303 -41.7983Z" fill="patternColor"/>
+<path d="M60.5303 -41.7983C60.5325 63.8962 60.5347 169.759 60.537 275.225" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M0 168.36L49.32 119.05L0 69.74V168.36Z" fill="darkenColor"/>
+<path d="M238.1 69.74L188.79 119.05L238.1 168.36V69.74Z" fill="darkenColor"/>
+<path d="M69.74 0L119.05 49.31L168.37 0H69.74Z" fill="darkenColor"/>
+</g>
+</svg>

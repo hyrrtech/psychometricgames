@@ -1,0 +1,24 @@
+<svg width="331" height="331" viewBox="0 0 331 331" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M96.94 0L0 96.94V234.02L96.94 330.96H234.02L330.96 234.02V96.94L234.02 0H96.94Z" fill="lightenColor"/>
+<path d="M127.34 1V331" stroke="patternColor" stroke-width="9" stroke-miterlimit="10"/>
+<path d="M108 1V331" stroke="patternColor" stroke-width="9" stroke-miterlimit="10"/>
+<path d="M166.34 0V330" stroke="patternColor" stroke-width="9" stroke-miterlimit="10"/>
+<path d="M147.34 0V330" stroke="patternColor" stroke-width="9" stroke-miterlimit="10"/>
+<path d="M205.34 0V330" stroke="patternColor" stroke-width="9" stroke-miterlimit="10"/>
+<path d="M185.34 0V330" stroke="patternColor" stroke-width="9" stroke-miterlimit="10"/>
+<path d="M223.34 0V330" stroke="patternColor" stroke-width="9" stroke-miterlimit="10"/>
+<path d="M67 83V248.48" stroke="patternColor" stroke-width="9" stroke-miterlimit="10"/>
+<path d="M87 82V247.48" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M48 82V247.48" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M28 96V233" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M9 97V234" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M301 82V247.48" stroke="patternColor" stroke-width="9" stroke-miterlimit="10"/>
+<path d="M321 97V234" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M282 81V246.48" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M262 95V232" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M243 96V233" stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M234.02 0V96.94H330.96L234.02 0Z" fill="darkenColor"/>
+<path d="M330.96 234.021H234.02V330.96L330.96 234.021Z" fill="darkenColor"/>
+<path d="M96.94 330.96V234.021H0L96.94 330.96Z" fill="darkenColor"/>
+<path d="M0 96.94H96.94V0L0 96.94Z" fill="darkenColor"/>
+</svg>

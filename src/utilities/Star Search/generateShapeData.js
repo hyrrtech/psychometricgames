@@ -1,5 +1,5 @@
 import svgData from './svgData';
-const shapes = Object.keys(svgData);
+const shapes = ['shape8'];
 
 const color_palette = {
   2: [

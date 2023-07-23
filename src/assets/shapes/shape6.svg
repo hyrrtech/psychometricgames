@@ -1,0 +1,19 @@
+<svg width="296" height="272" viewBox="0 0 296 272" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M175.92 87.14L175.37 87.09L114.92 80.71L57.64 252.55L69.76 254.89C69.9528 254.91 70.1435 254.947 70.33 255L80.61 257C81.118 257.025 81.6197 257.123 82.1 257.29L127.95 266.11C128.496 266.127 129.035 266.228 129.55 266.41L156.93 271.68L183.66 176.21L275.32 199.12L295.87 99.83L175.92 87.14Z" fill="lightenColor"/>
+<mask id="mask0_241_2564" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="57" y="80" width="239" height="192">
+<path d="M175.92 87.14L175.37 87.09L114.92 80.71L57.64 252.55L69.76 254.89C69.9528 254.91 70.1435 254.947 70.33 255L80.61 257C81.118 257.025 81.6197 257.123 82.1 257.29L127.95 266.11C128.496 266.127 129.035 266.228 129.55 266.41L156.93 271.68L183.66 176.21L275.32 199.12L295.87 99.83L175.92 87.14Z" fill="lightenColor"/>
+</mask>
+<g mask="url(#mask0_241_2564)">
+<path d="M95.3226 259.69C95.3226 228.17 94.8355 146.93 94.5919 147.06C94.1047 184.6 94.2787 221.97 95.1138 259.68L95.3226 259.69Z"  stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M117.34 83C117.34 143.1 117.34 209.85 117.34 270V83Z"  stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M163.759 88C162.747 142.53 162.747 197.66 163.759 251.91L164 251.85V88H163.759Z"  stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M72.8225 252C73.2712 232.316 72.8226 212.952 72 193V252H72.8225Z"  stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M140.08 85.77V269.28C141.413 207.947 141.413 146.78 140.08 85.78V85.77Z"  stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M185.92 90.47V187C187.174 158 187.331 119.62 185.92 90.47Z"  stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M232.105 95.45C231.294 126.93 231.496 158.88 232.611 190.29V95.45H232.105Z"  stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M254.44 97.8201V196.05C255.549 163.59 255.724 130.49 255.024 97.83L254.44 97.8201Z"  stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M209.141 93.1499H208.62V184.15C209.748 154.15 209.922 123.43 209.141 93.1499Z"  stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+<path d="M277.278 101C276.737 136.662 276.99 171.917 278 208V101.014L277.278 101Z"  stroke="patternColor" stroke-width="10" stroke-miterlimit="10"/>
+</g>
+<path d="M0 160.36L7.63 126L202.39 0L244.39 7.64L210.03 103.08L118.38 84L95.47 175.65L0 160.36Z" fill="darkenColor"/>
+</svg>

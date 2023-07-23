@@ -9,6 +9,14 @@ import {
   getShapePositions,
   svgData,
 } from '../../utilities/Star Search';
+import Shape1 from '../../assets/shapes/shape1.svg';
+import Shape2 from '../../assets/shapes/shape2.svg';
+import Shape3 from '../../assets/shapes/shape3.svg';
+import Shape4 from '../../assets/shapes/shape4.svg';
+import Shape5 from '../../assets/shapes/shape5.svg';
+import Shape6 from '../../assets/shapes/shape6.svg';
+import Shape7 from '../../assets/shapes/shape7.svg';
+import Shape8 from '../../assets/shapes/shape8.svg';
 
 const getInterpolatedValue = (rotationAnimation, angle) => {
   if (rotationAnimation === 'none')
@@ -34,16 +42,95 @@ const SvgComponent = ({
   position,
   count,
 }) => {
-  const shapeData = svgData[shape];
-  const {
-    viewBox,
-    lightPath,
-    darkPaths,
-    patternPaths,
-    // patternStrokeColor,
-    patternStrokeWidth,
-  } = shapeData;
+  // const shapeData = svgData[shape];
+  // const {
+  //   viewBox,
+  //   lightPath,
+  //   darkPaths,
+  //   patternPaths,
+  //   // patternStrokeColor,
+  //   patternStrokeWidth,
+  // } = shapeData;
   const {shapeSize} = constants;
+
+  const Shape = ({shapeName, darkenColor, lightenColor, patternColor}) => {
+    const shapeComponents = {
+      shape1: (
+        <Shape1
+          width={shapeSize}
+          height={shapeSize}
+          patternColor={patternColor}
+          lightenColor={lightenColor}
+          darkenColor={darkenColor}
+        />
+      ),
+      shape2: (
+        <Shape2
+          width={shapeSize}
+          height={shapeSize}
+          patternColor={patternColor}
+          lightenColor={lightenColor}
+          darkenColor={darkenColor}
+        />
+      ),
+      shape3: (
+        <Shape3
+          width={shapeSize}
+          height={shapeSize}
+          patternColor={patternColor}
+          lightenColor={lightenColor}
+          darkenColor={darkenColor}
+        />
+      ),
+      shape4: (
+        <Shape4
+          width={shapeSize}
+          height={shapeSize}
+          patternColor={patternColor}
+          lightenColor={lightenColor}
+          darkenColor={darkenColor}
+        />
+      ),
+      shape5: (
+        <Shape5
+          width={shapeSize}
+          height={shapeSize}
+          patternColor={patternColor}
+          lightenColor={lightenColor}
+          darkenColor={darkenColor}
+        />
+      ),
+      shape6: (
+        <Shape6
+          width={shapeSize}
+          height={shapeSize}
+          patternColor={patternColor}
+          lightenColor={lightenColor}
+          darkenColor={darkenColor}
+        />
+      ),
+      shape7: (
+        <Shape7
+          width={shapeSize}
+          height={shapeSize}
+          patternColor={patternColor}
+          lightenColor={lightenColor}
+          darkenColor={darkenColor}
+        />
+      ),
+      shape8: (
+        <Shape8
+          width={shapeSize}
+          height={shapeSize}
+          patternColor={patternColor}
+          lightenColor={lightenColor}
+          darkenColor={darkenColor}
+        />
+      ),
+    };
+
+    return shapeComponents[shapeName];
+  };
 
   const {darkened: darkenColor, lightened: lightenColor} = adjustHexColor(
     color,
@@ -77,24 +164,12 @@ const SvgComponent = ({
         left: position.x,
         top: position.y,
       }}>
-      <Svg width={shapeSize} height={shapeSize} viewBox={viewBox} fill="none">
-        <Path d={lightPath} fill={color} />
-
-        {hasPattern &&
-          patternPaths.map((path, index) => (
-            <Path
-              key={index}
-              d={path}
-              stroke={lightenColor}
-              strokeWidth={patternStrokeWidth}
-              strokeMiterlimit={10}
-            />
-          ))}
-
-        {darkPaths.map((path, index) => (
-          <Path key={index} d={path} fill={darkenColor} />
-        ))}
-      </Svg>
+      <Shape
+        shapeName={shape}
+        darkenColor={darkenColor}
+        lightenColor={lightenColor}
+        patternColor={hasPattern ? 'rgba(255,255,255,0.5)' : 'none'}
+      />
       <Text style={{position: 'absolute'}}>{count}</Text>
     </AnimatedTouchable>
   );
@@ -103,7 +178,7 @@ const SvgComponent = ({
 const StarSearch = () => {
   const {spawnAreaHeight, spawnAreaWidth} = constants;
   const shapePositions = getShapePositions(20);
-  const shapeStyles = generateShapeData(20, 3, 2, 3, false, false, true);
+  const shapeStyles = generateShapeData(20, 3, 2, 1, false, false, true);
 
   const combinePositionAndStyle = (shapePositions, shapeStyles) => {
     let combinedArray = [];
