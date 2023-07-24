@@ -1,47 +1,102 @@
-import {View, Text, TouchableOpacity, Animated, Easing} from 'react-native';
-import {
-  useEffect,
-  useState,
-  useContext,
-  useMemo,
-  useRef,
-  createRef,
-} from 'react';
+import React, {useEffect, useState, useContext, useRef, memo} from 'react';
+import {TouchableOpacity, Animated, Easing} from 'react-native';
 import {FishGameContext} from '../../providers/FishGame.Provider';
 import {constants, getNewAngle, newToValue} from '../../utilities/Fish Game';
 import Svg, {Path} from 'react-native-svg';
 import {fishColors as elementColors, frames} from './frames';
+
 const {fishSize, speed} = constants;
 
-const Fish = ({id, ACTIONS, dispatch, interpolations}) => {
+const getDistance = (start, end) => {
+  return Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2));
+};
+
+const Fish = ({ACTIONS, dispatch, interpolations, fishProps}) => {
   const {disabled, setDisabled} = useContext(FishGameContext);
-  const [fed, setFed] = useState(false);
-
-  const {rotateFrom, initialFromValue, initialToValue} = useMemo(() => {
-    const initialFromValue = newToValue();
-    const initialToValue = newToValue();
-    const rotateFrom = getNewAngle(initialFromValue, initialToValue);
-    return {rotateFrom, initialFromValue, initialToValue};
-  }, []);
-
-  const [rotationAngle, setRotationAngle] = useState({
-    from: rotateFrom,
-    to: rotateFrom,
-  });
-  const lastToValue = useRef(initialToValue);
+  const {id, initialFromValue, initialToValue, rotateFrom} = fishProps;
+  const [isFed, setIsFed] = useState(false);
+  const lastToValueRef = useRef(initialToValue);
   const fedAnimation = useRef(new Animated.Value(0)).current;
   const interpolateAnimation = useRef(new Animated.Value(0)).current;
   const translateAnimation = useRef(
     new Animated.ValueXY({x: initialFromValue.x, y: initialFromValue.y}),
   ).current;
   const rotationAnimation = useRef(new Animated.Value(0)).current;
+  const [rotationAngle, setRotationAngle] = useState({
+    from: rotateFrom,
+    to: rotateFrom,
+  });
 
   const refs = useRef(
     Object.keys(frames[0]).reduce((acc, key) => {
-      acc[key] = createRef();
+      acc[key] = React.createRef();
       return acc;
     }, {}),
   ).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(interpolateAnimation, {
+        toValue: 1,
+        duration: 700,
+        useNativeDriver: true,
+        easing: Easing.linear,
+      }),
+    ).start();
+  }, []);
+
+  const handlePress = () => {
+    if (isFed) {
+      dispatch({type: ACTIONS.DECREASE_LIVES});
+    } else {
+      translateAnimation.stopAnimation(value => {
+        setIsFed(true);
+        setDisabled(true);
+        dispatch({type: ACTIONS.ON_FED});
+        setTimeout(() => {
+          animateFish(value, lastToValueRef.current);
+        }, 1000);
+      });
+    }
+  };
+
+  const animateFish = (from, to) => {
+    const rotateTo = getNewAngle(from, to);
+    rotationAnimation.setValue(0);
+    setRotationAngle(rotationAngle => {
+      return {from: rotationAngle.to, to: rotateTo};
+    });
+
+    const distance = getDistance(from, to);
+    const duration = (distance / speed) * 1000;
+
+    const newTo = newToValue(to);
+    lastToValueRef.current = newTo;
+
+    const animation = Animated.parallel(
+      [
+        Animated.timing(rotationAnimation, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+          easing: Easing.linear,
+        }),
+        Animated.timing(translateAnimation, {
+          toValue: to,
+          duration: duration,
+          useNativeDriver: true,
+          easing: Easing.linear,
+        }),
+      ],
+      {stopTogether: false},
+    );
+
+    animation.start(({finished}) => {
+      if (finished) {
+        animateFish(to, newTo);
+      }
+    });
+  };
 
   useEffect(() => {
     const listener = ({value}) => {
@@ -64,92 +119,9 @@ const Fish = ({id, ACTIONS, dispatch, interpolations}) => {
   }, []);
 
   useEffect(() => {
-    Animated.loop(
-      Animated.timing(interpolateAnimation, {
-        toValue: 1,
-        duration: 800,
-        useNativeDriver: true,
-        easing: Easing.linear,
-      }),
-    ).start();
-  }, []);
-  // const showFedAnimation = () => {
-  //   Animated.timing(fedAnimation, {
-  //     toValue: 1,
-  //     duration: 500,
-  //     useNativeDriver: true,
-  //   }).start(({finished}) => {
-  //     if (finished) {
-  //       fedAnimation.setValue(0);
-  //     }
-  //   });
-  // };
-
-  const Animate = (from, to) => {
-    const distance = Math.sqrt(
-      Math.pow(to.x - from.x, 2) + Math.pow(to.y - from.y, 2),
-    );
-    const duration = (distance / speed) * 1000;
-    let rotateTo = getNewAngle(from, to);
-
-    setRotationAngle(rotationAngle => {
-      return {from: rotationAngle.to, to: rotateTo};
-    });
-
-    Animated.parallel(
-      [
-        Animated.timing(rotationAnimation, {
-          toValue: 1,
-          duration: 700,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }),
-        Animated.timing(translateAnimation, {
-          toValue: {x: to.x, y: to.y},
-          duration: duration,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        }),
-      ],
-      {stopTogether: false},
-    ).start(({finished}) => {
-      if (finished) {
-        const newTo = newToValue(lastToValue.current);
-        rotationAnimation.setValue(0);
-        lastToValue.current = newTo;
-        Animate(to, newTo);
-      }
-    });
-  };
-
-  useEffect(() => {
-    Animate(initialFromValue, initialToValue);
+    animateFish(initialFromValue, initialToValue);
   }, []);
 
-  const handlePress = () => {
-    // console.log('pressed', id, fed);
-    if (fed) {
-      dispatch({type: ACTIONS.DECREASE_LIVES});
-    } else {
-      translateAnimation.stopAnimation(value => {
-        // showFedAnimation();
-        setFed(true);
-        setDisabled(true);
-        dispatch({type: ACTIONS.ON_FED});
-        setTimeout(() => {
-          Animate(value, lastToValue.current);
-        }, 2000);
-      });
-    }
-  };
-
-  const strokeKeys = [
-    'bottom_left_branch',
-    'top_left_branch',
-    'bottom_right_branch',
-    'top_right_branch',
-  ];
-  const AnimatedPath = Animated.createAnimatedComponent(Path);
   return (
     <TouchableOpacity
       disabled={disabled}
@@ -181,7 +153,6 @@ const Fish = ({id, ACTIONS, dispatch, interpolations}) => {
             key={key}
             d={frames[0][key]}
             ref={refs[key]}
-            stroke={strokeKeys.includes(key) ? elementColors[key] : 'none'}
             fill={elementColors[key]}
             opacity={key === 'body' ? 0.8 : 1}
           />
@@ -191,4 +162,4 @@ const Fish = ({id, ACTIONS, dispatch, interpolations}) => {
   );
 };
 
-export default Fish;
+export default memo(Fish);

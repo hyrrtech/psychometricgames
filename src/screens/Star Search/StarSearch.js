@@ -16,7 +16,6 @@ import Shape4 from '../../assets/shapes/shape4.svg';
 import Shape5 from '../../assets/shapes/shape5.svg';
 import Shape6 from '../../assets/shapes/shape6.svg';
 import Shape7 from '../../assets/shapes/shape7.svg';
-import Shape8 from '../../assets/shapes/shape8.svg';
 
 const getInterpolatedValue = (rotationAnimation, angle) => {
   if (rotationAnimation === 'none')
@@ -111,15 +110,6 @@ const SvgComponent = ({
       ),
       shape7: (
         <Shape7
-          width={shapeSize}
-          height={shapeSize}
-          patternColor={patternColor}
-          lightenColor={lightenColor}
-          darkenColor={darkenColor}
-        />
-      ),
-      shape8: (
-        <Shape8
           width={shapeSize}
           height={shapeSize}
           patternColor={patternColor}

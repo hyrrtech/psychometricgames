@@ -31,7 +31,7 @@ const FishGame = ({navigation}) => {
         const result = Object.keys(frames[0]).reduce((acc, key) => {
           acc[key] = frames.map((frame, index) =>
             interpolate(frame[key], frames[(index + 1) % frames.length][key], {
-              maxSegmentLength: 7,
+              maxSegmentLength: 13,
             }),
           );
 
@@ -102,7 +102,7 @@ const FishGame = ({navigation}) => {
             key={fish.id}
             ACTIONS={ACTIONS}
             dispatch={dispatch}
-            id={index}
+            fishProps={fish}
             interpolations={interpolations}
           />
         ))}

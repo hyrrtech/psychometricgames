@@ -9,14 +9,14 @@ const newToValue = prev => {
   let x = Math.random() * (maxX - minX) + minX;
   let y = Math.random() * (maxY - minY) + minY;
 
-  while (
-    prev &&
-    Math.abs(x - prev.x) < maxX * 0.3 &&
-    Math.abs(y - prev.y) < maxY * 0.3
-  ) {
-    x = Math.random() * (maxX - minX) + minX;
-    y = Math.random() * (maxY - minY) + minY;
-  }
+  // while (
+  //   prev &&
+  //   Math.abs(x - prev.x) < maxX * 0.3 &&
+  //   Math.abs(y - prev.y) < maxY * 0.3
+  // ) {
+  //   x = Math.random() * (maxX - minX) + minX;
+  //   y = Math.random() * (maxY - minY) + minY;
+  // }
 
   return {x, y};
 };
