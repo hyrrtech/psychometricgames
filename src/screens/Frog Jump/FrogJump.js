@@ -93,7 +93,7 @@ const FrogJump = ({navigation}) => {
         style={{
           height: spawnAreaHeight,
           width: spawnAreaWidth,
-          backgroundColor: '#1b5256',
+          // backgroundColor: '#1b5256',
         }}>
         {lillipadPositions.map((lillipad, index) => {
           return (
@@ -101,6 +101,7 @@ const FrogJump = ({navigation}) => {
               key={index}
               position={lillipad.position}
               id={lillipad.id}
+              rotation={lillipad.rotation}
             />
           );
         })}

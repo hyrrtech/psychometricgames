@@ -10,7 +10,7 @@ import {InfoLabel} from '../../components/InfoLabel';
 import BackgroundImage from '../../values/BackgroundImage';
 import {reducer, ACTIONS} from './reducer';
 import initialState from './initialState';
-import {Fish, Deck} from '../../components/Fish Game';
+import {Fish, Deck, RainDrop} from '../../components/Fish Game';
 import {constants, gameRoundData} from '../../utilities/Fish Game';
 import {interpolate} from 'flubber';
 import {frames} from '../../components/Fish Game/frames';
@@ -106,7 +106,15 @@ const FishGame = ({navigation}) => {
             interpolations={interpolations}
           />
         ))}
+        {state.rainDrops.map(raindrop => (
+          <RainDrop
+            key={raindrop.id}
+            interval={raindrop.interval}
+            position={raindrop.position}
+          />
+        ))}
       </View>
+
       <View
         style={{
           position: 'absolute',

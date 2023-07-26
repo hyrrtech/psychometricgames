@@ -21,7 +21,7 @@ export const GameWrapper = ({
   const navigation = useNavigation();
   return (
     <LinearGradient style={{flex: 1}} colors={backgroundGradient}>
-      <ImageBackground
+      <View
         style={{
           flex: 1,
           justifyContent: 'space-between',
@@ -55,7 +55,7 @@ export const GameWrapper = ({
         <View style={styles.controllerButtons}>
           {controllerButtons?.map(button => button)}
         </View>
-      </ImageBackground>
+      </View>
     </LinearGradient>
   );
 };
