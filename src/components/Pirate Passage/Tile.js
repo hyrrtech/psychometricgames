@@ -25,9 +25,9 @@ const Tile = ({position, index}) => {
         left: position.x - tileSize / 2,
         top: position.y - tileSize / 2,
       }}>
-      {/* <Text>
+      <Text>
         [{index[0]},{index[1]}]
-      </Text> */}
+      </Text>
     </TouchableOpacity>
   );
   {
