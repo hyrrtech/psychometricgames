@@ -1,4 +1,4 @@
-const shapes = ['shape2'];
+const shapes = ['shape1', 'shape2', 'shape3', 'shape4', 'shape5', 'shape6'];
 
 const color_palette = {
   2: [
@@ -13,7 +13,6 @@ const color_palette = {
 };
 
 const rotationAnimations = ['none', 'clockwise', 'anticlockwise'];
-// const colors = ['#6093cc', '#2fd046', '#cf392c', '#ffd354'];
 const rotationAngles = [0, 60];
 
 const filterShapes = num => {
@@ -64,8 +63,8 @@ const generateShapeData = (
   num_of_unique_styles,
   num_of_unique_colors,
   num_of_unique_shapes,
-  isAnimated = false,
   isRotated = false,
+  isAnimated = false,
   hasPattern = false,
 ) => {
   //calculate count for each style

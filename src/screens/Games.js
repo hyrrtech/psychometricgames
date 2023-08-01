@@ -99,6 +99,7 @@ const Games = ({navigation}) => {
       />
       <Button
         onPress={() => {
+          console.log('Star Search');
           navigation.navigate('StarSearch');
         }}
         title="Star Search"

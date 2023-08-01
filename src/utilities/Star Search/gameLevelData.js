@@ -9,12 +9,14 @@
 export default data = [
   {
     level: 1,
-    num_of_shapes: 5,
+    scorePayload: 500,
+    num_of_shapes: [5, 7],
     num_of_unique_styles: 3,
-    num_of_unique_colors: 1,
-    num_of_unique_shapes: 3,
-    isAnimated: false,
+    num_of_unique_colors: 2,
+    num_of_unique_shapes: 2,
     isRotated: false,
+    isAnimated: false,
     hasPattern: false,
+    rounds: 4,
   },
 ];

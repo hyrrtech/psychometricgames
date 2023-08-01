@@ -1,12 +1,17 @@
 import {useContext} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {
+  View,
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import {
   Tile,
   Ship,
   Treasure,
   CollisionMark,
 } from '../../components/Pirate Passage';
-import {ActivityIndicator} from 'react-native';
 import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
 import {InfoLabel} from '../../components/InfoLabel';

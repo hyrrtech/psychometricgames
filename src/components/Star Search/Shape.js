@@ -1,9 +1,12 @@
 import ShapeSvg from './ShapeSvgs';
 import adjustHexColor from '../../utilities/adjustHexColor';
 import {constants} from '../../utilities/Star Search';
+import {ACTIONS} from '../../screens/Star Search/reducer';
 
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useContext} from 'react';
 import {View, Animated, Easing, TouchableOpacity} from 'react-native';
+
+import {StarSearchContext} from '../../providers/StarSearch.Provider';
 
 const getInterpolatedValue = (rotationAnimation, angle) => {
   if (rotationAnimation === 'none')
@@ -28,9 +31,9 @@ const Shape = ({
   shape,
   position,
   count,
-  id,
 }) => {
   const {shapeSize} = constants;
+  const {dispatch} = useContext(StarSearchContext);
 
   const {darkened: darkenColor, lightened: lightenColor} = adjustHexColor(
     color,
@@ -38,6 +41,15 @@ const Shape = ({
     50,
   );
   const rotateAnimation = useRef(new Animated.Value(0)).current;
+
+  const handlePress = () => {
+    dispatch({
+      type: ACTIONS.ON_TAP,
+      payload: {
+        isCorrect: count === 1,
+      },
+    });
+  };
 
   useEffect(() => {
     Animated.loop(
@@ -55,7 +67,8 @@ const Shape = ({
   );
   return (
     <TouchableOpacity
-      onPress={() => console.log(id)}
+      activeOpacity={1}
+      onPress={handlePress}
       style={{
         height: shapeSize,
         width: shapeSize,

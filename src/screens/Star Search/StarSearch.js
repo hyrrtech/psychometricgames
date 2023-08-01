@@ -1,50 +1,69 @@
-import {
-  constants,
-  generateShapeData,
-  getShapePositions,
-} from '../../utilities/Star Search';
+import {constants, gameLevelData} from '../../utilities/Star Search';
 import Shape from '../../components/Star Search/Shape';
-import {View} from 'react-native';
+import {StarSearchContext} from '../../providers/StarSearch.Provider';
+import CompletedPopup from '../../components/CompletedPopup';
+import {GameWrapper} from '../../components/GameWrapper';
+import {InfoLabel} from '../../components/InfoLabel';
+import BackgroundImage from '../../values/BackgroundImage';
+import styles from './styles';
+import {COLORS} from '../../values/Colors';
 
-const StarSearch = () => {
+import {View, ActivityIndicator} from 'react-native';
+import {useContext, useEffect} from 'react';
+import {ACTIONS} from './reducer';
+
+const StarSearch = ({navigation}) => {
   const {spawnAreaHeight, spawnAreaWidth} = constants;
-  const shapePositions = getShapePositions(20);
-  const shapeStyles = generateShapeData(20, 3, 2, 1, false, false, true);
+  const {state, dispatch} = useContext(StarSearchContext);
+  const loading = false;
+  const completedPopup = false;
 
-  const combinePositionAndStyle = (shapePositions, shapeStyles) => {
-    let combinedArray = [];
-    let j = 0;
-    for (let [key, value] of shapeStyles) {
-      for (let k = 0; k < value.count; k++) {
-        combinedArray.push({
-          position: shapePositions[j].position,
-          id: shapePositions[j].id,
-          ...value,
-        });
-        j++;
-      }
+  useEffect(() => {
+    if (
+      state.level === gameLevelData[gameLevelData.length - 1].level &&
+      state.currentRound > state.rounds
+    ) {
+      navigation.navigate('Transition', {
+        state: state,
+        cameFrom: 'StarSearch',
+      });
+      return;
     }
 
-    return combinedArray;
-  };
+    if (state.currentRound > state.rounds) {
+      dispatch({type: ACTIONS.ON_LEVEL_COMPLETE});
+    }
+  }, [state]);
 
-  const shapeData = combinePositionAndStyle(shapePositions, shapeStyles);
-
-  return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#1b5256',
-      }}>
+  return loading ? (
+    <ActivityIndicator size="large" color="#0000ff" />
+  ) : completedPopup ? (
+    <CompletedPopup gameName="SHARK" />
+  ) : (
+    <GameWrapper
+      imageURL={BackgroundImage.SHARK}
+      backgroundGradient={COLORS.sharkBGGrandient}
+      scoreboard={[
+        <InfoLabel
+          label={'Level'}
+          value={state.level.toString()}
+          style={styles.infoLabel}
+          key="level"
+        />,
+        <InfoLabel
+          label={'Score'}
+          value={state.score.toString()}
+          style={styles.infoLabel}
+          key="score"
+        />,
+      ]}
+      controllerButtons={[]}>
       <View
         style={{
           height: spawnAreaHeight,
           width: spawnAreaWidth,
-          borderWidth: 1,
         }}>
-        {shapeData.map(shape => (
+        {state.shapeData.map(shape => (
           <Shape
             key={shape.id}
             id={shape.id}
@@ -58,7 +77,7 @@ const StarSearch = () => {
           />
         ))}
       </View>
-    </View>
+    </GameWrapper>
   );
 };
 
