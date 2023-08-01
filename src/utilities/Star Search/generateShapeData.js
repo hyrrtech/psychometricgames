@@ -1,5 +1,4 @@
-import svgData from './svgData';
-const shapes = ['shape7'];
+const shapes = ['shape2'];
 
 const color_palette = {
   2: [
