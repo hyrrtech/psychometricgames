@@ -16,6 +16,7 @@ const Obstacle = ({positionHorizontal, obstacleHeight, obstacleWidth}) => {
         position: 'absolute',
         height: obstacleHeight,
         width: obstacleWidth,
+        transform: [{rotateX: '0deg'}],
       }}>
       <Svg
         width={obstacleWidth}

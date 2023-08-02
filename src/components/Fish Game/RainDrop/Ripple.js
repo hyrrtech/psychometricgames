@@ -3,7 +3,7 @@ import {Animated, Easing} from 'react-native';
 import {constants} from '../../../utilities/Fish Game';
 const {rainDropSize: size} = constants;
 const Ripple = ({initialScale, finalScale, delay, interval}) => {
-  console.log(interval);
+  // console.log(interval);
   const scaleAnimation = useRef(new Animated.Value(initialScale)).current;
   const opacityAnimation = useRef(new Animated.Value(0)).current;
   const duration = 700;

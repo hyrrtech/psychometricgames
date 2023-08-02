@@ -26,13 +26,13 @@ const Games = ({navigation}) => {
         style={styles.button}
       />
 
-      <Button
+      {/* <Button
         onPress={() => {
           navigation.navigate('KillTheSpider');
         }}
         title="Kill the Spider"
         style={styles.button}
-      />
+      /> */}
       <Button
         onPress={() => {
           navigation.navigate('CarGame');

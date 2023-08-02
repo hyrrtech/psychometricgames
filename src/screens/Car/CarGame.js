@@ -207,7 +207,7 @@ const CarGame = ({navigation}) => {
               position: 'absolute',
               bottom: 0,
               opacity: opacity,
-              transform: [{translateX: carPositionRef}, {rotateX: '-60deg'}],
+              transform: [{translateX: carPositionRef}, {rotateX: '0deg'}],
               // backgroundColor: 'red',
             }}
           />
