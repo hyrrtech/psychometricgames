@@ -130,7 +130,7 @@ const MemoryMatrix = ({navigation}) => {
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
-    <CompletedPopup gameName="MemoryMatrix" />
+    <CompletedPopup gameName="MEMORY MATRIX" />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.MemoryMatrix}

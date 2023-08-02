@@ -38,7 +38,7 @@ const StarSearch = ({navigation}) => {
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
-    <CompletedPopup gameName="SHARK" />
+    <CompletedPopup gameName="STAR SEARCH" />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}

@@ -92,7 +92,7 @@ const ColorMatch = ({navigation}) => {
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
-    <CompletedPopup gameName="SHARK" />
+    <CompletedPopup gameName="COLOR MATCH" />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}

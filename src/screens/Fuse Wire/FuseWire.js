@@ -75,7 +75,7 @@ const FuseWire = ({navigation}) => {
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
-    <CompletedPopup gameName="MemoryMatrix" />
+    <CompletedPopup gameName="FUSE WIRE" />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.FuseWire}

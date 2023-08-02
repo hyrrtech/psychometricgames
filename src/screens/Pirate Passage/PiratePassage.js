@@ -40,7 +40,7 @@ const PiratePassage = () => {
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
-    <CompletedPopup gameName="SHARK" />
+    <CompletedPopup gameName="PIRATE PASSAGE" />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}

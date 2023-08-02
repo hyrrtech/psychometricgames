@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native';
-import {Button} from './Button';
 import {COLORS} from '../values/Colors';
 import BackButtonIcon from '../assets/nav_icons/back_button.svg';
 import {useNavigation} from '@react-navigation/native';
@@ -67,7 +66,6 @@ export const GameWrapper = ({
         ))}
       </View>
     </ImageBackground>
-    // </LinearGradient>
   );
 };
 const styles = StyleSheet.create({

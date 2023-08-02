@@ -70,7 +70,7 @@ const FishGame = ({navigation}) => {
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
-    <CompletedPopup gameName="SHARK" />
+    <CompletedPopup gameName="FISH GAME" />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}
