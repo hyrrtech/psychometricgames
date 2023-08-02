@@ -2,11 +2,9 @@ import {View, ActivityIndicator} from 'react-native';
 import {useState, useReducer, useContext, useEffect} from 'react';
 import db from '../../firebase/database';
 import {AuthContext} from '../../providers/AuthProvider';
-import styles from './styles';
 import {GameWrapper} from '../../components/GameWrapper';
 import CompletedPopup from '../../components/CompletedPopup';
 import {COLORS} from '../../values/Colors';
-import {InfoLabel} from '../../components/InfoLabel';
 import BackgroundImage from '../../values/BackgroundImage';
 import {reducer, ACTIONS} from './reducer';
 import initialState from './initialState';
@@ -76,26 +74,19 @@ const FishGame = ({navigation}) => {
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}
-      backgroundGradient={COLORS.sharkBGGrandient}
+      backgroundGradient={COLORS.fishBGColor}
       scoreboard={[
-        <InfoLabel
-          label={'Level'}
-          value={state.level}
-          style={styles.infoLabel}
-          key="level"
-        />,
-        <InfoLabel
-          label={'Lives'}
-          value={state.lives.toString()}
-          style={styles.infoLabel}
-          key="lives"
-        />,
+        {
+          title: 'Lives',
+          value: state.lives > 0 ? '★'.repeat(state.lives) : '-',
+        },
+        {title: 'Level', value: state.level},
       ]}>
       <View
         style={{
           height: poundAreaHeight,
           width: poundAreaWidth,
-          backgroundColor: 'rgb(32, 156, 226)',
+          // backgroundColor: 'rgb(32, 156, 226)',
         }}>
         {state.fish.map((fish, index) => (
           <Fish

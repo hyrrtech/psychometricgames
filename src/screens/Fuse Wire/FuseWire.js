@@ -79,31 +79,15 @@ const FuseWire = ({navigation}) => {
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.FuseWire}
-      backgroundGradient={COLORS.memoryMatrixBGGradient}
+      backgroundGradient={COLORS.fuseWireBGColor}
       scoreboard={[
-        <InfoLabel
-          label={'Level'}
-          value={level}
-          style={styles.infoLabel}
-          key="time"
-          showAnimation={true}
-        />,
-        <InfoLabel
-          label={'Lives'}
-          value={lives > 0 ? '★'.repeat(lives) : '0'}
-          style={styles.infoLabel}
-          key="lives"
-          showAnimation={true}
-        />,
+        {
+          title: 'Lives',
+          value: state.lives > 0 ? '★'.repeat(state.lives) : '-',
+        },
+        {title: 'Level', value: state.level},
       ]}
-      controllerButtons={[
-        <Button
-          key="check"
-          style={styles.button}
-          title={'Check'}
-          onPressIn={handleCheck}
-        />,
-      ]}>
+      controllerButtons={[{title: 'Check', onPress: handleCheck}]}>
       <View style={stylest.mainContainer}>
         <HolderBoard />
         <FuseBoard />

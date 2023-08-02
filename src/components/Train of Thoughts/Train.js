@@ -171,7 +171,7 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
       });
     }
   };
-  console.log('trainDirection', trainDirection);
+  // console.log('trainDirection', trainDirection);
 
   useEffect(() => {
     moveTrain(PATH, TIME);

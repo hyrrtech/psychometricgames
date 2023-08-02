@@ -2,11 +2,9 @@ import {useContext, useEffect, useState, useMemo} from 'react';
 import {View, ActivityIndicator} from 'react-native';
 import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
-import {InfoLabel} from '../../components/InfoLabel';
 import db from '../../firebase/database';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
-import styles from './styles';
 import {AuthContext} from '../../providers/AuthProvider';
 import {FollowerFrog, Lillipad, LeaderFrog} from '../../components/Frog Game';
 import {FrogGameContext} from '../../providers/FrogGame.Provider';
@@ -80,14 +78,12 @@ const FrogJump = ({navigation}) => {
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.KillTheSpider}
-      backgroundGradient={COLORS.killTheSpiderBGGradient}
+      backgroundGradient={COLORS.followThatFrogBGColor}
       scoreboard={[
-        <InfoLabel
-          label={'Jumps'}
-          value={`${numberOfJumpsByFollowerFrog.current} of ${MAX_NUM_OF_JUMPS}`}
-          style={styles.infoLabel}
-          key="jumps"
-        />,
+        {
+          title: 'Jumps',
+          value: `${numberOfJumpsByFollowerFrog.current} of ${MAX_NUM_OF_JUMPS}`,
+        },
       ]}>
       <View
         style={{

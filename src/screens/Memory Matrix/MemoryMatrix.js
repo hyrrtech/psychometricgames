@@ -134,29 +134,14 @@ const MemoryMatrix = ({navigation}) => {
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.MemoryMatrix}
-      backgroundGradient={COLORS.memoryMatrixBGGradient}
+      backgroundGradient={COLORS.memoryMatrixBGColor}
       scoreboard={[
-        <InfoLabel
-          label={'Level'}
-          value={state.level}
-          style={styles.infoLabel}
-          key="time"
-          showAnimation={true}
-        />,
-        <InfoLabel
-          label={'Score'}
-          value={state.score.toString()}
-          style={styles.infoLabel}
-          key="score"
-          showAnimation={true}
-        />,
-        <InfoLabel
-          label={'Lives'}
-          value={state.lives > 0 ? '★'.repeat(state.lives) : '-'}
-          style={styles.infoLabel}
-          key="lives"
-          showAnimation={true}
-        />,
+        {
+          title: 'Lives',
+          value: state.lives > 0 ? '★'.repeat(state.lives) : '-',
+        },
+        {title: 'Score', value: state.score},
+        {title: 'Level', value: state.level},
       ]}>
       <Animated.View
         style={[styles.tilesBox, {transform: [{scale: animatedValue}]}]}>

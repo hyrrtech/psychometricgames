@@ -92,30 +92,11 @@ const SHARK = ({navigation}) => {
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}
-      backgroundGradient={COLORS.sharkBGGrandient}
-      scoreboard={[
-        <InfoLabel
-          label={'Time'}
-          value={TIME}
-          style={styles.infoLabel}
-          key="time"
-        />,
-      ]}
+      backgroundGradient={COLORS.sharkBGColor}
+      scoreboard={[{title: 'Time', value: TIME}]}
       controllerButtons={[
-        <Button
-          key="left"
-          style={styles.button}
-          icon={left_button}
-          iconProps={styles.icon}
-          onPressIn={() => handlePress('LEFT')}
-        />,
-        <Button
-          key="right"
-          style={styles.button}
-          icon={right_button}
-          iconProps={styles.icon}
-          onPressIn={() => handlePress('RIGHT')}
-        />,
+        {title: 'LEFT', onPress: () => handlePress('LEFT')},
+        {title: 'RIGHT', onPress: () => handlePress('RIGHT')},
       ]}>
       <SharkMatrix matrix={state.matrix} />
       {result.show ? (

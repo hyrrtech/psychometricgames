@@ -42,20 +42,10 @@ const StarSearch = ({navigation}) => {
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}
-      backgroundGradient={COLORS.sharkBGGrandient}
+      backgroundGradient={COLORS.starSearchBGColor}
       scoreboard={[
-        <InfoLabel
-          label={'Level'}
-          value={state.level.toString()}
-          style={styles.infoLabel}
-          key="level"
-        />,
-        <InfoLabel
-          label={'Score'}
-          value={state.score.toString()}
-          style={styles.infoLabel}
-          key="score"
-        />,
+        {title: 'Level', value: state.level},
+        {title: 'Score', value: state.score},
       ]}
       controllerButtons={[]}>
       <View

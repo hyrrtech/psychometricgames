@@ -143,39 +143,15 @@ const BART = ({route, navigation}) => {
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.BART}
-      backgroundGradient={COLORS.balloonBGGradient}
+      backgroundGradient={COLORS.balloonBGColor}
       scoreboard={[
-        <InfoLabel
-          label={'Total Score'}
-          value={state.totalScore || '0'}
-          style={styles.infoLabel}
-          key="total_score"
-          showAnimation={true}
-        />,
-        <InfoLabel
-          label={'Score'}
-          value={state.curr_score || '0'}
-          style={styles.infoLabel}
-          key="score"
-          showAnimation={true}
-        />,
+        {title: 'Total Score', value: state.totalScore},
+        {title: 'Score', value: state.curr_score},
+        {title: 'Level', value: state.level},
       ]}
-      level={
-        <InfoLabel label={`Level ${state.level}`} style={styles.infoLabel} />
-      }
       controllerButtons={[
-        <Button
-          key="pump"
-          title="Pump"
-          style={styles.button}
-          onPressIn={handlePump}
-        />,
-        <Button
-          key="collect"
-          title="Collect"
-          style={styles.button}
-          onPressIn={handleCollect}
-        />,
+        {title: 'Pump', onPress: handlePump},
+        {title: 'Collect', onPress: handleCollect},
       ]}>
       <AnimatedSvg
         width={sizeAnimation}

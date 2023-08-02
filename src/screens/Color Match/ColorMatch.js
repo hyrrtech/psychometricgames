@@ -10,8 +10,6 @@ import styles from './styles';
 import {GameWrapper} from '../../components/GameWrapper';
 import CompletedPopup from '../../components/CompletedPopup';
 import {COLORS} from '../../values/Colors';
-import {Button} from '../../components/Button';
-import {InfoLabel} from '../../components/InfoLabel';
 import BackgroundImage from '../../values/BackgroundImage';
 import useCountDown from '../../utilities/useCountDown';
 import useDebounce from '../../utilities/useDebounce';
@@ -98,34 +96,17 @@ const ColorMatch = ({navigation}) => {
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}
-      backgroundGradient={COLORS.sharkBGGrandient}
+      backgroundGradient={COLORS.colorMatchBGColor}
       scoreboard={[
-        <InfoLabel
-          label={'Time'}
-          value={TIME}
-          style={styles.infoLabel}
-          key="time"
-        />,
-        <InfoLabel
-          label={'Score'}
-          value={state.score.toString()}
-          style={styles.infoLabel}
-          key="score"
-        />,
+        {title: 'Time', value: TIME},
+        {title: 'Score', value: state.score},
       ]}
       controllerButtons={[
-        <Button
-          key="No"
-          style={styles.button}
-          title={'No'}
-          onPressIn={() => handlePress(false)}
-        />,
-        <Button
-          key="Yes"
-          style={styles.button}
-          title={'Yes'}
-          onPressIn={() => handlePress(true)}
-        />,
+        {title: 'NO', onPress: () => handlePress(false)},
+        {
+          title: 'YES',
+          onPress: () => handlePress(true),
+        },
       ]}>
       <>
         <Text style={styles.helperText1}>

@@ -3,12 +3,13 @@ import {
   ImageBackground,
   StyleSheet,
   TouchableOpacity,
+  Text,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import {Button} from './Button';
 import {COLORS} from '../values/Colors';
-import {faBars} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import BackButtonIcon from '../assets/nav_icons/back_button.svg';
 import {useNavigation} from '@react-navigation/native';
+import {FontStyle} from '../values/Font';
 
 export const GameWrapper = ({
   imageURL,
@@ -16,47 +17,57 @@ export const GameWrapper = ({
   children,
   controllerButtons,
   scoreboard,
-  level,
 }) => {
   const navigation = useNavigation();
   return (
-    <LinearGradient style={{flex: 1}} colors={backgroundGradient}>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'space-between',
-          padding: '5%',
-          zIndex: 0,
-        }}
-        source={imageURL}>
-        <View style={styles.header}>
-          <View style={styles.menu}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() => navigation.navigate('Home')}
-              style={{
-                borderRadius: 50,
-                padding: '2%',
-                backgroundColor: COLORS.primary,
-              }}>
-              <FontAwesomeIcon
-                icon={faBars}
-                size={25}
-                style={{color: COLORS.textSecondary}}
-              />
-            </TouchableOpacity>
-            {level}
-            <View style={{width: 25}} />
+    <ImageBackground
+      style={{
+        flex: 1,
+        justifyContent: 'space-between',
+        padding: '1%',
+        flexDirection: 'column',
+        zIndex: 12,
+      }}
+      source={imageURL}>
+      <View style={[styles.overlay, {backgroundColor: backgroundGradient}]} />
+      <View style={styles.header}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => {
+            console.log('pressed');
+            navigation.goBack();
+          }}
+          style={styles.menu}>
+          <View pointerEvents="none">
+            <BackButtonIcon width={40} height={40} fill={COLORS.neutral_600} />
           </View>
-          <View style={styles.scoreboard}>{scoreboard?.map(item => item)}</View>
-        </View>
+        </TouchableOpacity>
 
-        <View style={styles.gameContainer}>{children}</View>
-        <View style={styles.controllerButtons}>
-          {controllerButtons?.map(button => button)}
+        <View style={styles.scoreboardContainer}>
+          {scoreboard?.map((item, index) => (
+            <View key={index} style={styles.scoreboard}>
+              <Text style={styles.text}>{item.title}: </Text>
+              <Text style={styles.text}> {item.value}</Text>
+            </View>
+          ))}
         </View>
       </View>
-    </LinearGradient>
+
+      <View style={styles.gameContainer}>{children}</View>
+
+      {/* bottom */}
+      <View style={styles.buttonsContainer}>
+        {controllerButtons?.map(button => (
+          <TouchableOpacity
+            key={button.title}
+            style={styles.button}
+            onPress={button.onPress}>
+            <Text style={styles.buttonText}>{button.title}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </ImageBackground>
+    // </LinearGradient>
   );
 };
 const styles = StyleSheet.create({
@@ -69,24 +80,65 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  controllerButtons: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-evenly',
+  overlay: {
+    position: 'absolute',
+    flex: 1,
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    // opacity: 0.3,
+    zIndex: 0,
   },
+
   header: {
-    width: '100%',
-    flexDirection: 'column',
-    zIndex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    zIndex: 10,
+  },
+  menu: {
+    padding: '2%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.secondary_100,
+  },
+  scoreboardContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
   scoreboard: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    marginVertical: '5%',
-  },
-  menu: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    marginLeft: '1.5%',
     alignItems: 'center',
+    paddingHorizontal: '2%',
+    paddingVertical: '5%',
+  },
+  text: {
+    ...FontStyle.H5_semibold,
+    color: COLORS.neutral_600,
+    textTransform: 'uppercase',
+  },
+
+  buttonsContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+    zIndex: 10,
+  },
+  button: {
+    flex: 1,
+    padding: '5%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    marginHorizontal: 2.5,
+  },
+  buttonText: {
+    ...FontStyle.H2_semibold,
+    color: COLORS.neutral_600,
+    textTransform: 'uppercase',
   },
 });

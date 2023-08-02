@@ -1,11 +1,5 @@
 import {useContext} from 'react';
-import {
-  View,
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import {View, ActivityIndicator} from 'react-native';
 import {
   Tile,
   Ship,
@@ -14,13 +8,9 @@ import {
 } from '../../components/Pirate Passage';
 import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
-import {InfoLabel} from '../../components/InfoLabel';
-import {Button} from '../../components/Button';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
-import styles from './styles';
 import {PiratePassageContext} from '../../providers/PiratePassage.Provider';
-import {FontStyle} from '../../values/Font';
 import PirateShip from '../../components/Pirate Passage/PirateShip';
 
 const PiratePassage = () => {
@@ -54,29 +44,11 @@ const PiratePassage = () => {
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}
-      backgroundGradient={COLORS.sharkBGGrandient}
-      scoreboard={[
-        <InfoLabel
-          label={'Score'}
-          value={'1000'}
-          style={styles.infoLabel}
-          key="score"
-        />,
-      ]}
+      backgroundGradient={COLORS.piratePassageBGColor}
+      scoreboard={[{title: 'Score', value: '1000'}]}
       controllerButtons={[
-        <Button
-          key="undo"
-          style={styles.button}
-          title={'UNDO'}
-          onPress={handle_undo}
-        />,
-        <Button
-          key="go"
-          style={styles.button}
-          disabled={disableGo}
-          title={'GO'}
-          onPress={handle_go}
-        />,
+        {title: 'UNDO', onPress: handle_undo},
+        {title: 'GO', onPress: handle_go},
       ]}>
       <View
         style={{

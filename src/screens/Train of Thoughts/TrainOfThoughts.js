@@ -8,10 +8,8 @@ import React, {
 import {ActivityIndicator} from 'react-native';
 import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
-import {InfoLabel} from '../../components/InfoLabel';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
-import styles from './styles';
 import {TrainOfThoughtsContext} from '../../providers/TrainOfThoughts.Provider';
 import {AuthContext} from '../../providers/AuthProvider';
 import db from '../../firebase/database';
@@ -99,21 +97,10 @@ const TrainOfThoughts = ({navigation}) => {
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.TrainofThoughts}
-      backgroundGradient={COLORS.trainOfThoughtsBGGradient}
+      backgroundGradient={COLORS.trainOfThoughtsBGColor}
       scoreboard={[
-        <InfoLabel
-          label={'Time'}
-          value={TIME}
-          style={styles.infoLabel}
-          key="time"
-        />,
-        <InfoLabel
-          label={'Score'}
-          value={state.score.toString()}
-          style={styles.infoLabel}
-          key="score"
-          showAnimation={true}
-        />,
+        {title: 'Time', value: TIME},
+        {title: 'Score', value: state.score},
       ]}>
       <Map />
 

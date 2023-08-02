@@ -21,13 +21,13 @@ const Tile = ({position, index}) => {
         width: tileSize,
 
         position: 'absolute',
-        backgroundColor: '#64d7dc',
+        backgroundColor: 'rgba(100, 215, 220,0.8)',
         left: position.x - tileSize / 2,
         top: position.y - tileSize / 2,
       }}>
-      <Text>
+      {/* <Text>
         [{index[0]},{index[1]}]
-      </Text>
+      </Text> */}
     </TouchableOpacity>
   );
   {

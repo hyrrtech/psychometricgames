@@ -83,13 +83,13 @@ const Games = ({navigation}) => {
         title="Frog Jump"
         style={styles.button}
       />
-      <Button
+      {/* <Button
         onPress={() => {
           navigation.navigate('OrganicOrder');
         }}
         title="OrganicOrder"
         style={styles.button}
-      />
+      /> */}
       <Button
         onPress={() => {
           navigation.navigate('Masterpiece');
@@ -99,7 +99,6 @@ const Games = ({navigation}) => {
       />
       <Button
         onPress={() => {
-          console.log('Star Search');
           navigation.navigate('StarSearch');
         }}
         title="Star Search"
