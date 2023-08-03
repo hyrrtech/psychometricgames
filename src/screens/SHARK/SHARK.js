@@ -1,10 +1,7 @@
 import React, {useReducer, useEffect, useContext, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
 import {PlaySound, useDebounce} from '../../utilities';
-// import CompletedPopup from '../../components/CompletedPopup';
-import {InfoLabel} from '../../components/InfoLabel';
 import {GameWrapper} from '../../components/GameWrapper';
-import {Button} from '../../components/Button';
 import {SharkMatrix} from '../../components/Shark';
 import {ResultPopup} from '../../components/ResultPopup';
 import {AuthContext} from '../../providers/AuthProvider';
@@ -12,12 +9,9 @@ import CompletedPopup from '../../components/CompletedPopup';
 import db from '../../firebase/database';
 import initialState, {ResultAnimationTime} from './initialState';
 import {reducer, ACTIONS} from './reducer';
-import styles from './styles';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
 import {useCountdown} from '../../utilities';
-import left_button from '../../assets/left_button.png';
-import right_button from '../../assets/right_button.png';
 
 import correct_sound from '../../assets/sounds/correct_sound.mp3';
 import wrong_sound from '../../assets/sounds/wrong_sound.mp3';

@@ -32,6 +32,23 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps}) => {
     to: rotateFrom,
   });
 
+  const showFedAnimation = () => {
+    Animated.sequence([
+      Animated.timing(fedAnimation, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+        easing: Easing.linear,
+      }),
+      Animated.timing(fedAnimation, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+        easing: Easing.linear,
+      }),
+    ]).start();
+  };
+
   const refs = useRef(
     Object.keys(frames[0]).reduce((acc, key) => {
       acc[key] = React.createRef();
@@ -72,6 +89,14 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps}) => {
     if (isFed) {
       dispatch({type: ACTIONS.DECREASE_LIVES});
     } else {
+      setIsFed(true);
+      setDisabled(true);
+      dispatch({type: ACTIONS.ON_FED});
+      showFedAnimation();
+      // rotationAnimation.setValue(1);
+      rotationAnimation.stopAnimation(value => {
+        console.log(value);
+      });
       translateAnimation.stopAnimation(value => {
         setTimeout(() => {
           const distanceToCover = getDistance(
@@ -79,7 +104,6 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps}) => {
             currentTranslationValueRef.current.to,
           );
           const remainingDuration = (distanceToCover / speed) * 1000;
-          rotationAnimation.setValue(0);
 
           animateFish(
             value,
@@ -88,60 +112,48 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps}) => {
           );
         }, 1000);
       });
-
-      setIsFed(true);
-      setDisabled(true);
-      dispatch({type: ACTIONS.ON_FED});
-
-      Animated.sequence([
-        Animated.timing(fedAnimation, {
-          toValue: 1,
-          duration: 1000,
-          useNativeDriver: true,
-          easing: Easing.linear,
-        }),
-        Animated.timing(fedAnimation, {
-          toValue: 0,
-          duration: 1000,
-          useNativeDriver: true,
-          easing: Easing.linear,
-        }),
-      ]).start();
     }
   };
   const animateFish = (from, to, duration) => {
-    const newTo = newToValue(to);
     currentTranslationValueRef.current = {from: from, to: to};
 
-    const rotateTo = getNewAngle(from, to);
+    const newTo = newToValue(to);
 
-    setRotationAngle(rotationAngle => {
-      return {from: rotationAngle.to, to: rotateTo};
-    });
-    const distance = getDistance(from, to);
-    if (!duration) duration = (distance / speed) * 1000;
+    // console.log('duration before change', duration);
+    if (!duration) {
+      // console.log('changing duration');
+      rotationAnimation.setValue(0);
+      setRotationAngle(rotationAngle => ({
+        from: rotationAngle.to,
+        to: getNewAngle(from, to),
+      }));
 
-    const animation = Animated.parallel(
-      [
-        Animated.timing(rotationAnimation, {
-          toValue: 1,
-          duration: duration / 5,
-          useNativeDriver: true,
-          easing: Easing.linear,
-        }),
-        Animated.timing(translateAnimation, {
-          toValue: to,
-          duration: duration,
-          useNativeDriver: true,
-          easing: Easing.linear,
-        }),
-      ],
-      {stopTogether: true},
-    );
+      const distance = getDistance(from, to);
+      duration = (distance / speed) * 1000;
+    }
+    // console.log('duration after change', duration, '\n\n');
+    Animated.timing(rotationAnimation, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+      easing: Easing.linear,
+    }).start();
+    // const animation = Animated.parallel(
+    //   [
 
-    animation.start(({finished}) => {
+    //     ,
+    //   ],
+    //   {stopTogether: false},
+    // );
+
+    Animated.timing(translateAnimation, {
+      toValue: to,
+      duration: duration,
+      useNativeDriver: true,
+      easing: Easing.linear,
+    }).start(({finished}) => {
       if (finished) {
-        rotationAnimation.setValue(0);
+        rotationAnimation.setValue(1);
         animateFish(to, newTo);
       }
     });

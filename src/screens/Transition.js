@@ -118,7 +118,7 @@ const Transition = ({route, navigation}) => {
         },
       ]}>
       <Text style={[FontStyle.H2_semibold, {color: COLORS.neutral_600}]}>
-        CONGRATULATIONS
+        GREAT JOB!
       </Text>
       <Text
         style={[
@@ -135,13 +135,4 @@ const Transition = ({route, navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: COLORS.primary,
-    borderRadius: 10,
-    paddingHorizontal: '10%',
-    paddingVertical: '5%',
-    color: COLORS.textSecondary,
-  },
-});
 export default Transition;
