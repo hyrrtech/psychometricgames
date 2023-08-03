@@ -4,18 +4,18 @@ import Svg, {Path, Ellipse, G, Circle} from 'react-native-svg';
 const AnimatedG = Animated.createAnimatedComponent(G);
 
 const InflatingBalloon = props => {
-  const position = useRef(new Animated.Value(0)).current;
+  const floatAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
-        Animated.timing(position, {
+        Animated.timing(floatAnimation, {
           toValue: 1,
           duration: 2000,
           easing: Easing.linear,
           useNativeDriver: true,
         }),
-        Animated.timing(position, {
+        Animated.timing(floatAnimation, {
           toValue: 0,
           duration: 2000,
           easing: Easing.linear,
@@ -27,15 +27,15 @@ const InflatingBalloon = props => {
 
   const transform = [
     {
-      translateY: position.interpolate({
+      translateY: floatAnimation.interpolate({
         inputRange: [0, 1],
         outputRange: [0, -15],
       }),
     },
     {
-      rotate: position.interpolate({
+      rotate: floatAnimation.interpolate({
         inputRange: [0, 0.5, 1],
-        outputRange: ['-0.5deg', '-1deg', '0.5deg'],
+        outputRange: ['-0.5deg', '0deg', '0.5deg'],
       }),
     },
   ];

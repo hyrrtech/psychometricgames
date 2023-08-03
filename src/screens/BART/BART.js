@@ -13,7 +13,6 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Svg from 'react-native-svg';
-import styles from './styles';
 import {COLORS} from '../../values/Colors';
 import BackgroundImage from '../../values/BackgroundImage';
 import {PlaySound, useDebounce} from '../../utilities';
@@ -32,8 +31,6 @@ import db from '../../firebase/database';
 import {AuthContext} from '../../providers/AuthProvider';
 // wrap into 1
 import {GameWrapper} from '../../components/GameWrapper';
-import {Button} from '../../components/Button';
-import {InfoLabel} from '../../components/InfoLabel';
 import CompletedPopup from '../../components/CompletedPopup';
 import balloon_pump from '../../assets/sounds/balloon_pump.wav';
 
@@ -51,10 +48,12 @@ const BART = ({route, navigation}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [loading, setLoading] = useState(true);
   const [completedPopup, setCompletedPopup] = useState(false);
+  const [flyInOrOut, setFlyInOrOut] = useState('in');
 
   //init animations
   const sizeAnimation = useRef(new Animated.Value(scalingFactor * 15)).current;
   const flyAwayAnimation = useRef(new Animated.Value(0)).current;
+  const flyInAnimation = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     GameRef.once('value', snapshot => {
@@ -97,14 +96,32 @@ const BART = ({route, navigation}) => {
       .catch(err => console.log(err));
   }, []);
 
+  const flyInAnimationHandler = () => {
+    flyInAnimation.setValue(0);
+    setFlyInOrOut('in');
+    Animated.timing(flyInAnimation, {
+      toValue: 1,
+      duration: BALLOON_FLYAWAY_ANIMATION_TIME,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  useEffect(() => {
+    flyInAnimationHandler();
+  }, []);
+
   const onLevelEnd = () => {
     dispatch({type: ACTIONS.NEXT_LEVEL, payload: {uid: user.uid}});
     flyAwayAnimation.setValue(0);
+    flyInAnimation.setValue(0);
     sizeAnimation.setValue(scalingFactor * 15);
-    navigation.navigate('Transition', {
-      state: state,
-      cameFrom: 'BART',
-    });
+    if (state.level === state.totalLevels) {
+      navigation.navigate('Transition', {
+        state: state,
+        cameFrom: 'BART',
+      });
+    }
+    flyInAnimationHandler();
   };
 
   const handlePump = useDebounce(() => {
@@ -127,6 +144,7 @@ const BART = ({route, navigation}) => {
   }, BALLOON_PUMP_ANIMATION_TIME);
 
   const handleCollect = useDebounce(() => {
+    setFlyInOrOut('out');
     if (state.pumpCount !== 0 && state.showPopped === false) {
       Animated.timing(flyAwayAnimation, {
         toValue: 1,
@@ -147,7 +165,10 @@ const BART = ({route, navigation}) => {
       scoreboard={[
         {title: 'Total Score', value: state.totalScore},
         {title: 'Score', value: state.curr_score},
-        {title: 'Level', value: state.level},
+        {
+          title: 'Level',
+          value: state.level > 10 ? state.totalLevels : state.level,
+        },
       ]}
       controllerButtons={[
         {title: 'Pump', onPress: handlePump},
@@ -159,10 +180,16 @@ const BART = ({route, navigation}) => {
         style={{
           transform: [
             {
-              translateY: flyAwayAnimation.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, -windowHeight / 1.3],
-              }),
+              translateY:
+                flyInOrOut === 'out'
+                  ? flyAwayAnimation.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, -windowHeight / 1.3],
+                    })
+                  : flyInAnimation.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [windowHeight / 1.3, 0],
+                    }),
             },
           ],
         }}

@@ -93,10 +93,7 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps}) => {
       setDisabled(true);
       dispatch({type: ACTIONS.ON_FED});
       showFedAnimation();
-      // rotationAnimation.setValue(1);
-      rotationAnimation.stopAnimation(value => {
-        console.log(value);
-      });
+      rotationAnimation.stopAnimation();
       translateAnimation.stopAnimation(value => {
         setTimeout(() => {
           const distanceToCover = getDistance(
