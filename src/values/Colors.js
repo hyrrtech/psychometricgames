@@ -28,10 +28,10 @@ export const COLORS = {
   trainOfThoughtsBGColor: 'rgba(57, 123, 75,0.5)',
   balloonBGColor: 'rgba(255,140,140,0.6)',
   starSearchBGColor: 'rgba(145, 146, 255,0.3)',
-  piratePassageBGColor: 'rgba(148, 194, 191,0.6)',
+  piratePassageBGColor: 'rgba(36, 205, 249,0.3)',
   fishBGColor: 'rgba(54, 110, 255,0.4)',
   colorMatchBGColor: 'rgba(97, 79, 65,0.9)',
   followThatFrogBGColor: 'rgba(18, 137, 15,0.24)',
   fuseWireBGColor: 'rgba(190, 138, 9,0.3)',
-  masterPieceBGColor: 'rgba(0,0,0,0)',
+  masterPieceBGColor: 'rgba(224, 135, 31,0.6)',
 };

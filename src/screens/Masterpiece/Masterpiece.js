@@ -55,7 +55,7 @@ const Masterpiece = () => {
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.Masterpiece}
-      backgroundGradient={COLORS.followThatFrogBGColor}
+      backgroundGradient={COLORS.masterPieceBGColor}
       scoreboard={[
         {
           title: 'Level',

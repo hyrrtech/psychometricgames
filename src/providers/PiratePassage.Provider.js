@@ -18,7 +18,7 @@ export const PiratePassageProvider = ({children}) => {
   const [showCollision, setShowCollision] = useState({collided: false});
   const [disableGo, setDisableGo] = useState(true);
   const [completedPopup, setCompletedPopup] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const checkPathToTreasure = () => {
     const {indexes} = state.shipPathIndexes;
@@ -32,6 +32,10 @@ export const PiratePassageProvider = ({children}) => {
     }
     return false;
   };
+  //mimic loading
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 1000);
+  }, []);
 
   useEffect(() => {
     if (checkPathToTreasure()) {

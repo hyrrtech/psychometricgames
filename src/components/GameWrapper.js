@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   },
   scoreboard: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(255,255,255,0.5)',
+    backgroundColor: 'rgba(255,255,255,0.3)',
     marginLeft: '1.5%',
     alignItems: 'center',
     paddingHorizontal: '3%',
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     paddingVertical: '5%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.5)',
+    backgroundColor: 'rgba(255,255,255,0.3)',
     marginHorizontal: 2.5,
   },
   buttonText: {

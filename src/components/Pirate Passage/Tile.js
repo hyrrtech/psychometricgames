@@ -21,7 +21,7 @@ const Tile = ({position, index}) => {
         width: tileSize,
 
         position: 'absolute',
-        backgroundColor: 'rgba(100, 215, 220,0.5)',
+        backgroundColor: 'rgba(100, 215, 220,0.8)',
         left: position.x - tileSize / 2,
         top: position.y - tileSize / 2,
       }}>
