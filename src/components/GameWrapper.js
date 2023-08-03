@@ -33,7 +33,6 @@ export const GameWrapper = ({
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => {
-            console.log('pressed');
             navigation.goBack();
           }}
           style={styles.menu}>
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.5)',
     marginLeft: '1.5%',
     alignItems: 'center',
-    paddingHorizontal: '2%',
+    paddingHorizontal: '3%',
     paddingVertical: '5%',
   },
   text: {
@@ -128,14 +127,15 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    padding: '5%',
+    // paddingHorizontal: '2%',
+    paddingVertical: '2%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255,255,255,0.5)',
     marginHorizontal: 2.5,
   },
   buttonText: {
-    ...FontStyle.H2_semibold,
+    ...FontStyle.H5_semibold,
     color: COLORS.neutral_600,
     textTransform: 'uppercase',
   },

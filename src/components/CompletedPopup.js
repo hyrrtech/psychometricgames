@@ -28,7 +28,7 @@ const CompletedPopup = ({gameName}) => {
       <Button
         title="Home"
         style={styles.button}
-        onPressIn={() => navigation.navigate('Home')}
+        onPressIn={() => navigation.navigate('Tabs')}
       />
     </View>
   );

@@ -1,117 +1,187 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
-import {Button} from '../components/Button';
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  Text,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
+import {COLORS, FontStyle} from '../values';
+
+const data = [
+  {
+    title: 'Balloon',
+    navigateTo: 'BART',
+    subtitle: 'Decision Taking',
+    imageUri: require('../assets/games_logo/bart.png'),
+  },
+  {
+    title: 'Pirate Passage',
+    navigateTo: 'PiratePassage',
+    subtitle: 'Problem Solving',
+    imageUri: require('../assets/games_logo/pirate_passage.png'),
+  },
+  {
+    title: 'Memory Matrix',
+    navigateTo: 'MemoryMatrix',
+    subtitle: 'Spatial Recall',
+    imageUri: require('../assets/games_logo/pirate_passage.png'),
+  },
+  {
+    title: 'Shark',
+    navigateTo: 'SHARK',
+    subtitle: 'Flexibility',
+    imageUri: require('../assets/games_logo/pirate_passage.png'),
+  },
+  // {
+  //   title: 'Kill the Spider',
+  //   navigateTo: 'KillTheSpider',
+  //   subtitle: 'Shark',
+  //   imageUri: require('../assets/games_logo/pirate_passage.png'),
+  // },
+  // {
+  //   title: 'Car Race',
+  //   navigateTo: 'CarGame',
+  //   subtitle: '',
+  //   imageUri: require('../assets/games_logo/pirate_passage.png'),
+  // },
+  {
+    title: 'Train Of Thoughs',
+    navigateTo: 'TrainOfThoughts',
+    subtitle: 'Attention',
+    imageUri: require('../assets/games_logo/pirate_passage.png'),
+  },
+  {
+    title: 'Color Match',
+    navigateTo: 'ColorMatch',
+    subtitle: 'Flexibility',
+    imageUri: require('../assets/games_logo/pirate_passage.png'),
+  },
+  {
+    title: 'Feed The Fish',
+    navigateTo: 'FishGame',
+    subtitle: 'Attention',
+    imageUri: require('../assets/games_logo/fish_food.png'),
+  },
+  {
+    title: 'Fuse Wire',
+    navigateTo: 'FuseWire',
+    subtitle: 'Problem Solving',
+    imageUri: require('../assets/games_logo/pirate_passage.png'),
+  },
+  {
+    title: 'Frog Jump',
+    navigateTo: 'FrogJump',
+    subtitle: 'Attention',
+    imageUri: require('../assets/games_logo/pirate_passage.png'),
+  },
+  {
+    title: 'Masterpiece',
+    navigateTo: 'Masterpiece',
+    subtitle: 'Problem Solving',
+    imageUri: require('../assets/games_logo/masterpiece.png'),
+  },
+  {
+    title: 'Star Search',
+    navigateTo: 'StarSearch',
+    subtitle: 'Selective Attention',
+    imageUri: require('../assets/games_logo/pirate_passage.png'),
+  },
+];
+
 const Games = ({navigation}) => {
+  const Header = ({title}) => {
+    return <Text style={styles.headerText}>{title}</Text>;
+  };
+
+  const Item = ({props}) => {
+    const {title, navigateTo, subtitle, imageUri} = props;
+
+    return (
+      <View style={styles.container}>
+        <View style={styles.imageContainer}>
+          <Image source={imageUri} style={styles.image} />
+        </View>
+
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.subtitle}>{subtitle}</Text>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => navigation.navigate(navigateTo)}
+          style={styles.button}>
+          <Text style={styles.buttonText}>Start Playing</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
-    <View>
-      <Button
-        onPress={() => {
-          navigation.navigate('BART');
-        }}
-        title="Balloon"
-        style={styles.button}
+    <>
+      <FlatList
+        style={{margin: '2%'}}
+        showsVerticalScrollIndicator={false}
+        numColumns={2}
+        // columnWrapperStyle={{flex: 1}}
+        data={data}
+        ListHeaderComponent={<Header title="All Games" />}
+        keyExtractor={item => item.navigateTo}
+        renderItem={object => <Item props={object.item} />}
       />
-      <Button
-        onPress={() => {
-          navigation.navigate('SHARK');
-        }}
-        title="Shark"
-        style={styles.button}
-      />
-      <Button
-        onPress={() => {
-          navigation.navigate('MemoryMatrix');
-        }}
-        title="Memory Matrix"
-        style={styles.button}
-      />
-
-      {/* <Button
-        onPress={() => {
-          navigation.navigate('KillTheSpider');
-        }}
-        title="Kill the Spider"
-        style={styles.button}
-      /> */}
-      <Button
-        onPress={() => {
-          navigation.navigate('CarGame');
-        }}
-        title="Car Game"
-        style={styles.button}
-      />
-      <Button
-        onPress={() => {
-          navigation.navigate('TrainOfThoughts');
-        }}
-        title="TrainOfThoughts"
-        style={styles.button}
-      />
-      <Button
-        onPress={() => {
-          navigation.navigate('ColorMatch');
-        }}
-        title="Color Match"
-        style={styles.button}
-      />
-      <Button
-        onPress={() => {
-          navigation.navigate('FishGame');
-        }}
-        title="Fish Game"
-        style={styles.button}
-      />
-      <Button
-        onPress={() => {
-          navigation.navigate('PiratePassage');
-        }}
-        title="Pirate Passage"
-        style={styles.button}
-      />
-      <Button
-        onPress={() => {
-          navigation.navigate('FuseWire');
-        }}
-        title="Fuse Wire"
-        style={styles.button}
-      />
-
-      <Button
-        onPress={() => {
-          navigation.navigate('FrogJump');
-        }}
-        title="Frog Jump"
-        style={styles.button}
-      />
-      {/* <Button
-        onPress={() => {
-          navigation.navigate('OrganicOrder');
-        }}
-        title="OrganicOrder"
-        style={styles.button}
-      /> */}
-      <Button
-        onPress={() => {
-          navigation.navigate('Masterpiece');
-        }}
-        title="Masterpiece"
-        style={styles.button}
-      />
-      <Button
-        onPress={() => {
-          navigation.navigate('StarSearch');
-        }}
-        title="Star Search"
-        style={styles.button}
-      />
-    </View>
+    </>
   );
 };
+
 const styles = StyleSheet.create({
+  headerText: {
+    ...FontStyle.H3_bold,
+    color: COLORS.neutral_700,
+    marginVertical: '2%',
+  },
+  container: {
+    margin: '1%',
+    flex: 1,
+    padding: '3%',
+    borderRadius: 5,
+    alignItems: 'center',
+    shadowColor: '#171717',
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 5,
+    backgroundColor: COLORS.neutral_100,
+    shadowColor: COLORS.neutral_700,
+  },
+  imageContainer: {
+    height: 150,
+    width: 150,
+    borderRadius: 5,
+    overflow: 'hidden',
+    marginBottom: '5%',
+  },
+  image: {flex: 1, width: null, height: null, resizeMode: 'stretch'},
   button: {
-    marginVertical: 10,
-    marginHorizontal: 10,
-    color: 'black',
+    borderRadius: 5,
+    backgroundColor: COLORS.primary_100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    padding: '4%',
+  },
+  buttonText: {
+    ...FontStyle.Title_8,
+    color: COLORS.neutral_100,
+  },
+
+  subtitle: {
+    ...FontStyle.H5,
+    color: COLORS.neutral_500,
+    width: '100%',
+  },
+  title: {
+    ...FontStyle.H4_bold,
+    color: COLORS.neutral_600,
+    width: '100%',
   },
 });
 export default Games;
