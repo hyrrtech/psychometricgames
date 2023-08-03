@@ -16,6 +16,7 @@ export const GameWrapper = ({
   children,
   controllerButtons,
   scoreboard,
+  showBackButton = true,
 }) => {
   const navigation = useNavigation();
   return (
@@ -30,16 +31,22 @@ export const GameWrapper = ({
       source={imageURL}>
       <View style={[styles.overlay, {backgroundColor: backgroundGradient}]} />
       <View style={styles.header}>
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => {
-            navigation.goBack();
-          }}
-          style={styles.menu}>
-          <View pointerEvents="none">
-            <BackButtonIcon width={40} height={40} fill={COLORS.neutral_600} />
-          </View>
-        </TouchableOpacity>
+        {showBackButton && (
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => {
+              navigation.goBack();
+            }}
+            style={styles.menu}>
+            <View pointerEvents="none">
+              <BackButtonIcon
+                width={40}
+                height={40}
+                fill={COLORS.neutral_600}
+              />
+            </View>
+          </TouchableOpacity>
+        )}
 
         <View style={styles.scoreboardContainer}>
           {scoreboard?.map((item, index) => (

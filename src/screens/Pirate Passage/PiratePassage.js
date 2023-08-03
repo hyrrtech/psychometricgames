@@ -1,4 +1,4 @@
-import {useContext} from 'react';
+import {useContext, useEffect} from 'react';
 import {View, ActivityIndicator} from 'react-native';
 import {
   Tile,
@@ -13,7 +13,7 @@ import {COLORS} from '../../values/Colors';
 import {PiratePassageContext} from '../../providers/PiratePassage.Provider';
 import PirateShip from '../../components/Pirate Passage/PirateShip';
 
-const PiratePassage = () => {
+const PiratePassage = ({navigation}) => {
   const {
     disableGo,
     pathComponents,
@@ -36,6 +36,15 @@ const PiratePassage = () => {
   const handle_undo = () => {
     dispatch({type: ACTIONS.UNDO});
   };
+
+  useEffect(() => {
+    if (showCollision.collided)
+      setTimeout(() => {
+        navigation.navigate('Transition', {
+          cameFrom: 'PiratePassage',
+        });
+      }, 500);
+  }, [showCollision]);
 
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />

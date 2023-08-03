@@ -52,36 +52,43 @@ const Transition = ({route, navigation}) => {
       text: 'You have completed the game. Press home to go back to home screen',
     },
     ColorMatch: {
-      backgroundGradient: COLORS.sharkBGGrandient,
-      imageURL: BackgroundImage.SHARK,
+      backgroundGradient: COLORS.colorMatchBGColor,
+      imageURL: BackgroundImage.ColorMatch,
       navigateTo: 'Tabs',
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press home to go back to home screen',
     },
     FrogJump: {
-      backgroundGradient: COLORS.sharkBGGrandient,
-      imageURL: BackgroundImage.SHARK,
+      backgroundGradient: COLORS.followThatFrogBGColor,
+      imageURL: BackgroundImage.FrogJump,
       navigateTo: 'Tabs',
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press home to go back to home screen',
     },
     FuseWire: {
-      backgroundGradient: COLORS.sharkBGGrandient,
+      backgroundGradient: COLORS.fuseWireBGColor,
       imageURL: BackgroundImage.FuseWire,
       navigateTo: 'Tabs',
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press home to go back to home screen',
     },
     FishGame: {
-      backgroundGradient: COLORS.sharkBGGrandient,
-      imageURL: BackgroundImage.SHARK,
+      backgroundGradient: COLORS.fishBGColor,
+      imageURL: BackgroundImage.FishGame,
       navigateTo: 'Tabs',
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press home to go back to home screen',
     },
     StarSearch: {
-      backgroundGradient: COLORS.sharkBGGrandient,
+      backgroundGradient: COLORS.starSearchBGColor,
       imageURL: BackgroundImage.SHARK,
+      navigateTo: 'Tabs',
+      navigateButtonText: 'Home',
+      text: 'You have completed the game. Press home to go back to home screen',
+    },
+    PiratePassage: {
+      backgroundGradient: COLORS.piratePassageBGColor,
+      imageURL: BackgroundImage.PiratePassage,
       navigateTo: 'Tabs',
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press home to go back to home screen',
@@ -102,6 +109,7 @@ const Transition = ({route, navigation}) => {
   return (
     <GameWrapper
       imageURL={values[cameFrom].imageURL}
+      showBackButton={false}
       backgroundGradient={values[cameFrom].backgroundGradient}
       controllerButtons={[
         {
@@ -116,7 +124,7 @@ const Transition = ({route, navigation}) => {
         style={[
           FontStyle.h4,
           {
-            color: COLORS.textSecondary,
+            color: COLORS.neutral_600,
             textAlign: 'center',
             marginTop: '5%',
           },

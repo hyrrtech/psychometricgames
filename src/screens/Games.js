@@ -26,13 +26,13 @@ const data = [
     title: 'Memory Matrix',
     navigateTo: 'MemoryMatrix',
     subtitle: 'Spatial Recall',
-    imageUri: require('../assets/games_logo/pirate_passage.png'),
+    imageUri: require('../assets/games_logo/memory_matrix.png'),
   },
   {
     title: 'Shark',
     navigateTo: 'SHARK',
     subtitle: 'Flexibility',
-    imageUri: require('../assets/games_logo/pirate_passage.png'),
+    imageUri: require('../assets/games_logo/fish.png'),
   },
   // {
   //   title: 'Kill the Spider',
@@ -50,13 +50,13 @@ const data = [
     title: 'Train Of Thoughs',
     navigateTo: 'TrainOfThoughts',
     subtitle: 'Attention',
-    imageUri: require('../assets/games_logo/pirate_passage.png'),
+    imageUri: require('../assets/games_logo/train_of_thoughs.png'),
   },
   {
     title: 'Color Match',
     navigateTo: 'ColorMatch',
     subtitle: 'Flexibility',
-    imageUri: require('../assets/games_logo/pirate_passage.png'),
+    imageUri: require('../assets/games_logo/color_match.png'),
   },
   {
     title: 'Feed The Fish',
@@ -68,13 +68,13 @@ const data = [
     title: 'Fuse Wire',
     navigateTo: 'FuseWire',
     subtitle: 'Problem Solving',
-    imageUri: require('../assets/games_logo/pirate_passage.png'),
+    imageUri: require('../assets/games_logo/fuse_wire.png'),
   },
   {
     title: 'Frog Jump',
     navigateTo: 'FrogJump',
     subtitle: 'Attention',
-    imageUri: require('../assets/games_logo/pirate_passage.png'),
+    imageUri: require('../assets/games_logo/frog_jump.png'),
   },
   {
     title: 'Masterpiece',
@@ -86,7 +86,7 @@ const data = [
     title: 'Star Search',
     navigateTo: 'StarSearch',
     subtitle: 'Selective Attention',
-    imageUri: require('../assets/games_logo/pirate_passage.png'),
+    imageUri: require('../assets/games_logo/star_search.png'),
   },
 ];
 

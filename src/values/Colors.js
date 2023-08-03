@@ -27,7 +27,7 @@ export const COLORS = {
   memoryMatrixBGColor: 'rgba(190, 138, 9,0.3)',
   trainOfThoughtsBGColor: 'rgba(57, 123, 75,0.5)',
   balloonBGColor: 'rgba(255,140,140,0.6)',
-  starSearchBGColor: 'rgba(145, 146, 255,0.3)',
+  starSearchBGColor: 'rgba(24, 27, 57,0.8)',
   piratePassageBGColor: 'rgba(36, 205, 249,0.3)',
   fishBGColor: 'rgba(54, 110, 255,0.4)',
   colorMatchBGColor: 'rgba(97, 79, 65,0.9)',
