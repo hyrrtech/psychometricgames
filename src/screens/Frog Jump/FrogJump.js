@@ -77,7 +77,7 @@ const FrogJump = ({navigation}) => {
     <CompletedPopup gameName="FOLLOW THAT FROG" />
   ) : (
     <GameWrapper
-      imageURL={BackgroundImage.KillTheSpider}
+      imageURL={BackgroundImage.FrogJump}
       backgroundGradient={COLORS.followThatFrogBGColor}
       scoreboard={[
         {

@@ -23,7 +23,7 @@ const CombinedPiece = ({
         top: position.y - (height * ratio) / 2,
       }}>
       {paths.map(path => (
-        <Path d={path.path} fill={'red'} key={path.path} />
+        <Path d={path.path} fill={fill} key={path.path} />
       ))}
     </Svg>
   );

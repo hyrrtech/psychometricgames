@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     // paddingHorizontal: '2%',
-    paddingVertical: '2%',
+    paddingVertical: '5%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255,255,255,0.5)',

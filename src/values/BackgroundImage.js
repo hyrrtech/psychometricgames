@@ -13,6 +13,12 @@ const BackgroundImage = {
   KillTheSpider: gameBackgroundImage,
   TrainofThoughts: gameBackgroundImage,
   FuseWire: gameBackgroundImage,
+  FrogJump: gameBackgroundImage,
+  Masterpiece: gameBackgroundImage,
+  ColorMatch: gameBackgroundImage,
+  FishGame: gameBackgroundImage,
+  CarGame: gameBackgroundImage,
+  PiratePassage: gameBackgroundImage,
 };
 
 export default BackgroundImage;

@@ -14,7 +14,7 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
     setPickedPieceId,
     isCorrect,
   } = useContext(MasterpieceContext);
-  const [strokeWidth, setStrokeWidth] = useState(pickedPieceId == id ? 2 : 1);
+  const [strokeWidth, setStrokeWidth] = useState(pickedPieceId == id ? 3 : 2);
   const {x, y, width, height} = viewBox;
   const [pieceHeight, pieceWidth] = [height * ratio, width * ratio];
   const calibratedInitialPosition = {
@@ -49,14 +49,14 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
 
   const colorInterpolate = colorAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: ['yellow', '#00FF00'],
+    outputRange: ['#f9bc3c', '#1f2548'],
   });
 
   const getColor = () => {
     if (isCorrect) {
       return colorInterpolate;
     }
-    return pickedPieceId == id ? 'yellow' : '#4C4ACF';
+    return pickedPieceId == id ? '#f9bc3c' : '#2ed0f6';
   };
   const color = useMemo(() => getColor(), [isCorrect, pickedPieceId]);
 

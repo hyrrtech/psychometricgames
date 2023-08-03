@@ -20,7 +20,7 @@ const data = {
     },
     viewBox: '0 0 268 192',
   },
-  fillColor: '#4C4ACF',
+  fillColor: '#1e2448',
 };
 
 export const MasterpieceProvider = ({children}) => {
