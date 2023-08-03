@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  Dimensions,
 } from 'react-native';
 import {COLORS, FontStyle} from '../values';
 
@@ -97,9 +98,9 @@ const Games = ({navigation}) => {
 
   const Item = ({props}) => {
     const {title, navigateTo, subtitle, imageUri} = props;
-
+    const width = (Dimensions.get('window').width - 4 * 10) / 2;
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, {width: width}]}>
         <View style={styles.imageContainer}>
           <Image source={imageUri} style={styles.image} />
         </View>
@@ -122,7 +123,11 @@ const Games = ({navigation}) => {
         style={{margin: '2%'}}
         showsVerticalScrollIndicator={false}
         numColumns={2}
-        // columnWrapperStyle={{flex: 1}}
+        columnWrapperStyle={{
+          flexShrink: 1,
+          justifyContent: 'space-between',
+          marginBottom: '1%',
+        }}
         data={data}
         ListHeaderComponent={<Header title="All Games" />}
         keyExtractor={item => item.navigateTo}
@@ -140,9 +145,9 @@ const styles = StyleSheet.create({
   },
   container: {
     margin: '1%',
-    flex: 1,
+    // flex: 1,
     padding: '3%',
-    borderRadius: 5,
+    borderRadius: 6,
     alignItems: 'center',
     shadowColor: '#171717',
     shadowOffset: {width: -2, height: 4},
@@ -155,13 +160,13 @@ const styles = StyleSheet.create({
   imageContainer: {
     height: 150,
     width: 150,
-    borderRadius: 5,
+    borderRadius: 3,
     overflow: 'hidden',
     marginBottom: '5%',
   },
   image: {flex: 1, width: null, height: null, resizeMode: 'stretch'},
   button: {
-    borderRadius: 5,
+    borderRadius: 3,
     backgroundColor: COLORS.primary_100,
     alignItems: 'center',
     justifyContent: 'center',
@@ -182,6 +187,7 @@ const styles = StyleSheet.create({
     ...FontStyle.H4_bold,
     color: COLORS.neutral_600,
     width: '100%',
+    marginVertical: '5%',
   },
 });
 export default Games;

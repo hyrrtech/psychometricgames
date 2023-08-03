@@ -4,7 +4,7 @@ const shapes = [
   'shape3',
   'shape4',
   'shape5',
-  'shape6',
+  // 'shape6',
   // 'shape7',
 ];
 

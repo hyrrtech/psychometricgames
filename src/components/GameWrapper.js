@@ -50,7 +50,12 @@ export const GameWrapper = ({
 
         <View style={styles.scoreboardContainer}>
           {scoreboard?.map((item, index) => (
-            <View key={index} style={styles.scoreboard}>
+            <View
+              key={index}
+              style={[
+                styles.scoreboard,
+                scoreboard.length < 3 && {paddingHorizontal: '7%'},
+              ]}>
               <Text style={styles.text}>{item.title}: </Text>
               <Text style={styles.text}> {item.value}</Text>
             </View>
