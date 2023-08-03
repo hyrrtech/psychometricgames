@@ -105,7 +105,7 @@ const Games = ({navigation}) => {
         </View>
 
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.subtitle}>{subtitle}</Text>
+        {/* <Text style={styles.subtitle}>{subtitle}</Text> */}
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => navigation.navigate(navigateTo)}

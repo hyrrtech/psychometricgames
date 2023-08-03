@@ -1,13 +1,22 @@
-const shapes = ['shape1', 'shape2', 'shape3', 'shape4', 'shape5', 'shape6'];
+const shapes = [
+  'shape1',
+  'shape2',
+  'shape3',
+  'shape4',
+  'shape5',
+  'shape6',
+  // 'shape7',
+];
 
 const color_palette = {
+  1: [['#f3db7a'], ['#7c57e6'], ['#e37059']],
   2: [
-    ['#b2d5cb', '#92b9c5'],
-    ['#eea888', '#e37059'],
+    ['#87a29a', '#6c8992'],
+    ['#bb846a', '#e37059'],
   ],
   3: [
     ['#72adc4', '#b2d5cb', '#709a9b'],
-    ['#9183b0', '#6849c0', '#8fa5d0'],
+    ['#9183b0', '#7c57e6', '#8fa5d0'],
     ['#978c89', '#ab8287', '#935d6c'],
   ],
 };
