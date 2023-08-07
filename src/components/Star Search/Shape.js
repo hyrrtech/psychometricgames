@@ -1,12 +1,9 @@
 import ShapeSvg from './ShapeSvgs';
 import adjustHexColor from '../../utilities/adjustHexColor';
 import {constants} from '../../utilities/Star Search';
-import {ACTIONS} from '../../screens/Star Search/reducer';
 
-import {useEffect, useRef, useContext} from 'react';
-import {View, Animated, Easing, TouchableOpacity} from 'react-native';
-
-import {StarSearchContext} from '../../providers/StarSearch.Provider';
+import {useEffect, useRef} from 'react';
+import {Animated, Easing} from 'react-native';
 
 const getInterpolatedValue = (rotationAnimation, angle) => {
   if (rotationAnimation === 'none')
@@ -29,27 +26,15 @@ const Shape = ({
   rotationAnimation,
   color,
   shape,
-  position,
-  count,
 }) => {
   const {shapeSize} = constants;
-  const {dispatch} = useContext(StarSearchContext);
 
   const {darkened: darkenColor, lightened: lightenColor} = adjustHexColor(
     color,
     20,
-    50,
+    30,
   );
   const rotateAnimation = useRef(new Animated.Value(0)).current;
-
-  const handlePress = () => {
-    dispatch({
-      type: ACTIONS.ON_TAP,
-      payload: {
-        isCorrect: count === 1,
-      },
-    });
-  };
 
   useEffect(() => {
     Animated.loop(
@@ -66,26 +51,20 @@ const Shape = ({
     getInterpolatedValue(rotationAnimation, initialRotationAngle),
   );
   return (
-    <TouchableOpacity
-      activeOpacity={1}
-      onPress={handlePress}
+    <Animated.View
+      pointerEvents="none"
       style={{
         height: shapeSize,
         width: shapeSize,
         transform: [{rotateZ: rotate}],
-        position: 'absolute',
-        left: position.x,
-        top: position.y,
       }}>
-      <View pointerEvents="none">
-        <ShapeSvg
-          shapeName={shape}
-          darkenColor={darkenColor}
-          lightenColor={lightenColor}
-          patternColor={hasPattern ? 'rgba(255,255,255,0.8)' : 'none'}
-        />
-      </View>
-    </TouchableOpacity>
+      <ShapeSvg
+        shapeName={shape}
+        darkenColor={darkenColor}
+        lightenColor={lightenColor}
+        patternColor={hasPattern ? 'rgba(255,255,255,0.8)' : 'none'}
+      />
+    </Animated.View>
   );
 };
 

@@ -56,7 +56,7 @@ const Deck = ({baitCount, lives}) => {
 
   const color = colorAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: ['#1ccc5b', '#f4574b'],
+    outputRange: ['#62a764', '#f4574b'],
   });
 
   const shake = Animated.sequence([
@@ -64,21 +64,25 @@ const Deck = ({baitCount, lives}) => {
       toValue: 1,
       duration: 100,
       useNativeDriver: true,
+      easing: Easing.linear,
     }),
     Animated.timing(shakeAnimation, {
       toValue: -1,
       duration: 100,
       useNativeDriver: true,
+      easing: Easing.linear,
     }),
     Animated.timing(shakeAnimation, {
       toValue: 1,
       duration: 100,
       useNativeDriver: true,
+      easing: Easing.linear,
     }),
     Animated.timing(shakeAnimation, {
       toValue: 0,
       duration: 100,
       useNativeDriver: true,
+      easing: Easing.linear,
     }),
   ]);
 
@@ -105,12 +109,14 @@ const Deck = ({baitCount, lives}) => {
         toValue: 1,
         duration: 700,
         useNativeDriver: false,
+        easing: Easing.linear,
       }).start();
     } else {
       Animated.timing(colorAnimation, {
         toValue: 0,
         duration: 700,
         useNativeDriver: false,
+        easing: Easing.linear,
       }).start();
     }
   }, [disabled]);
