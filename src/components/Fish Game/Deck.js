@@ -1,7 +1,8 @@
 import {Animated, View, StyleSheet, Dimensions} from 'react-native';
-import {useEffect, useMemo, useRef} from 'react';
+import {useEffect, useMemo, useRef, useContext} from 'react';
+import {FishGameContext} from '../../providers/FishGame.Provider';
 
-const {height} = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 const containerHeight = height * 0.2;
 const BaitContainerHeight = containerHeight * 0.22;
 const TimerContainerSize = containerHeight * 0.5;
@@ -47,7 +48,40 @@ const Baits = ({baitCount}) => {
   );
 };
 
-const Deck = ({baitCount}) => {
+const Deck = ({baitCount, lives}) => {
+  const {disabled} = useContext(FishGameContext);
+  const originalLives = useMemo(() => lives, []);
+  const shakeAnimation = useRef(new Animated.Value(0)).current;
+  const colorAnimation = useRef(new Animated.Value(0)).current;
+
+  const color = colorAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#1ccc5b', '#f4574b'],
+  });
+
+  const shake = Animated.sequence([
+    Animated.timing(shakeAnimation, {
+      toValue: 1,
+      duration: 100,
+      useNativeDriver: true,
+    }),
+    Animated.timing(shakeAnimation, {
+      toValue: -1,
+      duration: 100,
+      useNativeDriver: true,
+    }),
+    Animated.timing(shakeAnimation, {
+      toValue: 1,
+      duration: 100,
+      useNativeDriver: true,
+    }),
+    Animated.timing(shakeAnimation, {
+      toValue: 0,
+      duration: 100,
+      useNativeDriver: true,
+    }),
+  ]);
+
   const containerWidth = useMemo(
     () =>
       baitCount * baitSize +
@@ -57,10 +91,46 @@ const Deck = ({baitCount}) => {
     [],
   );
   const TimeContainerCenterX = containerWidth / 2 - TimerContainerSize / 2;
-  useEffect(() => {}, [baitCount]);
+  // useEffect(() => {}, [baitCount]);
+
+  useEffect(() => {
+    if (lives < originalLives) {
+      shake.start();
+    }
+  }, [lives]);
+
+  useEffect(() => {
+    if (disabled) {
+      Animated.timing(colorAnimation, {
+        toValue: 1,
+        duration: 700,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      Animated.timing(colorAnimation, {
+        toValue: 0,
+        duration: 700,
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [disabled]);
 
   return (
-    <View style={[styles.container, {width: containerWidth}]}>
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          width: containerWidth,
+          transform: [
+            {
+              translateX: shakeAnimation.interpolate({
+                inputRange: [-1, 1],
+                outputRange: [-width * 0.01, width * 0.01],
+              }),
+            },
+          ],
+        },
+      ]}>
       <View
         style={[styles.timeContainerBGSquare, {left: TimeContainerCenterX}]}
       />
@@ -75,16 +145,16 @@ const Deck = ({baitCount}) => {
             height: TimeElementSize,
             width: TimeElementSize,
           }}>
-          <View
+          <Animated.View
             style={{
-              backgroundColor: 'orange',
+              backgroundColor: color,
               borderRadius: TimeElementSize / 2,
               height: TimeElementSize,
               width: TimeElementSize,
-            }}></View>
+            }}></Animated.View>
         </View>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 

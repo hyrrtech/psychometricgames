@@ -9,7 +9,7 @@ export const FishGameProvider = ({children}) => {
     if (disabled)
       setTimeout(() => {
         setDisabled(false);
-      }, 2000);
+      }, 3000);
   }, [disabled]);
 
   return (

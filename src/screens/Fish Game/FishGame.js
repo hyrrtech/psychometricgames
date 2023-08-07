@@ -113,7 +113,7 @@ const FishGame = ({navigation}) => {
           width: '100%',
           alignItems: 'center',
         }}>
-        <Deck baitCount={state.baitCount} />
+        <Deck baitCount={state.baitCount} lives={state.lives} />
       </View>
     </GameWrapper>
   );
