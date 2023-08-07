@@ -24,7 +24,7 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
   let segmentStartTime = useRef(Date.now());
   const pathFollowed = useRef([]);
   const [trainDirection, setTrainDirection] = useState('0rad');
-  console.log(SwitchDirections.current);
+  // console.log(SwitchDirections.current);
 
   // const switchesPassedExclusive = id => {
   //   //might not be needed
@@ -179,7 +179,7 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
 
   return (
     <Animated.View
-      pointerEvents={'none'}
+      // pointerEvents={'none'}
       style={[
         trainPosition.getTranslateTransform(),
         {

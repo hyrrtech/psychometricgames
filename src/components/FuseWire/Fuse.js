@@ -77,6 +77,7 @@ const Fuse = ({position, value}) => {
             id: fuseHolder.id,
             value,
             currentFuseHolderId: currentFuseHolderId.current,
+            initiallyBlank: fuseHolder.initiallyBlank,
           },
         });
         currentFuseHolderId.current = fuseHolder.id;
@@ -95,7 +96,7 @@ const Fuse = ({position, value}) => {
       useNativeDriver: false,
     }).start();
   }, [level]);
-  console.log(currentFuseHolderId.current);
+  // console.log(currentFuseHolderId.current);
   return (
     <Animated.View
       style={[{transform: pan.getTranslateTransform()}, styles.fuse]}

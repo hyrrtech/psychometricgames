@@ -32,20 +32,32 @@ const FuseWire = ({navigation}) => {
     setIfAnswerCorrect,
   } = useContext(FuseWireContext);
   const {user} = useContext(AuthContext);
+  // console.log(fuseHolders);
+  console.log(fuseHolders.map(fuseHolder => fuseHolder.sequence));
+  console.log(fuseHolders.map(fuseHolder => fuseHolder.inputValue));
 
   const handleCheck = async () => {
-    const checkIfCorrect = () =>
-      fuseHolders
-        .filter(fuseHolder => fuseHolder.initiallyBlank)
-        .every(fuseHolder => fuseHolder.sequence === fuseHolder.inputValue);
+    const checkIfCorrect = () => {
+      const initiallyBlank = fuseHolders.filter(
+        fuseHolder => fuseHolder.initiallyBlank,
+      );
+      console.log(initiallyBlank.map(item => (item.sequence, item.inputValue)));
+      return initiallyBlank.every(
+        fuseHolder => fuseHolder.sequence == fuseHolder.inputValue,
+      );
+    };
     const ifCorrect = checkIfCorrect();
+    console.log(ifCorrect);
     setIfAnswerCorrect(ifCorrect);
     if (level === gameRoundData[gameRoundData.length - 1].level && ifCorrect) {
       dispatch({type: ACTIONS.GAME_OVER, payload: {uid: user.uid}});
-      navigation.navigate('Transition', {
-        state: state,
-        cameFrom: 'FuseWire',
-      });
+      setTimeout(() => {
+        navigation.navigate('Transition', {
+          state: state,
+          cameFrom: 'FuseWire',
+        });
+      }, 1000);
+
       return;
     }
     const nextLevelState = await stateGeneratorAsync(level + 1);
@@ -65,9 +77,11 @@ const FuseWire = ({navigation}) => {
         type: ACTIONS.GAME_OVER,
         payload: {uid: user.uid},
       });
-      navigation.navigate('Transition', {
-        state: state,
-        cameFrom: 'FuseWire',
+      setTimeout(() => {
+        navigation.navigate('Transition', {
+          state: state,
+          cameFrom: 'FuseWire',
+        });
       });
     }
   }, [lives]);

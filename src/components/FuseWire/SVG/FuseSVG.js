@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Svg, {Path} from 'react-native-svg';
 const FuseSvg = ({height, width, showPlugs}) => {
-  console.log('showPlugs', showPlugs);
+  // console.log('showPlugs', showPlugs);
   return (
     <Svg width={width} height={height} viewBox="0 0 72 61" fill="none">
       <Path
