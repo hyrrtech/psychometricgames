@@ -11,11 +11,10 @@ const getDistance = (start, end) => {
   return Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2));
 };
 
-const Fish = ({ACTIONS, dispatch, interpolations, fishProps}) => {
+const Fish = ({ACTIONS, dispatch, interpolations, fishProps, level}) => {
   const {disabled, setDisabled} = useContext(FishGameContext);
   const {id, initialFromValue, initialToValue, rotateFrom} = fishProps;
   const [isFed, setIsFed] = useState(false);
-  const lastToValueRef = useRef(initialToValue);
   const currentTranslationValueRef = useRef({
     from: initialFromValue,
     to: initialToValue,
@@ -85,6 +84,8 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps}) => {
     };
   }, []);
 
+  useEffect(() => setIsFed(false), [level]);
+
   const handlePress = () => {
     if (isFed) {
       dispatch({type: ACTIONS.DECREASE_LIVES});
@@ -129,28 +130,26 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps}) => {
       duration = (distance / speed) * 1000;
     }
     // console.log('duration after change', duration, '\n\n');
-    Animated.timing(rotationAnimation, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-      easing: Easing.linear,
-    }).start();
-    // const animation = Animated.parallel(
-    //   [
-
-    //     ,
-    //   ],
-    //   {stopTogether: false},
-    // );
-
-    Animated.timing(translateAnimation, {
-      toValue: to,
-      duration: duration,
-      useNativeDriver: true,
-      easing: Easing.linear,
-    }).start(({finished}) => {
+    //  .start();
+    Animated.parallel(
+      [
+        Animated.timing(rotationAnimation, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+          easing: Easing.linear,
+        }),
+        Animated.timing(translateAnimation, {
+          toValue: to,
+          duration: duration,
+          useNativeDriver: true,
+          easing: Easing.linear,
+        }),
+      ],
+      {stopTogether: false},
+    ).start(({finished}) => {
       if (finished) {
-        rotationAnimation.setValue(1);
+        // rotationAnimation.setValue(1);
         animateFish(to, newTo);
       }
     });

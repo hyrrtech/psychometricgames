@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {StyleSheet, Animated, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, Animated, View} from 'react-native';
 import {faCheck, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 
@@ -22,7 +22,7 @@ const Tile = ({props}) => {
         //revert animation of all toggled tiles
         Animated.timing(flipAnim, {
           toValue: 0,
-          duration: 600,
+          duration: 0,
           useNativeDriver: true,
         }), //show correct tiles on game init
         Animated.delay(700),

@@ -1,4 +1,4 @@
-import {Animated, View, StyleSheet, Dimensions} from 'react-native';
+import {Animated, View, StyleSheet, Dimensions, Easing} from 'react-native';
 import {useEffect, useMemo, useRef, useContext} from 'react';
 import {FishGameContext} from '../../providers/FishGame.Provider';
 
@@ -10,11 +10,11 @@ const TimeElementSize = TimerContainerSize * 0.8;
 
 const baitSize = BaitContainerHeight * 0.7;
 
-const Baits = ({baitCount}) => {
-  const originalBaitCount = useMemo(() => baitCount, []);
+const Baits = ({baitCount, level}) => {
+  const originalBaitCount = useMemo(() => baitCount, [level]);
   const scaleAnimations = useMemo(
     () => new Array(originalBaitCount).fill(1).map(() => new Animated.Value(1)),
-    [originalBaitCount],
+    [level],
   );
 
   useEffect(() => {
@@ -48,9 +48,9 @@ const Baits = ({baitCount}) => {
   );
 };
 
-const Deck = ({baitCount, lives}) => {
+const Deck = ({baitCount, lives, level}) => {
   const {disabled} = useContext(FishGameContext);
-  const originalLives = useMemo(() => lives, []);
+  const originalLives = useMemo(() => lives, [level]);
   const shakeAnimation = useRef(new Animated.Value(0)).current;
   const colorAnimation = useRef(new Animated.Value(0)).current;
 
@@ -92,10 +92,9 @@ const Deck = ({baitCount, lives}) => {
       baitCount * baitSize * 0.4 +
       BaitContainerHeight / 2,
 
-    [],
+    [level],
   );
   const TimeContainerCenterX = containerWidth / 2 - TimerContainerSize / 2;
-  // useEffect(() => {}, [baitCount]);
 
   useEffect(() => {
     if (lives < originalLives) {
@@ -141,7 +140,7 @@ const Deck = ({baitCount, lives}) => {
         style={[styles.timeContainerBGSquare, {left: TimeContainerCenterX}]}
       />
 
-      <Baits baitCount={baitCount} />
+      <Baits baitCount={baitCount} level={level} />
 
       <View style={[styles.timeContainer, {left: TimeContainerCenterX}]}>
         <View

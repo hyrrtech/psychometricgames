@@ -11,6 +11,11 @@ const Fuse = ({position, value}) => {
   const pan = useRef(new Animated.ValueXY(position)).current;
   const [fusePicked, setFusePicked] = useState(false);
 
+  useEffect(() => {
+    currentFuseHolderId.current = null;
+    setFusePicked(false);
+  }, [value]);
+
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant: () => {

@@ -4,11 +4,8 @@ import {StyleSheet, ActivityIndicator, View} from 'react-native';
 import {AuthContext} from '../../providers/AuthProvider';
 import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
-import {InfoLabel} from '../../components/InfoLabel';
-import {Button} from '../../components/Button';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
-import styles from './styles';
 
 import {gameRoundData, stateGeneratorAsync} from '../../utilities/FuseWire';
 import {FuseWireContext} from '../../providers/FuseWire.Provider';
@@ -33,21 +30,27 @@ const FuseWire = ({navigation}) => {
   } = useContext(FuseWireContext);
   const {user} = useContext(AuthContext);
   // console.log(fuseHolders);
-  console.log(fuseHolders.map(fuseHolder => fuseHolder.sequence));
-  console.log(fuseHolders.map(fuseHolder => fuseHolder.inputValue));
+  // console.log(
+  //   fuseHolders.map(fuseHolder => fuseHolder.sequence),
+  //   'sequence',
+  // );
+  // console.log(
+  //   fuseHolders.map(fuseHolder => fuseHolder.inputValue),
+  //   'inputs',
+  // );
 
   const handleCheck = async () => {
     const checkIfCorrect = () => {
       const initiallyBlank = fuseHolders.filter(
         fuseHolder => fuseHolder.initiallyBlank,
       );
-      console.log(initiallyBlank.map(item => (item.sequence, item.inputValue)));
+      // console.log(initiallyBlank.map(item => (item.sequence, item.inputValue)));
       return initiallyBlank.every(
         fuseHolder => fuseHolder.sequence == fuseHolder.inputValue,
       );
     };
     const ifCorrect = checkIfCorrect();
-    console.log(ifCorrect);
+    // console.log(ifCorrect);
     setIfAnswerCorrect(ifCorrect);
     if (level === gameRoundData[gameRoundData.length - 1].level && ifCorrect) {
       dispatch({type: ACTIONS.GAME_OVER, payload: {uid: user.uid}});
@@ -60,7 +63,8 @@ const FuseWire = ({navigation}) => {
 
       return;
     }
-    const nextLevelState = await stateGeneratorAsync(level + 1);
+    let nextLevelState;
+    if (ifCorrect) nextLevelState = await stateGeneratorAsync(level + 1);
     dispatch({
       type: ACTIONS.ON_CHECK,
       payload: {

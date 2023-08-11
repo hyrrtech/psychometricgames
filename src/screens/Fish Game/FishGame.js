@@ -47,7 +47,7 @@ const FishGame = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    const lastLevel = gameRoundData.length - 1;
+    const lastLevel = gameRoundData[gameRoundData.length - 1].level;
     if (state.baitCount === 0 && state.level !== lastLevel) {
       dispatch({type: ACTIONS.NEXT_LEVEL});
     } else if (state.baitCount === 0 && state.level === lastLevel) {
@@ -95,6 +95,7 @@ const FishGame = ({navigation}) => {
             dispatch={dispatch}
             fishProps={fish}
             interpolations={interpolations}
+            level={state.level}
           />
         ))}
         {state.rainDrops.map(raindrop => (
@@ -113,7 +114,11 @@ const FishGame = ({navigation}) => {
           width: '100%',
           alignItems: 'center',
         }}>
-        <Deck baitCount={state.baitCount} lives={state.lives} />
+        <Deck
+          baitCount={state.baitCount}
+          lives={state.lives}
+          level={state.level}
+        />
       </View>
     </GameWrapper>
   );
