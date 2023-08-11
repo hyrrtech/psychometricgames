@@ -1,5 +1,9 @@
-import {HIGH_RISK_POINT} from './initialState';
-import {balloonPopPoint} from '../../utilities/BART';
+import {
+  HIGH_RISK_END_POINT,
+  COLORS,
+  HIGH_RISK_START_POINT,
+} from './initialState';
+import {getColor, randomPoint} from '../../utilities/BART';
 import db from '../../firebase/database';
 
 export const ACTIONS = {
@@ -35,19 +39,36 @@ export function reducer(state, action) {
       };
 
     case ACTIONS.POP_ON_PUMP:
-      return {...state, showPopped: true}; //test changing curr_score=0
+      return {...state, showPopped: true, curr_score: 0};
 
-    case ACTIONS.NEXT_LEVEL: //old implementation
+    case ACTIONS.NEXT_LEVEL:
+      const HIGH_RISK_POINT = randomPoint(
+        HIGH_RISK_START_POINT,
+        HIGH_RISK_END_POINT,
+      );
+
+      const POP_POINT = randomPoint(HIGH_RISK_POINT, state.number_of_weights);
+      // console.log(
+      //   'POP_POINT',
+      //   POP_POINT,
+      //   'number_of_weights',
+      //   state.number_of_weights,
+      // );
+      const BALLOON_COLOR = getColor(
+        COLORS,
+        HIGH_RISK_START_POINT,
+        POP_POINT,
+        state.number_of_weights,
+      );
+
       const newState = {
         ...state,
         level: state.level + 1,
         curr_score: 0,
         pumpCount: 0,
-        pop_point: balloonPopPoint(
-          HIGH_RISK_POINT + 2,
-          state.number_of_weights,
-        ),
+        pop_point: POP_POINT,
         showPopped: false,
+        balloon_color: BALLOON_COLOR,
       };
       if (state.level >= state.totalLevels) {
         newState.status = 'COMPLETED';

@@ -1,15 +1,20 @@
 import {
   maxScore,
   divideIntoWeightedParts,
-  balloonPopPoint,
   randomPoint,
+  getColor,
 } from '../../utilities/BART';
 const BALLOON_PUMP_ANIMATION_TIME = 700;
 const BALLOON_FLYAWAY_ANIMATION_TIME = 1500;
+const COLORS = {
+  low: '#ffca28',
+  medium: '#f44030',
+  high: '#1b1f23',
+};
 
 //pivot point
 const HIGH_RISK_START_POINT = 4;
-const HIGH_RISK_END_POINT = 6;
+const HIGH_RISK_END_POINT = 7;
 const HIGH_RISK_POINT = randomPoint(HIGH_RISK_START_POINT, HIGH_RISK_END_POINT);
 
 //adjust weightage before and after pivot point
@@ -26,12 +31,19 @@ const MAX_SCORE = maxScore(MAX_SCORE_RANGE);
 
 //max levels
 const MAX_LEVEL = 10;
-const POP_POINT = balloonPopPoint(HIGH_RISK_POINT + 2, NUMBER_OF_WEIGHTS);
+const POP_POINT = randomPoint(HIGH_RISK_POINT, NUMBER_OF_WEIGHTS);
 const SCORE_RANGE = divideIntoWeightedParts(
   MAX_SCORE,
   NUMBER_OF_WEIGHTS,
   HIGH_RISK_POINT,
   DIVIDE_WEIGHTAGE,
+);
+
+const BALLOON_COLOR = getColor(
+  COLORS,
+  HIGH_RISK_START_POINT,
+  POP_POINT,
+  NUMBER_OF_WEIGHTS,
 );
 
 const initialState = {
@@ -47,23 +59,8 @@ const initialState = {
   pop_point: POP_POINT,
   score_range: SCORE_RANGE,
   number_of_weights: NUMBER_OF_WEIGHTS,
+  balloon_color: BALLOON_COLOR,
 };
-
-//generate data as per level (needs changes, rn only generates data randomly and not level wise)
-
-// const getNewState = level => {
-//   //based on level
-//   return {
-//     maxScore: maxScore(MAX_SCORE_RANGE),
-//     pop_point: balloonPopPoint(HIGH_RISK_POINT + 2, NUMBER_OF_WEIGHTS),
-//     score_range: divideIntoWeightedParts(
-//       MAX_SCORE,
-//       NUMBER_OF_WEIGHTS,
-//       HIGH_RISK_POINT,
-//       DIVIDE_WEIGHTAGE,
-//     ),
-//   };
-// };
 
 export {
   BALLOON_PUMP_ANIMATION_TIME,
@@ -71,5 +68,8 @@ export {
   initialState,
   HIGH_RISK_POINT,
   NUMBER_OF_WEIGHTS,
+  COLORS,
+  HIGH_RISK_END_POINT,
+  HIGH_RISK_START_POINT,
   // getNewState,
 };

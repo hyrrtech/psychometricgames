@@ -42,7 +42,7 @@ const scalingFactor =
     ? (windowHeight / windowWidth) * 10
     : (windowWidth / windowHeight) * 10;
 
-const BART = ({route, navigation}) => {
+const BART = ({navigation}) => {
   const {user} = useContext(AuthContext);
   const GameRef = db.ref(`/users/${user.uid}/BART/`);
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -195,7 +195,11 @@ const BART = ({route, navigation}) => {
         }}
         viewBox={`0 0 287 349`}
         fill="none">
-        {state.showPopped ? <PoppedBalloon /> : <InflatingBalloon />}
+        {state.showPopped ? (
+          <PoppedBalloon balloonColor={state.balloon_color} />
+        ) : (
+          <InflatingBalloon balloonColor={state.balloon_color} />
+        )}
       </AnimatedSvg>
       <View
         style={{
