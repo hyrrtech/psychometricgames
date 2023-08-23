@@ -69,6 +69,7 @@ export const GameWrapper = ({
       <View style={styles.buttonsContainer}>
         {controllerButtons?.map(button => (
           <TouchableOpacity
+            onLayout={button.onLayout}
             key={button.title}
             style={styles.button}
             onPress={button.onPress}>

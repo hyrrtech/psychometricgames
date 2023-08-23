@@ -15,6 +15,7 @@ import {
 import Svg from 'react-native-svg';
 import {COLORS} from '../../values/Colors';
 import BackgroundImage from '../../values/BackgroundImage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {PlaySound, useDebounce} from '../../utilities';
 import {
   InflatingBalloon,
@@ -33,6 +34,7 @@ import {AuthContext} from '../../providers/AuthProvider';
 import {GameWrapper} from '../../components/GameWrapper';
 import CompletedPopup from '../../components/CompletedPopup';
 import balloon_pump from '../../assets/sounds/balloon_pump.wav';
+import Demo from './Demo';
 
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 const windowHeight = Dimensions.get('window').height;
@@ -49,52 +51,81 @@ const BART = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [completedPopup, setCompletedPopup] = useState(false);
   const [flyInOrOut, setFlyInOrOut] = useState('in');
+  const [showDemo, setShowDemo] = useState(false);
 
   //init animations
   const sizeAnimation = useRef(new Animated.Value(scalingFactor * 15)).current;
   const flyAwayAnimation = useRef(new Animated.Value(0)).current;
   const flyInAnimation = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    GameRef.once('value', snapshot => {
-      const exists = snapshot.exists();
-      if (exists) {
-        const data = snapshot.val();
-        const {level, totalScore, status, score_range, number_of_weights} =
-          data;
-        if (status === 'COMPLETED') {
-          setCompletedPopup(true);
-          return;
-        }
-        if (level !== 1)
-          dispatch({
-            type: ACTIONS.NEXT_LEVEL, //make init_level for this
-            payload: {
-              level: level,
-              number_of_weights: number_of_weights,
-              totalScore: totalScore,
-              score_range: score_range,
-              uid: user.uid,
-            },
-          });
+  const initGame = async () => {
+    try {
+      const value = await AsyncStorage.getItem('BART_DEMO');
+
+      if (value === null) {
+        setShowDemo(true);
         setLoading(false);
       } else {
-        GameRef.set({
-          //make ACTION for this (INIT_DB)
-          totalScore: 0,
-          level: 1,
-          number_of_weights: state.number_of_weights,
-          totalLevels: state.totalLevels,
-          score_range: state.score_range,
-          max_score_per_level: state.max_score_per_level,
-          attempts: {},
-          status: 'IN_PROGRESS',
-        });
+        GameRef.once('value')
+          .then(snapshot => {
+            const exists = snapshot.exists();
+            if (exists) {
+              const data = snapshot.val();
+              const {
+                level,
+                totalScore,
+                status,
+                score_range,
+                number_of_weights,
+              } = data;
+
+              if (status === 'COMPLETED') {
+                setCompletedPopup(true);
+                setLoading(false);
+              } else {
+                if (level !== 1) {
+                  dispatch({
+                    type: ACTIONS.NEXT_LEVEL,
+                    payload: {
+                      level: level,
+                      number_of_weights: number_of_weights,
+                      totalScore: totalScore,
+                      score_range: score_range,
+                      uid: user.uid,
+                    },
+                  });
+                }
+                setLoading(false);
+              }
+            } else {
+              return GameRef.set({
+                totalScore: 0,
+                level: 1,
+                number_of_weights: state.number_of_weights,
+                totalLevels: state.totalLevels,
+                score_range: state.score_range,
+                max_score_per_level: state.max_score_per_level,
+                attempts: {},
+                status: 'IN_PROGRESS',
+              });
+            }
+          })
+          .then(() => {
+            setLoading(false);
+            flyInAnimationHandler();
+          })
+          .catch(err => console.log(err));
       }
-    })
-      .then(() => setLoading(false))
-      .catch(err => console.log(err));
-  }, []);
+    } catch (err) {
+      console.log(err);
+      setShowDemo(true);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    initGame();
+  }, [showDemo]);
 
   const flyInAnimationHandler = () => {
     flyInAnimation.setValue(0);
@@ -105,10 +136,6 @@ const BART = ({navigation}) => {
       useNativeDriver: false,
     }).start();
   };
-
-  useEffect(() => {
-    flyInAnimationHandler();
-  }, []);
 
   const onLevelEnd = () => {
     dispatch({type: ACTIONS.NEXT_LEVEL, payload: {uid: user.uid}});
@@ -158,6 +185,8 @@ const BART = ({navigation}) => {
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
     <CompletedPopup gameName="BART" />
+  ) : showDemo ? (
+    <Demo setShowDemo={setShowDemo} />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.BART}

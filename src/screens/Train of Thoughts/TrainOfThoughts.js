@@ -37,31 +37,33 @@ const TrainOfThoughts = ({navigation}) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const scoreArray = useRef([]);
+  console.log(scoreArray.current);
 
   useEffect(() => {
     if (scoreArray.current.length === 0) {
-      scoreArray.current = [
-        {score: state.score, spawnSpeed: spawnSpeed.current},
-      ];
+      scoreArray.current = [{score: 0, spawnSpeed: spawnSpeed.current}];
     } else {
       const lastScore = scoreArray.current[scoreArray.current.length - 1].score;
-      const scoreDifference = state.score - lastScore;
+      const sign = Math.max(lastScore, state.score / 50) === lastScore ? 1 : -1;
+
       scoreArray.current = [
         ...scoreArray.current,
-        {score: scoreDifference, spawnSpeed: spawnSpeed.current},
+        {score: sign, spawnSpeed: spawnSpeed.current},
       ];
     }
 
-    if (spawnSpeed.current > 2600) {
-      if (scoreArray.current.length > 4) {
-        const negativeScores = scoreArray.current.filter(
-          score => score.score < 0,
-        );
-        if (negativeScores.length / scoreArray.current.length > 0.6) {
-          spawnSpeed.current = spawnSpeed.current + initialSpawnSpeed * 0.1;
-        } else {
-          spawnSpeed.current = spawnSpeed.current - initialSpawnSpeed * 0.15;
-        }
+    if (scoreArray.current.length > 4) {
+      const negativeScores = scoreArray.current.filter(
+        score => score.score < 0,
+      );
+      if (
+        negativeScores.length / scoreArray.current.length > 0.6 &&
+        spawnSpeed.current < initialSpawnSpeed
+      ) {
+        spawnSpeed.current = spawnSpeed.current + initialSpawnSpeed * 0.07;
+      } else {
+        if (spawnSpeed.current > 2600)
+          spawnSpeed.current = spawnSpeed.current - initialSpawnSpeed * 0.07;
       }
     }
   }, [state.score]);
