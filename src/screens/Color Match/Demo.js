@@ -16,7 +16,6 @@ import {constants} from '../../utilities/Color Match';
 import {ResultPopup} from '../../components/ResultPopup';
 import {PointerModal, Modal} from '../../components/Color Match';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {transform} from '@babel/core';
 
 if (
   Platform.OS === 'android' &&

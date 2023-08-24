@@ -72,7 +72,7 @@ const ColorMatch = ({navigation}) => {
   useEffect(() => {
     if (TIME === '00:00') {
       if (state.total_rounds_played === 0) {
-        navigation.navigate('Home');
+        navigation.goBack();
         return;
       }
       dispatch({type: ACTIONS.ON_TIME_UP, payload: {uid: user.uid}});

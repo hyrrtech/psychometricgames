@@ -1,2 +1,4 @@
 import SharkMatrix from './SharkMatrix';
-export {SharkMatrix};
+import Modal from './modal';
+import PointerModal from './pointerModal';
+export {SharkMatrix, Modal, PointerModal};

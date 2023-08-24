@@ -12,9 +12,11 @@ import {reducer, ACTIONS} from './reducer';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
 import {useCountdown} from '../../utilities';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import correct_sound from '../../assets/sounds/correct_sound.mp3';
 import wrong_sound from '../../assets/sounds/wrong_sound.mp3';
+import Demo from './Demo';
 
 const SHARK = ({navigation}) => {
   const {user} = useContext(AuthContext);
@@ -25,27 +27,48 @@ const SHARK = ({navigation}) => {
   const [result, setResult] = useState({show: false, value: 'correct'});
   const minutes = state.time.minutes;
   const seconds = state.time.seconds;
-  const {TIME} = useCountdown(minutes, seconds);
+  const {TIME, togglePause} = useCountdown(minutes, seconds);
+  const [showDemo, setShowDemo] = useState(false);
+
+  const initGame = async () => {
+    togglePause(true);
+    try {
+      const value = await AsyncStorage.getItem('SHARK_DEMO');
+      if (value === null) {
+        setShowDemo(true);
+        setLoading(false);
+      } else {
+        GameRef.once('value', snapshot => {
+          const exists = snapshot.exists();
+          if (exists) {
+            const data = snapshot.val();
+            const {status} = data;
+            if (status === 'COMPLETED') {
+              setCompletedPopup(true);
+            }
+          }
+        })
+          .then(() => {
+            setLoading(false);
+            togglePause(false);
+          })
+          .catch(err => console.log(err));
+      }
+    } catch (err) {
+      console.log(err);
+      setShowDemo(true);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    GameRef.once('value', snapshot => {
-      const exists = snapshot.exists();
-      if (exists) {
-        const data = snapshot.val();
-        const {status} = data;
-        if (status === 'COMPLETED') {
-          setCompletedPopup(true);
-        }
-      }
-    })
-      .then(() => setLoading(false))
-      .catch(err => console.log(err));
-  }, []);
+    initGame();
+  }, [showDemo]);
 
   useEffect(() => {
     if (TIME === '00:00') {
       if (state.total_rounds_played === 0) {
-        navigation.navigate('Home');
+        navigation.goBack();
         return;
       }
       dispatch({type: ACTIONS.ON_TIME_UP, payload: {uid: user.uid}});
@@ -83,6 +106,8 @@ const SHARK = ({navigation}) => {
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
     <CompletedPopup gameName="SHARK" />
+  ) : showDemo ? (
+    <Demo setShowDemo={setShowDemo} />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}
