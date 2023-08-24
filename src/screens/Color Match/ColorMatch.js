@@ -19,6 +19,8 @@ import {constants} from '../../utilities/Color Match';
 import {ResultPopup} from '../../components/ResultPopup';
 import db from '../../firebase/database';
 import {AuthContext} from '../../providers/AuthProvider';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Demo from './Demo';
 const {time, timeout} = constants;
 
 const ColorMatch = ({navigation}) => {
@@ -28,23 +30,44 @@ const ColorMatch = ({navigation}) => {
   const [completedPopup, setCompletedPopup] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [result, setResult] = useState({show: false, value: 'correct'});
-  const {TIME} = useCountDown(time.minutes, time.seconds);
+  const {TIME, togglePause} = useCountDown(time.minutes, time.seconds);
   const opacity = useRef(new Animated.Value(1)).current;
+  const [showDemo, setShowDemo] = useState(false);
+
+  const initGame = async () => {
+    togglePause(true);
+    try {
+      const value = await AsyncStorage.getItem('COLORMATCH_DEMO');
+      if (value === null) {
+        setShowDemo(true);
+        setLoading(false);
+      } else {
+        GameRef.once('value', snapshot => {
+          const exists = snapshot.exists();
+          if (exists) {
+            const data = snapshot.val();
+            const {status} = data;
+            if (status === 'COMPLETED') {
+              setCompletedPopup(true);
+            }
+          }
+        })
+          .then(() => {
+            setLoading(false);
+            togglePause(false);
+          })
+          .catch(err => console.log(err));
+      }
+    } catch (err) {
+      console.log(err);
+      setShowDemo(true);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    GameRef.once('value', snapshot => {
-      const exists = snapshot.exists();
-      if (exists) {
-        const data = snapshot.val();
-        const {status} = data;
-        if (status === 'COMPLETED') {
-          setCompletedPopup(true);
-        }
-      }
-    })
-      .then(() => setLoading(false))
-      .catch(err => console.log(err));
-  }, []);
+    initGame();
+  }, [showDemo]);
 
   useEffect(() => {
     if (TIME === '00:00') {
@@ -93,6 +116,8 @@ const ColorMatch = ({navigation}) => {
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
     <CompletedPopup gameName="COLOR MATCH" />
+  ) : showDemo ? (
+    <Demo setShowDemo={setShowDemo} />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}

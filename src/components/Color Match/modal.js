@@ -1,41 +1,18 @@
-import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  Dimensions,
-  Animated,
-} from 'react-native';
-import {useEffect, useRef} from 'react';
+import {TouchableOpacity, Text, StyleSheet, Dimensions} from 'react-native';
 import {FontStyle} from '../../values/Font';
 import {COLORS} from '../../values/Colors';
 const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
 
-const Modal = ({content, onPress, position}) => {
-  const animation = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-    Animated.timing(animation, {
-      toValue: 1,
-      duration: 700,
-      useNativeDriver: true,
-    }).start();
-  }, []);
-
-  const opacity = animation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 1],
-  });
-  const translateY = animation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [windowHeight * 0.05, 0],
-  });
-
+const Modal = ({content, onPress, style}) => {
   return (
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={1}
       style={[
         styles.container,
-        {opacity: opacity, transform: [{translateY: translateY}]},
+        {
+          ...style,
+        },
       ]}>
       <Text style={styles.text}>{content}</Text>
       <Text style={styles.text2}>Tap to Continue</Text>

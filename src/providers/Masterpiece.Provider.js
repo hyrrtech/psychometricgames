@@ -23,6 +23,18 @@ const data = {
   fillColor: '#1e2448',
 };
 
+const demoData = {
+  fullSVGComponent: {
+    paths: {
+      0: 'M0.5 0H106V90.5H0.5V0Z',
+    },
+    viewBox: '0 0 106 99',
+  },
+  fillColor: '#1e2448',
+};
+
+//
+
 export const MasterpieceProvider = ({children}) => {
   // const {user} = useContext(AuthContext);
   // const GameRef = db.ref(`/users/${user.uid}/Masterpiece/`);
@@ -61,11 +73,11 @@ export const MasterpieceProvider = ({children}) => {
       position => position.id === position.idOfPieceAtThisPosition,
     );
     const isAt0deg = elementsData.every(
-      element => element.pieceRotationAngle % 360 === 0, //-0===0
+      element => element.pieceRotationAngle % 360 === 0,
     );
     return isAt0deg && isAtCorrectPosition;
   }, [elementsData, positionsState]);
-  console.log(isCorrect);
+
   return (
     <MasterpieceContext.Provider
       value={{
