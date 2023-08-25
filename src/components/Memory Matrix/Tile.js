@@ -14,18 +14,28 @@ const Tile = ({props}) => {
     correctScreenTime,
     lives,
     level,
+    triggerCloseTiles,
   } = props;
+
+  const closeTiles = () => {
+    Animated.timing(flipAnim, {
+      toValue: 0,
+      duration: 600,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  useEffect(() => {
+    if (triggerCloseTiles) {
+      closeTiles();
+    }
+  }, [triggerCloseTiles]);
 
   useEffect(() => {
     if (isCorrect && lives !== 0) {
       Animated.sequence([
-        //revert animation of all toggled tiles
-        Animated.timing(flipAnim, {
-          toValue: 0,
-          duration: 0,
-          useNativeDriver: true,
-        }), //show correct tiles on game init
-        Animated.delay(700),
+        //show correct tiles on game init
+        Animated.delay(500),
         Animated.timing(flipAnim, {
           toValue: 1,
           duration: 600,
