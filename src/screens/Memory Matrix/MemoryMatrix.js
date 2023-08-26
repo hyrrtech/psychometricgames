@@ -13,9 +13,9 @@ import {
 } from 'react-native';
 import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
-import {InfoLabel} from '../../components/InfoLabel';
 import db from '../../firebase/database';
 import {AuthContext} from '../../providers/AuthProvider';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Tile} from '../../components/Memory Matrix';
 import {gameRoundData, stateGenerator} from '../../utilities/Memory Matrix/';
@@ -24,6 +24,7 @@ import {ACTIONS, reducer} from './reducer';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
 import styles from './styles';
+import Demo from './Demo';
 
 const MemoryMatrix = ({navigation}) => {
   const {user} = useContext(AuthContext);
@@ -33,33 +34,56 @@ const MemoryMatrix = ({navigation}) => {
   const [tileDisabled, setTileDisabled] = useState(true);
   const [loading, setLoading] = useState(true);
   const [completedPopup, setCompletedPopup] = useState(false);
+  const [triggerCloseTiles, setTriggerCloseTiles] = useState(0);
+  const [showDemo, setShowDemo] = useState(false);
+  const fetchedData = useRef(false);
+
+  const initGame = async () => {
+    try {
+      const value = await AsyncStorage.getItem('MEMORYMATRIX_DEMO');
+      if (value === null) {
+        setShowDemo(true);
+        setLoading(false);
+      }
+    } catch (e) {
+      console.log(e);
+      setShowDemo(true);
+      setLoading(false);
+    }
+
+    if (!fetchedData.current)
+      GameRef.once('value', snapshot => {
+        const exists = snapshot.exists();
+        if (exists) {
+          const data = snapshot.val();
+          let {level, status, lives, score} = data;
+          level = level ? level : 1;
+          lives = lives ? lives : state.lives;
+          if (status === 'COMPLETED') {
+            setCompletedPopup(true);
+            return;
+          }
+          dispatch({
+            type: ACTIONS.INIT_LEVEL,
+            payload: {
+              level: level,
+              lives: lives,
+              uid: user.uid,
+              score: score,
+            },
+          });
+        }
+      })
+        .then(() => {
+          setLoading(false);
+          fetchedData.current = true;
+        })
+        .catch(err => console.log(err));
+  };
 
   useEffect(() => {
-    GameRef.once('value', snapshot => {
-      const exists = snapshot.exists();
-      if (exists) {
-        const data = snapshot.val();
-        let {level, status, lives, score} = data;
-        level = level ? level : 1;
-        lives = lives ? lives : state.lives;
-        if (status === 'COMPLETED') {
-          setCompletedPopup(true);
-          return;
-        }
-        dispatch({
-          type: ACTIONS.INIT_LEVEL,
-          payload: {
-            level: level,
-            lives: lives,
-            uid: user.uid,
-            score: score,
-          },
-        });
-      }
-    })
-      .then(() => setLoading(false))
-      .catch(err => console.log(err));
-  }, []);
+    initGame();
+  }, [showDemo]);
 
   const handleGameOver = () => {
     const payload = {uid: user.uid};
@@ -74,7 +98,7 @@ const MemoryMatrix = ({navigation}) => {
     setTileDisabled(true);
     setTimeout(() => {
       setTileDisabled(false);
-    }, state.correctScreenTime + 2500);
+    }, state.correctScreenTime + 2000);
 
     if (state.lives === 0) {
       setTimeout(() => {
@@ -112,10 +136,15 @@ const MemoryMatrix = ({navigation}) => {
     };
     if (state.remainingClickCount === 0) {
       setTileDisabled(true);
+
+      setTimeout(() => {
+        setTriggerCloseTiles(prev => prev + 1);
+      }, 1500);
+
       let timeoutId =
         state.level === gameRoundData[gameRoundData.length - 1].level
-          ? setTimeout(handleGameOver, 1000)
-          : setTimeout(handleNextState, 1000);
+          ? setTimeout(handleGameOver, 2000)
+          : setTimeout(handleNextState, 2000);
       return () => clearTimeout(timeoutId);
     }
   }, [state.remainingClickCount]);
@@ -130,33 +159,20 @@ const MemoryMatrix = ({navigation}) => {
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
-    <CompletedPopup gameName="MemoryMatrix" />
+    <CompletedPopup gameName="MEMORY MATRIX" />
+  ) : showDemo ? (
+    <Demo setShowDemo={setShowDemo} />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.MemoryMatrix}
-      backgroundGradient={COLORS.memoryMatrixBGGradient}
+      backgroundGradient={COLORS.memoryMatrixBGColor}
       scoreboard={[
-        <InfoLabel
-          label={'Level'}
-          value={state.level}
-          style={styles.infoLabel}
-          key="time"
-          showAnimation={true}
-        />,
-        <InfoLabel
-          label={'Score'}
-          value={state.score.toString()}
-          style={styles.infoLabel}
-          key="score"
-          showAnimation={true}
-        />,
-        <InfoLabel
-          label={'Lives'}
-          value={state.lives > 0 ? '★'.repeat(state.lives) : '-'}
-          style={styles.infoLabel}
-          key="lives"
-          showAnimation={true}
-        />,
+        {
+          title: 'Lives',
+          value: state.lives > 0 ? '★'.repeat(state.lives) : '-',
+        },
+        {title: 'Score', value: state.score},
+        {title: 'Level', value: state.level},
       ]}>
       <Animated.View
         style={[styles.tilesBox, {transform: [{scale: animatedValue}]}]}>
@@ -175,6 +191,7 @@ const MemoryMatrix = ({navigation}) => {
                     correctScreenTime: state.correctScreenTime,
                     lives: state.lives,
                     level: state.level,
+                    triggerCloseTiles: triggerCloseTiles,
                   }}
                 />
               </TouchableOpacity>

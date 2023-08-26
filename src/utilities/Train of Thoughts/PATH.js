@@ -36,7 +36,7 @@ const path = {
                     {x: 15 + 225, y: 50 + 675},
                   ],
                   destination: {
-                    color: 'pink',
+                    color: '#e48125',
                     x: 15 + 200 - 50 / 2,
                     y: 50 + 675 - 26 / 2,
                   },
@@ -49,7 +49,7 @@ const path = {
                   destination: {
                     x: 15 + 275 - 50 / 2,
                     y: 50 + 725 + 26 / 2 + 50 / 2,
-                    color: 'green',
+                    color: '#f8de22',
                   },
                 },
               },
@@ -83,7 +83,7 @@ const path = {
                       destination: {
                         x: 15 + 50 - 50 / 2,
                         y: 50 + 575 - 26 / 2,
-                        color: 'aqua',
+                        color: '#c70039',
                       },
                     },
                     horizontal_left: {
@@ -105,7 +105,7 @@ const path = {
                           destination: {
                             x: 15 + 50 - 50 / 2,
                             y: 50 + 675 - 26 / 2,
-                            color: 'aquamarine',
+                            color: '#7c9d96',
                           },
                         },
                         vertical: {
@@ -116,7 +116,7 @@ const path = {
                           destination: {
                             x: 15 + 125 - 50 / 2,
                             y: 50 + 725 + 26 / 2 + 50 / 2,
-                            color: 'beige',
+                            color: '#d7c0ae',
                           },
                         },
                       },
@@ -168,7 +168,7 @@ const path = {
                               destination: {
                                 x: 15 + 125 - 50 / 2,
                                 y: 50 + 475 - 26 / 2,
-                                color: 'chartreuse',
+                                color: '#ff6969',
                               },
                             },
                             horizontal: {
@@ -182,7 +182,7 @@ const path = {
                               destination: {
                                 x: 15 + 50 - 50 / 2,
                                 y: 50 + 400 - 50 / 2 - 26 / 2,
-                                color: 'coral',
+                                color: '#fe7be5',
                               },
                             },
                           },
@@ -206,7 +206,7 @@ const path = {
                               destination: {
                                 x: 15 + 200 - 50 / 2,
                                 y: 50 + 200 - 50 / 2 - 26 / 2,
-                                color: 'orange',
+                                color: '#974ec3',
                               },
                             },
                             vertical_left: {
@@ -237,7 +237,7 @@ const path = {
                                   destination: {
                                     x: 15 + 125 - 50 / 2,
                                     y: 50 + 200 - 50 / 2 - 26 / 2,
-                                    color: 'gray',
+                                    color: '#42ac4d',
                                   },
                                 },
                                 horizontal: {
@@ -251,7 +251,7 @@ const path = {
                                   destination: {
                                     x: 15 + 50 - 50 / 2,
                                     y: 50 + 300 - 50 / 2 - 26 / 2,
-                                    color: 'crimson',
+                                    color: '#bdad16',
                                   },
                                 },
                               },
@@ -279,7 +279,7 @@ const path = {
                           destination: {
                             x: 15 + 350,
                             y: 50 + 500 - 50 / 2 - 26 / 2,
-                            color: 'red',
+                            color: '#a2678a',
                           },
                         },
                         horizontal_left_up: {
@@ -304,7 +304,7 @@ const path = {
                               destination: {
                                 x: 15 + 350,
                                 y: 50 + 400 - 50 / 2 - 26 / 2,
-                                color: 'blue',
+                                color: '#5bc0f8',
                               },
                             },
                             vertical: {
@@ -329,7 +329,7 @@ const path = {
                                   destination: {
                                     x: 15 + 350,
                                     y: 50 + 300 - 50 / 2 - 26 / 2,
-                                    color: 'yellow',
+                                    color: '#3771d5',
                                   },
                                 },
                                 vertical: {
@@ -346,7 +346,7 @@ const path = {
                                   destination: {
                                     x: 15 + 275 - 50 / 2,
                                     y: 50 + 200 - 50 / 2 - 26 / 2,
-                                    color: 'purple',
+                                    color: '#b9ff66',
                                   },
                                 },
                               },

@@ -4,11 +4,8 @@ import {StyleSheet, ActivityIndicator, View} from 'react-native';
 import {AuthContext} from '../../providers/AuthProvider';
 import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
-import {InfoLabel} from '../../components/InfoLabel';
-import {Button} from '../../components/Button';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
-import styles from './styles';
 
 import {gameRoundData, stateGeneratorAsync} from '../../utilities/FuseWire';
 import {FuseWireContext} from '../../providers/FuseWire.Provider';
@@ -32,23 +29,42 @@ const FuseWire = ({navigation}) => {
     setIfAnswerCorrect,
   } = useContext(FuseWireContext);
   const {user} = useContext(AuthContext);
+  // console.log(fuseHolders);
+  // console.log(
+  //   fuseHolders.map(fuseHolder => fuseHolder.sequence),
+  //   'sequence',
+  // );
+  // console.log(
+  //   fuseHolders.map(fuseHolder => fuseHolder.inputValue),
+  //   'inputs',
+  // );
 
   const handleCheck = async () => {
-    const checkIfCorrect = () =>
-      fuseHolders
-        .filter(fuseHolder => fuseHolder.initiallyBlank)
-        .every(fuseHolder => fuseHolder.sequence === fuseHolder.inputValue);
+    const checkIfCorrect = () => {
+      const initiallyBlank = fuseHolders.filter(
+        fuseHolder => fuseHolder.initiallyBlank,
+      );
+      // console.log(initiallyBlank.map(item => (item.sequence, item.inputValue)));
+      return initiallyBlank.every(
+        fuseHolder => fuseHolder.sequence == fuseHolder.inputValue,
+      );
+    };
     const ifCorrect = checkIfCorrect();
+    // console.log(ifCorrect);
     setIfAnswerCorrect(ifCorrect);
     if (level === gameRoundData[gameRoundData.length - 1].level && ifCorrect) {
       dispatch({type: ACTIONS.GAME_OVER, payload: {uid: user.uid}});
-      navigation.navigate('Transition', {
-        state: state,
-        cameFrom: 'FuseWire',
-      });
+      setTimeout(() => {
+        navigation.navigate('Transition', {
+          state: state,
+          cameFrom: 'FuseWire',
+        });
+      }, 1000);
+
       return;
     }
-    const nextLevelState = await stateGeneratorAsync(level + 1);
+    let nextLevelState;
+    if (ifCorrect) nextLevelState = await stateGeneratorAsync(level + 1);
     dispatch({
       type: ACTIONS.ON_CHECK,
       payload: {
@@ -65,9 +81,11 @@ const FuseWire = ({navigation}) => {
         type: ACTIONS.GAME_OVER,
         payload: {uid: user.uid},
       });
-      navigation.navigate('Transition', {
-        state: state,
-        cameFrom: 'FuseWire',
+      setTimeout(() => {
+        navigation.navigate('Transition', {
+          state: state,
+          cameFrom: 'FuseWire',
+        });
       });
     }
   }, [lives]);
@@ -75,35 +93,19 @@ const FuseWire = ({navigation}) => {
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
-    <CompletedPopup gameName="MemoryMatrix" />
+    <CompletedPopup gameName="FUSE WIRE" />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.FuseWire}
-      backgroundGradient={COLORS.memoryMatrixBGGradient}
+      backgroundGradient={COLORS.fuseWireBGColor}
       scoreboard={[
-        <InfoLabel
-          label={'Level'}
-          value={level}
-          style={styles.infoLabel}
-          key="time"
-          showAnimation={true}
-        />,
-        <InfoLabel
-          label={'Lives'}
-          value={lives > 0 ? '★'.repeat(lives) : '0'}
-          style={styles.infoLabel}
-          key="lives"
-          showAnimation={true}
-        />,
+        {
+          title: 'Lives',
+          value: state.lives > 0 ? '★'.repeat(state.lives) : '-',
+        },
+        {title: 'Level', value: state.level},
       ]}
-      controllerButtons={[
-        <Button
-          key="check"
-          style={styles.button}
-          title={'Check'}
-          onPressIn={handleCheck}
-        />,
-      ]}>
+      controllerButtons={[{title: 'Check', onPress: handleCheck}]}>
       <View style={stylest.mainContainer}>
         <HolderBoard />
         <FuseBoard />

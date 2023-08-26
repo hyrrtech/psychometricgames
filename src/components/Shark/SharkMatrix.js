@@ -5,9 +5,11 @@ import Lottie from 'lottie-react-native';
 const {height, width} = Dimensions.get('window');
 const translateX = width / 10;
 const translateY = height / 9;
+const AnimatedLottie = Animated.createAnimatedComponent(Lottie);
 
-const SharkMatrix = ({matrix}) => {
+const SharkMatrix = ({matrix, highlightMiddle = false, mid}) => {
   const animation = useRef(new Animated.ValueXY({x: 0, y: 0})).current;
+  const opacity = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     const X =
@@ -19,9 +21,28 @@ const SharkMatrix = ({matrix}) => {
         x: X,
         y: Y,
       },
-      duration: 300, // Animation duration in milliseconds
-      useNativeDriver: true, // For better performance on native platforms
+      duration: 300,
+      useNativeDriver: true,
     }).start();
+  }, [matrix]);
+
+  useEffect(() => {
+    if (highlightMiddle) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(opacity, {
+            toValue: 0.2,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(opacity, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+        ]),
+      ).start();
+    }
   }, [matrix]);
 
   return (
@@ -42,10 +63,17 @@ const SharkMatrix = ({matrix}) => {
                 {transform: [{rotateY: col === 'RIGHT' ? '0deg' : '180deg'}]},
               ]}>
               {col ? (
-                <Lottie
+                <AnimatedLottie
                   source={fish}
                   resizeMode="contain"
-                  style={{width: '100%'}}
+                  style={{
+                    width: '100%',
+                    opacity: highlightMiddle
+                      ? mid.middleRow === i && mid.middleColumn === j
+                        ? opacity
+                        : 1
+                      : 1,
+                  }}
                   autoPlay
                   loop
                 />

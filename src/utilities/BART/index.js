@@ -1,6 +1,6 @@
-import balloonPopPoint from './balloonPopPoint';
 import divideIntoWeightedParts from './divideIntoWeightedParts';
 import randomPoint from './randomPoint';
 import maxScore from './maxScore';
+import getColor from './getColor';
 
-export {balloonPopPoint, divideIntoWeightedParts, randomPoint, maxScore};
+export {divideIntoWeightedParts, randomPoint, maxScore, getColor};

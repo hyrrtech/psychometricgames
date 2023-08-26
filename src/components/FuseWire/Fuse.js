@@ -11,6 +11,11 @@ const Fuse = ({position, value}) => {
   const pan = useRef(new Animated.ValueXY(position)).current;
   const [fusePicked, setFusePicked] = useState(false);
 
+  useEffect(() => {
+    currentFuseHolderId.current = null;
+    setFusePicked(false);
+  }, [value]);
+
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderGrant: () => {
@@ -77,6 +82,7 @@ const Fuse = ({position, value}) => {
             id: fuseHolder.id,
             value,
             currentFuseHolderId: currentFuseHolderId.current,
+            initiallyBlank: fuseHolder.initiallyBlank,
           },
         });
         currentFuseHolderId.current = fuseHolder.id;
@@ -95,7 +101,7 @@ const Fuse = ({position, value}) => {
       useNativeDriver: false,
     }).start();
   }, [level]);
-  console.log(currentFuseHolderId.current);
+  // console.log(currentFuseHolderId.current);
   return (
     <Animated.View
       style={[{transform: pan.getTranslateTransform()}, styles.fuse]}

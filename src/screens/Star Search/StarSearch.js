@@ -1,231 +1,139 @@
-import {useEffect, useRef} from 'react';
-import {View, Animated, Easing, Text, TouchableOpacity} from 'react-native';
+import {constants, gameLevelData} from '../../utilities/Star Search';
+import Shape from '../../components/Star Search/Shape';
+import {StarSearchContext} from '../../providers/StarSearch.Provider';
+import CompletedPopup from '../../components/CompletedPopup';
+import {GameWrapper} from '../../components/GameWrapper';
+import BackgroundImage from '../../values/BackgroundImage';
+import CorrectIndicator from '../../components/Star Search/CorrectIndicator';
+import IncorrectIndicator from '../../components/Star Search/IncorrectIndicator';
+import {COLORS} from '../../values/Colors';
 
-import Svg, {Path} from 'react-native-svg';
-import adjustHexColor from '../../utilities/adjustHexColor';
-import {
-  constants,
-  generateShapeData,
-  getShapePositions,
-  svgData,
-} from '../../utilities/Star Search';
-import Shape1 from '../../assets/shapes/shape1.svg';
-import Shape2 from '../../assets/shapes/shape2.svg';
-import Shape3 from '../../assets/shapes/shape3.svg';
-import Shape4 from '../../assets/shapes/shape4.svg';
-import Shape5 from '../../assets/shapes/shape5.svg';
-import Shape6 from '../../assets/shapes/shape6.svg';
-import Shape7 from '../../assets/shapes/shape7.svg';
-import Shape8 from '../../assets/shapes/shape8.svg';
+import {View, ActivityIndicator, TouchableOpacity} from 'react-native';
+import {useContext, useEffect, useState} from 'react';
+import {ACTIONS} from './reducer';
 
-const getInterpolatedValue = (rotationAnimation, angle) => {
-  if (rotationAnimation === 'none')
-    return {
-      inputRange: [0, 1],
-      outputRange: [`${angle}deg`, `${angle}deg`],
-    };
-  const rotationAngle =
-    rotationAnimation === 'clockwise' ? angle + 360 : angle - 360;
+const StarSearch = ({navigation}) => {
+  const {
+    spawnAreaHeight,
+    spawnAreaWidth,
+    shapeSize,
+    answerIndicatorAnimationTime,
+  } = constants;
+  const {state, dispatch} = useContext(StarSearchContext);
+  const loading = false;
+  const completedPopup = false;
 
-  return {
-    inputRange: [0, 1],
-    outputRange: [`${angle}deg`, `${rotationAngle}deg`],
-  };
-};
-
-const SvgComponent = ({
-  hasPattern,
-  initialRotationAngle,
-  rotationAnimation,
-  color,
-  shape,
-  position,
-  count,
-}) => {
-  // const shapeData = svgData[shape];
-  // const {
-  //   viewBox,
-  //   lightPath,
-  //   darkPaths,
-  //   patternPaths,
-  //   // patternStrokeColor,
-  //   patternStrokeWidth,
-  // } = shapeData;
-  const {shapeSize} = constants;
-
-  const Shape = ({shapeName, darkenColor, lightenColor, patternColor}) => {
-    const shapeComponents = {
-      shape1: (
-        <Shape1
-          width={shapeSize}
-          height={shapeSize}
-          patternColor={patternColor}
-          lightenColor={lightenColor}
-          darkenColor={darkenColor}
-        />
-      ),
-      shape2: (
-        <Shape2
-          width={shapeSize}
-          height={shapeSize}
-          patternColor={patternColor}
-          lightenColor={lightenColor}
-          darkenColor={darkenColor}
-        />
-      ),
-      shape3: (
-        <Shape3
-          width={shapeSize}
-          height={shapeSize}
-          patternColor={patternColor}
-          lightenColor={lightenColor}
-          darkenColor={darkenColor}
-        />
-      ),
-      shape4: (
-        <Shape4
-          width={shapeSize}
-          height={shapeSize}
-          patternColor={patternColor}
-          lightenColor={lightenColor}
-          darkenColor={darkenColor}
-        />
-      ),
-      shape5: (
-        <Shape5
-          width={shapeSize}
-          height={shapeSize}
-          patternColor={patternColor}
-          lightenColor={lightenColor}
-          darkenColor={darkenColor}
-        />
-      ),
-      shape6: (
-        <Shape6
-          width={shapeSize}
-          height={shapeSize}
-          patternColor={patternColor}
-          lightenColor={lightenColor}
-          darkenColor={darkenColor}
-        />
-      ),
-      shape7: (
-        <Shape7
-          width={shapeSize}
-          height={shapeSize}
-          patternColor={patternColor}
-          lightenColor={lightenColor}
-          darkenColor={darkenColor}
-        />
-      ),
-      shape8: (
-        <Shape8
-          width={shapeSize}
-          height={shapeSize}
-          patternColor={patternColor}
-          lightenColor={lightenColor}
-          darkenColor={darkenColor}
-        />
-      ),
-    };
-
-    return shapeComponents[shapeName];
-  };
-
-  const {darkened: darkenColor, lightened: lightenColor} = adjustHexColor(
-    color,
-    20,
-    50,
-  );
-  const rotateAnimation = useRef(new Animated.Value(0)).current;
+  const [correctIndicator, setCorrectIndicator] = useState({
+    show: false,
+    position: {x: 0, y: 0},
+  });
+  const [incorrectIndicator, setIncorrectIndicator] = useState({
+    show: false,
+    position: {x: 0, y: 0},
+  });
 
   useEffect(() => {
-    Animated.loop(
-      Animated.timing(rotateAnimation, {
-        toValue: 1,
-        duration: 5000,
-        useNativeDriver: true,
-        easing: Easing.linear,
-      }),
-    ).start();
-  }, []);
-
-  const rotate = rotateAnimation.interpolate(
-    getInterpolatedValue(rotationAnimation, initialRotationAngle),
-  );
-  const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
-  return (
-    <AnimatedTouchable
-      style={{
-        height: shapeSize,
-        width: shapeSize,
-        transform: [{rotateZ: rotate}],
-        position: 'absolute',
-        left: position.x,
-        top: position.y,
-      }}>
-      <Shape
-        shapeName={shape}
-        darkenColor={darkenColor}
-        lightenColor={lightenColor}
-        patternColor={hasPattern ? 'rgba(255,255,255,0.5)' : 'none'}
-      />
-      <Text style={{position: 'absolute'}}>{count}</Text>
-    </AnimatedTouchable>
-  );
-};
-
-const StarSearch = () => {
-  const {spawnAreaHeight, spawnAreaWidth} = constants;
-  const shapePositions = getShapePositions(20);
-  const shapeStyles = generateShapeData(20, 3, 2, 1, false, false, true);
-
-  const combinePositionAndStyle = (shapePositions, shapeStyles) => {
-    let combinedArray = [];
-    let j = 0;
-    for (let [key, value] of shapeStyles) {
-      for (let k = 0; k < value.count; k++) {
-        combinedArray.push({
-          position: shapePositions[j].position,
-          id: shapePositions[j].id,
-          ...value,
-        });
-        j++;
-      }
+    if (
+      state.level === gameLevelData[gameLevelData.length - 1].level &&
+      state.currentRound > state.rounds
+    ) {
+      navigation.navigate('Transition', {
+        state: state,
+        cameFrom: 'StarSearch',
+      });
+      return;
     }
 
-    return combinedArray;
+    if (state.currentRound > state.rounds) {
+      dispatch({type: ACTIONS.ON_LEVEL_COMPLETE});
+    }
+  }, [state]);
+
+  const handlePress = shape => {
+    setTimeout(() => {
+      dispatch({
+        type: ACTIONS.ON_TAP,
+        payload: {
+          isCorrect: shape.count === 1,
+        },
+      });
+    }, (answerIndicatorAnimationTime * 3) / 2);
+
+    if (shape.count === 1) {
+      setCorrectIndicator({
+        show: true,
+        position: shape.position,
+      });
+    } else {
+      const correctPiecePosition = state.shapeData.find(
+        shape => shape.count === 1,
+      ).position;
+
+      setCorrectIndicator({
+        show: true,
+        position: correctPiecePosition,
+      });
+      setIncorrectIndicator({
+        show: true,
+        position: shape.position,
+      });
+    }
   };
 
-  const shapeData = combinePositionAndStyle(shapePositions, shapeStyles);
-
-  return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#1b5256',
-      }}>
+  return loading ? (
+    <ActivityIndicator size="large" color="#0000ff" />
+  ) : completedPopup ? (
+    <CompletedPopup gameName="STAR SEARCH" />
+  ) : (
+    <GameWrapper
+      imageURL={BackgroundImage.SHARK}
+      backgroundGradient={COLORS.starSearchBGColor}
+      scoreboard={[
+        {title: 'Level', value: state.level},
+        {title: 'Score', value: state.score},
+      ]}
+      controllerButtons={[]}>
       <View
         style={{
           height: spawnAreaHeight,
           width: spawnAreaWidth,
         }}>
-        {shapeData.map(shape => (
-          <SvgComponent
+        {state.shapeData.map(shape => (
+          <TouchableOpacity
             key={shape.id}
-            hasPattern={shape.hasPattern}
-            initialRotationAngle={shape.initialRotationAngle}
-            rotationAnimation={shape.rotationAnimation}
-            color={shape.color}
-            shape={shape.shape}
-            position={shape.position}
-            count={shape.count}
-          />
+            activeOpacity={1}
+            onPressIn={() => handlePress(shape)}
+            style={{
+              position: 'absolute',
+              left: shape.position.x - shapeSize / 2,
+              top: shape.position.y - shapeSize / 2,
+            }}>
+            <Shape
+              id={shape.id}
+              hasPattern={shape.hasPattern}
+              initialRotationAngle={shape.initialRotationAngle}
+              rotationAnimation={shape.rotationAnimation}
+              color={shape.color}
+              shape={shape.shape}
+              position={shape.position}
+              count={shape.count}
+            />
+          </TouchableOpacity>
         ))}
+        {correctIndicator.show && (
+          <CorrectIndicator
+            position={correctIndicator.position}
+            setCorrectIndicator={setCorrectIndicator}
+          />
+        )}
+        {incorrectIndicator.show && (
+          <IncorrectIndicator
+            position={incorrectIndicator.position}
+            setIncorrectIndicator={setIncorrectIndicator}
+          />
+        )}
       </View>
-    </View>
+    </GameWrapper>
   );
 };
 

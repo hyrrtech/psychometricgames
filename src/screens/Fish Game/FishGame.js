@@ -2,15 +2,13 @@ import {View, ActivityIndicator} from 'react-native';
 import {useState, useReducer, useContext, useEffect} from 'react';
 import db from '../../firebase/database';
 import {AuthContext} from '../../providers/AuthProvider';
-import styles from './styles';
 import {GameWrapper} from '../../components/GameWrapper';
 import CompletedPopup from '../../components/CompletedPopup';
 import {COLORS} from '../../values/Colors';
-import {InfoLabel} from '../../components/InfoLabel';
 import BackgroundImage from '../../values/BackgroundImage';
 import {reducer, ACTIONS} from './reducer';
 import initialState from './initialState';
-import {Fish, Deck} from '../../components/Fish Game';
+import {Fish, Deck, RainDrop} from '../../components/Fish Game';
 import {constants, gameRoundData} from '../../utilities/Fish Game';
 import {interpolate} from 'flubber';
 import {frames} from '../../components/Fish Game/frames';
@@ -31,7 +29,7 @@ const FishGame = ({navigation}) => {
         const result = Object.keys(frames[0]).reduce((acc, key) => {
           acc[key] = frames.map((frame, index) =>
             interpolate(frame[key], frames[(index + 1) % frames.length][key], {
-              maxSegmentLength: 7,
+              maxSegmentLength: 13,
             }),
           );
 
@@ -49,7 +47,7 @@ const FishGame = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    const lastLevel = gameRoundData.length - 1;
+    const lastLevel = gameRoundData[gameRoundData.length - 1].level;
     if (state.baitCount === 0 && state.level !== lastLevel) {
       dispatch({type: ACTIONS.NEXT_LEVEL});
     } else if (state.baitCount === 0 && state.level === lastLevel) {
@@ -72,41 +70,43 @@ const FishGame = ({navigation}) => {
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
-    <CompletedPopup gameName="SHARK" />
+    <CompletedPopup gameName="FISH GAME" />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}
-      backgroundGradient={COLORS.sharkBGGrandient}
+      backgroundGradient={COLORS.fishBGColor}
       scoreboard={[
-        <InfoLabel
-          label={'Level'}
-          value={state.level}
-          style={styles.infoLabel}
-          key="level"
-        />,
-        <InfoLabel
-          label={'Lives'}
-          value={state.lives.toString()}
-          style={styles.infoLabel}
-          key="lives"
-        />,
+        {
+          title: 'Lives',
+          value: state.lives > 0 ? '★'.repeat(state.lives) : '-',
+        },
+        {title: 'Level', value: state.level},
       ]}>
       <View
         style={{
           height: poundAreaHeight,
           width: poundAreaWidth,
-          backgroundColor: 'rgb(32, 156, 226)',
+          // backgroundColor: 'rgb(32, 156, 226)',
         }}>
         {state.fish.map((fish, index) => (
           <Fish
             key={fish.id}
             ACTIONS={ACTIONS}
             dispatch={dispatch}
-            id={index}
+            fishProps={fish}
             interpolations={interpolations}
+            level={state.level}
+          />
+        ))}
+        {state.rainDrops.map(raindrop => (
+          <RainDrop
+            key={raindrop.id}
+            interval={raindrop.interval}
+            position={raindrop.position}
           />
         ))}
       </View>
+
       <View
         style={{
           position: 'absolute',
@@ -114,7 +114,11 @@ const FishGame = ({navigation}) => {
           width: '100%',
           alignItems: 'center',
         }}>
-        <Deck baitCount={state.baitCount} />
+        <Deck
+          baitCount={state.baitCount}
+          lives={state.lives}
+          level={state.level}
+        />
       </View>
     </GameWrapper>
   );

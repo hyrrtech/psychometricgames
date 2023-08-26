@@ -28,6 +28,7 @@ import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
 import db from '../../firebase/database';
 import {AuthContext} from '../../providers/AuthProvider';
+import CarSvg from '../../components/Car Game/CarSvg';
 
 const {
   CAR_WIDTH,
@@ -199,18 +200,16 @@ const CarGame = ({navigation}) => {
           {renderLines()}
           {renderObjects()}
 
-          <Animated.View
-            style={[
-              {
-                position: 'absolute',
-                height: CAR_HEIGHT,
-                bottom: 0,
-                opacity: opacity,
-                transform: [{translateX: carPositionRef}],
-                width: CAR_WIDTH,
-                backgroundColor: 'red',
-              },
-            ]}
+          <CarSvg
+            height={CAR_HEIGHT}
+            width={CAR_WIDTH}
+            styles={{
+              position: 'absolute',
+              bottom: 0,
+              opacity: opacity,
+              transform: [{translateX: carPositionRef}, {rotateX: '0deg'}],
+              // backgroundColor: 'red',
+            }}
           />
         </Road>
         <View

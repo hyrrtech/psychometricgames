@@ -10,8 +10,6 @@ import styles from './styles';
 import {GameWrapper} from '../../components/GameWrapper';
 import CompletedPopup from '../../components/CompletedPopup';
 import {COLORS} from '../../values/Colors';
-import {Button} from '../../components/Button';
-import {InfoLabel} from '../../components/InfoLabel';
 import BackgroundImage from '../../values/BackgroundImage';
 import useCountDown from '../../utilities/useCountDown';
 import useDebounce from '../../utilities/useDebounce';
@@ -21,6 +19,8 @@ import {constants} from '../../utilities/Color Match';
 import {ResultPopup} from '../../components/ResultPopup';
 import db from '../../firebase/database';
 import {AuthContext} from '../../providers/AuthProvider';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Demo from './Demo';
 const {time, timeout} = constants;
 
 const ColorMatch = ({navigation}) => {
@@ -30,28 +30,49 @@ const ColorMatch = ({navigation}) => {
   const [completedPopup, setCompletedPopup] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [result, setResult] = useState({show: false, value: 'correct'});
-  const {TIME} = useCountDown(time.minutes, time.seconds);
+  const {TIME, togglePause} = useCountDown(time.minutes, time.seconds);
   const opacity = useRef(new Animated.Value(1)).current;
+  const [showDemo, setShowDemo] = useState(false);
+
+  const initGame = async () => {
+    togglePause(true);
+    try {
+      const value = await AsyncStorage.getItem('COLORMATCH_DEMO');
+      if (value === null) {
+        setShowDemo(true);
+        setLoading(false);
+      } else {
+        GameRef.once('value', snapshot => {
+          const exists = snapshot.exists();
+          if (exists) {
+            const data = snapshot.val();
+            const {status} = data;
+            if (status === 'COMPLETED') {
+              setCompletedPopup(true);
+            }
+          }
+        })
+          .then(() => {
+            setLoading(false);
+            togglePause(false);
+          })
+          .catch(err => console.log(err));
+      }
+    } catch (err) {
+      console.log(err);
+      setShowDemo(true);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    GameRef.once('value', snapshot => {
-      const exists = snapshot.exists();
-      if (exists) {
-        const data = snapshot.val();
-        const {status} = data;
-        if (status === 'COMPLETED') {
-          setCompletedPopup(true);
-        }
-      }
-    })
-      .then(() => setLoading(false))
-      .catch(err => console.log(err));
-  }, []);
+    initGame();
+  }, [showDemo]);
 
   useEffect(() => {
     if (TIME === '00:00') {
       if (state.total_rounds_played === 0) {
-        navigation.navigate('Home');
+        navigation.goBack();
         return;
       }
       dispatch({type: ACTIONS.ON_TIME_UP, payload: {uid: user.uid}});
@@ -94,38 +115,23 @@ const ColorMatch = ({navigation}) => {
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
-    <CompletedPopup gameName="SHARK" />
+    <CompletedPopup gameName="COLOR MATCH" />
+  ) : showDemo ? (
+    <Demo setShowDemo={setShowDemo} />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}
-      backgroundGradient={COLORS.sharkBGGrandient}
+      backgroundGradient={COLORS.colorMatchBGColor}
       scoreboard={[
-        <InfoLabel
-          label={'Time'}
-          value={TIME}
-          style={styles.infoLabel}
-          key="time"
-        />,
-        <InfoLabel
-          label={'Score'}
-          value={state.score.toString()}
-          style={styles.infoLabel}
-          key="score"
-        />,
+        {title: 'Time', value: TIME},
+        {title: 'Score', value: state.score},
       ]}
       controllerButtons={[
-        <Button
-          key="No"
-          style={styles.button}
-          title={'No'}
-          onPressIn={() => handlePress(false)}
-        />,
-        <Button
-          key="Yes"
-          style={styles.button}
-          title={'Yes'}
-          onPressIn={() => handlePress(true)}
-        />,
+        {title: 'NO', onPress: () => handlePress(false)},
+        {
+          title: 'YES',
+          onPress: () => handlePress(true),
+        },
       ]}>
       <>
         <Text style={styles.helperText1}>

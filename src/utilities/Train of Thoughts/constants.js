@@ -7,7 +7,8 @@ export const curveSize = pathSize + 5;
 export const switchSize = width * 0.12;
 export const stationSize = width * 0.18;
 export const speed = 50;
-export const initialSpawnSpeed = 4000;
+export const scoreIncrement = 50;
+export const initialSpawnSpeed = 5000;
 export const time = {minutes: 4, seconds: 0};
 
 export const originalSwitchDirections = {

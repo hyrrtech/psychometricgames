@@ -19,7 +19,7 @@ const CollisionMarkSvg = ({height, width}) => {
   useEffect(() => {
     Animated.timing(scaleAnimation, {
       toValue: 1,
-      duration: 500,
+      duration: 300,
       easing: Easing.linear,
       useNativeDriver: true,
     }).start();

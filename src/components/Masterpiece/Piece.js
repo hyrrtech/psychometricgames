@@ -5,7 +5,7 @@ import {useContext, useRef, useState, useEffect, useMemo} from 'react';
 import {MasterpieceContext} from '../../providers/Masterpiece.Provider';
 const {ratio} = constants;
 
-const Piece = ({pathD, viewBox, initialPosition, id}) => {
+const Piece = ({pathD, viewBox, initialPosition, id, pieceCorrectPositon}) => {
   const {
     positionsState,
     elementsData,
@@ -14,9 +14,10 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
     setPickedPieceId,
     isCorrect,
   } = useContext(MasterpieceContext);
-  const [strokeWidth, setStrokeWidth] = useState(pickedPieceId == id ? 2 : 1);
+  const [strokeWidth, setStrokeWidth] = useState(pickedPieceId == id ? 3 : 2);
   const {x, y, width, height} = viewBox;
   const [pieceHeight, pieceWidth] = [height * ratio, width * ratio];
+  const [isAtCorrectPosition, setIsAtCorrectPosition] = useState(false);
   const calibratedInitialPosition = {
     x: initialPosition.x - pieceWidth / 2,
     y: initialPosition.y - pieceHeight / 2,
@@ -24,7 +25,6 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
   const currentPositionId = useRef(null);
   const pan = useRef(new Animated.ValueXY(calibratedInitialPosition)).current;
   const colorAnimation = useRef(new Animated.Value(0)).current;
-
   const rotation = elementsData.find(
     element => element.id === id,
   ).pieceRotationAngle;
@@ -49,14 +49,14 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
 
   const colorInterpolate = colorAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: ['yellow', '#00FF00'],
+    outputRange: ['#f9bc3c', '#1f2548'],
   });
 
   const getColor = () => {
     if (isCorrect) {
       return colorInterpolate;
     }
-    return pickedPieceId == id ? 'yellow' : '#4C4ACF';
+    return pickedPieceId == id ? '#f9bc3c' : '#2ed0f6';
   };
   const color = useMemo(() => getColor(), [isCorrect, pickedPieceId]);
 
@@ -74,7 +74,19 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
     onPanResponderRelease: (e, gesture) => {
       if (gesture.moveX === 0 && gesture.moveY === 0) return;
       pan.flattenOffset();
+
       const {exist, position} = isDropZone(gesture);
+
+      if (isAtCorrectPosition) {
+        Animated.spring(pan, {
+          toValue: {
+            x: pieceCorrectPositon.x - pieceWidth / 2,
+            y: pieceCorrectPositon.y - pieceHeight / 2,
+          },
+          useNativeDriver: false,
+        }).start();
+        return;
+      }
 
       if (exist) {
         //move to a valid position
@@ -101,6 +113,7 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
       },
       useNativeDriver: false,
     }).start();
+
     if (currentPositionId.current !== null) {
       setPositionsState(prevState => {
         let newState = [...prevState];
@@ -131,6 +144,13 @@ const Piece = ({pathD, viewBox, initialPosition, id}) => {
         validPosition.isBlank
       ) {
         result = {exist: true, position: validPosition.position};
+
+        if (
+          pieceCorrectPositon.x === validPosition.position.x &&
+          pieceCorrectPositon.y === validPosition.position.y
+        ) {
+          setIsAtCorrectPosition(true);
+        }
 
         setPositionsState(prevState => {
           let newState = [...prevState];

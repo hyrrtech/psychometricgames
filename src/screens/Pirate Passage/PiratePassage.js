@@ -1,24 +1,19 @@
-import {useContext} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {useContext, useEffect} from 'react';
+import {View, ActivityIndicator} from 'react-native';
 import {
   Tile,
   Ship,
   Treasure,
   CollisionMark,
 } from '../../components/Pirate Passage';
-import {ActivityIndicator} from 'react-native';
 import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
-import {InfoLabel} from '../../components/InfoLabel';
-import {Button} from '../../components/Button';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
-import styles from './styles';
 import {PiratePassageContext} from '../../providers/PiratePassage.Provider';
-import {FontStyle} from '../../values/Font';
 import PirateShip from '../../components/Pirate Passage/PirateShip';
 
-const PiratePassage = () => {
+const PiratePassage = ({navigation}) => {
   const {
     disableGo,
     pathComponents,
@@ -42,36 +37,27 @@ const PiratePassage = () => {
     dispatch({type: ACTIONS.UNDO});
   };
 
+  useEffect(() => {
+    if (showCollision.collided)
+      setTimeout(() => {
+        navigation.navigate('Transition', {
+          cameFrom: 'PiratePassage',
+        });
+      }, 500);
+  }, [showCollision]);
+
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
-    <CompletedPopup gameName="SHARK" />
+    <CompletedPopup gameName="PIRATE PASSAGE" />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}
-      backgroundGradient={COLORS.sharkBGGrandient}
-      scoreboard={[
-        <InfoLabel
-          label={'Score'}
-          value={'1000'}
-          style={styles.infoLabel}
-          key="score"
-        />,
-      ]}
+      backgroundGradient={COLORS.piratePassageBGColor}
+      scoreboard={[{title: 'Score', value: '1000'}]}
       controllerButtons={[
-        <Button
-          key="undo"
-          style={styles.button}
-          title={'UNDO'}
-          onPress={handle_undo}
-        />,
-        <Button
-          key="go"
-          style={styles.button}
-          disabled={disableGo}
-          title={'GO'}
-          onPress={handle_go}
-        />,
+        {title: 'UNDO', onPress: handle_undo},
+        {title: 'GO', onPress: handle_go},
       ]}>
       <View
         style={{

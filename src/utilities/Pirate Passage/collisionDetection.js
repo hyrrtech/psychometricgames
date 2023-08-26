@@ -3,6 +3,7 @@ const collisionDetection = (shipPathIndexes, piratePathsIndexes, time) => {
   const shipPosition = getShipPosition(shipPathIndexes, steps);
   for (const piratePath of piratePathsIndexes) {
     const piratePosition = getPirateShipPosition(piratePath, steps);
+    console.log(shipPosition, piratePosition);
     if (positionsOverlap(shipPosition, piratePosition)) {
       return {collided: true, shipPosition};
     }
@@ -25,26 +26,21 @@ function getPirateShipPosition(path, steps) {
   } else {
     let index = -1;
     let {pathIndexes, moveDirection, initialShipLocation} = path;
-    // get initial index of pirate ship
+
     for (let i = 0; i < pathIndexes.length; i++) {
       if (positionsOverlap(pathIndexes[i], initialShipLocation)) {
         index = i;
         break;
       }
     }
+    let direction = 1;
 
-    if (index === 0) {
-      moveDirection = 1;
-    } else if (index === pathIndexes.length - 1) {
-      moveDirection = -1;
-    } else {
-      moveDirection *= -1;
-    }
     for (let i = 0; i < steps; i++) {
-      index += moveDirection;
       if (index === pathIndexes.length - 1 || index === 0) {
-        moveDirection *= -1;
+        direction *= -1;
       }
+
+      index += direction;
     }
 
     return pathIndexes[index];

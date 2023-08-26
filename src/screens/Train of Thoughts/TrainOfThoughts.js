@@ -4,14 +4,13 @@ import React, {
   useContext,
   useReducer,
   useRef,
+  useMemo,
 } from 'react';
 import {ActivityIndicator} from 'react-native';
 import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
-import {InfoLabel} from '../../components/InfoLabel';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
-import styles from './styles';
 import {TrainOfThoughtsContext} from '../../providers/TrainOfThoughts.Provider';
 import {AuthContext} from '../../providers/AuthProvider';
 import db from '../../firebase/database';
@@ -19,7 +18,7 @@ import {ACTIONS, reducer} from './reducer';
 import {constants, getRandomColor} from '../../utilities/Train of Thoughts';
 import {Train, Map} from '../../components/Train of Thoughts/';
 import initialState from './initialState';
-const {initialSpawnSpeed} = constants;
+const {initialSpawnSpeed, scoreIncrement} = constants;
 const TrainOfThoughts = ({navigation}) => {
   const {trainColors, TIME} = useContext(TrainOfThoughtsContext);
   const {user} = useContext(AuthContext);
@@ -36,6 +35,38 @@ const TrainOfThoughts = ({navigation}) => {
   const [loading, setLoading] = useState(true);
 
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  const scoreArray = useRef([]);
+  console.log(scoreArray.current);
+
+  useEffect(() => {
+    if (scoreArray.current.length === 0) {
+      scoreArray.current = [{score: 0, spawnSpeed: spawnSpeed.current}];
+    } else {
+      const lastScore = scoreArray.current[scoreArray.current.length - 1].score;
+      const sign = Math.max(lastScore, state.score / 50) === lastScore ? 1 : -1;
+
+      scoreArray.current = [
+        ...scoreArray.current,
+        {score: sign, spawnSpeed: spawnSpeed.current},
+      ];
+    }
+
+    if (scoreArray.current.length > 4) {
+      const negativeScores = scoreArray.current.filter(
+        score => score.score < 0,
+      );
+      if (
+        negativeScores.length / scoreArray.current.length > 0.6 &&
+        spawnSpeed.current < initialSpawnSpeed
+      ) {
+        spawnSpeed.current = spawnSpeed.current + initialSpawnSpeed * 0.07;
+      } else {
+        if (spawnSpeed.current > 2600)
+          spawnSpeed.current = spawnSpeed.current - initialSpawnSpeed * 0.07;
+      }
+    }
+  }, [state.score]);
 
   useEffect(() => {
     GameRef.once('value', snapshot => {
@@ -72,17 +103,6 @@ const TrainOfThoughts = ({navigation}) => {
   }, [trainCount.current, spawnSpeed.current, loading]);
 
   useEffect(() => {
-    if (spawnSpeed.current > 2000) {
-      const decreaseIntervalId = setInterval(() => {
-        spawnSpeed.current = spawnSpeed.current - 300;
-      }, 5000);
-      return () => {
-        clearInterval(decreaseIntervalId);
-      };
-    }
-  }, [spawnSpeed.current]);
-
-  useEffect(() => {
     if (TIME === '00:00') {
       dispatch({type: ACTIONS.ON_TIME_UP, payload: {uid: user.uid}});
       navigation.navigate('Transition', {
@@ -95,25 +115,15 @@ const TrainOfThoughts = ({navigation}) => {
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
-    <CompletedPopup gameName="MemoryMatrix" />
+    <CompletedPopup gameName="TRAIN OF THOUGHS" />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.TrainofThoughts}
-      backgroundGradient={COLORS.trainOfThoughtsBGGradient}
+      backgroundGradient={COLORS.trainOfThoughtsBGColor}
       scoreboard={[
-        <InfoLabel
-          label={'Time'}
-          value={TIME}
-          style={styles.infoLabel}
-          key="time"
-        />,
-        <InfoLabel
-          label={'Score'}
-          value={state.score.toString()}
-          style={styles.infoLabel}
-          key="score"
-          showAnimation={true}
-        />,
+        {title: 'Spawn Speed', value: `${spawnSpeed.current / 1000}s`},
+        {title: 'Time', value: TIME},
+        {title: 'Score', value: state.score},
       ]}>
       <Map />
 

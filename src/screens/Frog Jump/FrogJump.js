@@ -2,11 +2,9 @@ import {useContext, useEffect, useState, useMemo} from 'react';
 import {View, ActivityIndicator} from 'react-native';
 import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
-import {InfoLabel} from '../../components/InfoLabel';
 import db from '../../firebase/database';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
-import styles from './styles';
 import {AuthContext} from '../../providers/AuthProvider';
 import {FollowerFrog, Lillipad, LeaderFrog} from '../../components/Frog Game';
 import {FrogGameContext} from '../../providers/FrogGame.Provider';
@@ -76,24 +74,22 @@ const FrogJump = ({navigation}) => {
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
-    <CompletedPopup gameName="SHARK" />
+    <CompletedPopup gameName="FOLLOW THAT FROG" />
   ) : (
     <GameWrapper
-      imageURL={BackgroundImage.KillTheSpider}
-      backgroundGradient={COLORS.killTheSpiderBGGradient}
+      imageURL={BackgroundImage.FrogJump}
+      backgroundGradient={COLORS.followThatFrogBGColor}
       scoreboard={[
-        <InfoLabel
-          label={'Jumps'}
-          value={`${numberOfJumpsByFollowerFrog.current} of ${MAX_NUM_OF_JUMPS}`}
-          style={styles.infoLabel}
-          key="jumps"
-        />,
+        {
+          title: 'Jumps',
+          value: `${numberOfJumpsByFollowerFrog.current} of ${MAX_NUM_OF_JUMPS}`,
+        },
       ]}>
       <View
         style={{
           height: spawnAreaHeight,
           width: spawnAreaWidth,
-          backgroundColor: '#1b5256',
+          // backgroundColor: '#1b5256',
         }}>
         {lillipadPositions.map((lillipad, index) => {
           return (
@@ -101,6 +97,7 @@ const FrogJump = ({navigation}) => {
               key={index}
               position={lillipad.position}
               id={lillipad.id}
+              rotation={lillipad.rotation}
             />
           );
         })}

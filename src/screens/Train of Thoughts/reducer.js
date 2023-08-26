@@ -1,5 +1,7 @@
 import db from '../../firebase/database';
 import initialState from './initialState';
+import {constants} from '../../utilities/Train of Thoughts';
+const {scoreIncrement} = constants;
 
 export const ACTIONS = {
   ON_REACH_STATION: 'on_reach_station',
@@ -42,10 +44,10 @@ export function reducer(state, action) {
         correctPath[correctPath.length - 1]
       ) {
         newState.correctStations += 1;
-        newState.score += 50;
+        newState.score += scoreIncrement;
       } else {
         newState.incorrectStations += 1;
-        newState.score -= 50;
+        newState.score -= scoreIncrement;
       }
       updateTrain(
         {

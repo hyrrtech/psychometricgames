@@ -57,8 +57,9 @@ export function reducer(state, action) {
       };
 
     case ACTIONS.SET_FUSEHOLDER:
-      var {currentFuseHolderId, id, value} = action.payload;
-      if (currentFuseHolderId !== null) {
+      var {currentFuseHolderId, id, value, initiallyBlank} = action.payload;
+      // console.log(initiallyBlank, currentFuseHolderId);
+      if (currentFuseHolderId !== null && initiallyBlank) {
         newState.fuseHolders[currentFuseHolderId].isBlank = true;
         newState.fuseHolders[currentFuseHolderId].inputValue = null;
       }
@@ -76,6 +77,7 @@ export function reducer(state, action) {
 
     case ACTIONS.RESET_FUSEHOLDER:
       var {currentFuseHolderId} = action.payload;
+
       newState.fuseHolders[currentFuseHolderId].isBlank = true;
       newState.fuseHolders[currentFuseHolderId].inputValue = null;
       return newState;

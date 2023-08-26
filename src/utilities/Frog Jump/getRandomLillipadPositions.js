@@ -19,7 +19,11 @@ const randomLillipadPositions = num_of_lillipads => {
           lillipad.position.y < lillipadY + lillipadSize,
       )
     );
-    newLillipad = {position: {x: lillipadX, y: lillipadY}, id: i};
+    newLillipad = {
+      position: {x: lillipadX, y: lillipadY},
+      id: i,
+      rotation: Math.floor(Math.random() * 360),
+    };
     lillipads.push(newLillipad);
   }
   return lillipads;

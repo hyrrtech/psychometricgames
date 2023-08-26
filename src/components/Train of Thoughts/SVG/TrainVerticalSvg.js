@@ -65,7 +65,7 @@ const TrainVerticalSvg = ({height, width, color, styles}) => (
     />
     <Path
       d="M14.14 49.0219H103.44L106.6 171.142H14.14V49.0219Z"
-      fill="#2D8FB3"
+      fill={color}
       stroke="#231F20"
       strokeWidth={2}
       strokeMiterlimit={10}
@@ -86,7 +86,7 @@ const TrainVerticalSvg = ({height, width, color, styles}) => (
     />
     <Path
       d="M16.85 263.682H104.63L110.56 252.082H9.04001L16.85 263.682Z"
-      fill="#2D8FB3"
+      fill={color}
       stroke="#231F20"
       strokeWidth={2}
       strokeMiterlimit={10}

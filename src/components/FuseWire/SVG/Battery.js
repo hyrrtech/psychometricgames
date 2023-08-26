@@ -32,7 +32,7 @@ const Battery = ({height, width, styles}) => {
       Animated.sequence([
         Animated.timing(widthAnimation, {
           toValue: 82,
-          duration: 1000,
+          duration: 700,
           easing: Easing.linear,
           useNativeDriver: false,
         }),
@@ -55,7 +55,7 @@ const Battery = ({height, width, styles}) => {
           setIfAnswerCorrect(null);
           Animated.timing(widthAnimation, {
             toValue: 0,
-            duration: 1000,
+            duration: 700,
             easing: Easing.linear,
             useNativeDriver: false,
           }).start(({finished}) => {

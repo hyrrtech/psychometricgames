@@ -1,9 +1,14 @@
 import {useContext, useEffect} from 'react';
-import {View, StyleSheet, Button} from 'react-native';
+import {View, StyleSheet, Button, ActivityIndicator} from 'react-native';
 import Piece from '../../components/Masterpiece/Piece';
 import CombinedPiece from '../../components/Masterpiece/CombinedPiece';
 import {MasterpieceContext} from '../../providers/Masterpiece.Provider';
 import {constants} from '../../utilities/Masterpiece';
+import {GameWrapper} from '../../components/GameWrapper';
+import CompletedPopup from '../../components/CompletedPopup';
+import {COLORS} from '../../values';
+import BackgroundImage from '../../values/BackgroundImage';
+
 const {
   ratio,
   combinedPiecePosition,
@@ -24,6 +29,9 @@ const Masterpiece = () => {
     combinedPieceDimensions,
   } = useContext(MasterpieceContext);
 
+  const loading = false;
+  const completedPopup = false;
+
   const handleRotate = direction => {
     const newElementsData = elementsData.map(element => {
       if (element.id === pickedPieceId) {
@@ -40,8 +48,24 @@ const Masterpiece = () => {
     setElementsData(newElementsData);
   };
 
-  return (
-    <View style={styles.container}>
+  return loading ? (
+    <ActivityIndicator size="large" color="#0000ff" />
+  ) : completedPopup ? (
+    <CompletedPopup gameName="FOLLOW THAT FROG" />
+  ) : (
+    <GameWrapper
+      imageURL={BackgroundImage.Masterpiece}
+      backgroundGradient={COLORS.masterPieceBGColor}
+      scoreboard={[
+        {
+          title: 'Level',
+          value: 1,
+        },
+      ]}
+      controllerButtons={[
+        {title: 'rotate left', onPress: () => handleRotate('left')},
+        {title: 'rotate right', onPress: () => handleRotate('right')},
+      ]}>
       <CombinedPiece
         position={combinedPiecePosition}
         viewBox={data.fullSVGComponent.viewBox}
@@ -49,30 +73,31 @@ const Masterpiece = () => {
         fill={data.fillColor}
         paths={elementsData}
       />
-      <View
-        style={{
-          position: 'absolute',
-          top: barrierY,
-          left: barrierX,
-          height: barrierHeight,
-          width: barrierWidth,
-          backgroundColor: 'rgba(0,0,0,0.4)',
-          zIndex: -1,
-        }}
-      />
-
-      {elementsData.map(element => (
-        <Piece
-          id={element.id}
-          key={element.id}
-          pathD={element.path}
-          viewBox={element.viewBox}
-          initialPosition={piecesPosition[element.id].position}
-          pieceCorrectPositon={element.pieceCorrectPositon}
-          rotation={element.pieceRotationAngle}
+      <View style={{flex: 1, position: 'absolute', left: 0, top: 0}}>
+        <View
+          style={{
+            position: 'absolute',
+            top: barrierY,
+            left: barrierX,
+            height: barrierHeight,
+            width: barrierWidth,
+            // backgroundColor: 'rgba(0,0,0,0.4)',
+            zIndex: -1,
+          }}
         />
-      ))}
-      {/* {positionsState.map((element, index) => (
+
+        {elementsData.map(element => (
+          <Piece
+            id={element.id}
+            key={element.id}
+            pathD={element.path}
+            viewBox={element.viewBox}
+            initialPosition={piecesPosition[element.id].position}
+            pieceCorrectPositon={element.pieceCorrectPositon}
+            rotation={element.pieceRotationAngle}
+          />
+        ))}
+        {/* {positionsState.map((element, index) => (
         <View
           key={element.id}
           style={{
@@ -85,25 +110,9 @@ const Masterpiece = () => {
           }}
         />
       ))} */}
-      <View
-        style={{
-          flexDirection: 'row',
-          bottom: 0,
-          position: 'absolute',
-          width: '100%',
-          justifyContent: 'space-around',
-        }}>
-        <Button title="rotate left" onPress={() => handleRotate('left')} />
-        <Button title="rotate right" onPress={() => handleRotate('right')} />
       </View>
-    </View>
+    </GameWrapper>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default Masterpiece;

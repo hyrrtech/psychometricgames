@@ -13,9 +13,9 @@ const Transition = ({route, navigation}) => {
 
   const values = {
     BART: {
-      backgroundGradient: COLORS.balloonBGGradient,
+      backgroundGradient: COLORS.balloonBGColor,
       imageURL: BackgroundImage.BART,
-      navigateTo: currentLevel === totalLevels ? 'Home' : 'BART',
+      navigateTo: currentLevel === totalLevels ? 'Tabs' : 'BART',
 
       navigateButtonText: currentLevel === totalLevels ? 'Home' : 'Next Level',
       text:
@@ -24,62 +24,72 @@ const Transition = ({route, navigation}) => {
           : `You have completed ${currentLevel}/${totalLevels} part of the game. Press next game to play further`,
     },
     SHARK: {
-      backgroundGradient: COLORS.sharkBGGrandient,
+      backgroundGradient: COLORS.sharkBGColor,
       imageURL: BackgroundImage.SHARK,
-      navigateTo: 'Home',
+      navigateTo: 'Tabs',
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press home to go back to home screen',
     },
     MemoryMatrix: {
-      backgroundGradient: COLORS.memoryMatrixBGGradient,
+      backgroundGradient: COLORS.memoryMatrixBGColor,
       imageURL: BackgroundImage.MemoryMatrix,
-      navigateTo: 'Home',
+      navigateTo: 'Tabs',
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press Home to go back to home screen',
     },
     KillTheSpider: {
-      backgroundGradient: COLORS.killTheSpiderBGGradient,
+      backgroundGradient: COLORS.killTheSpiderBGColor,
       imageURL: BackgroundImage.KillTheSpider,
-      navigateTo: 'Home',
+      navigateTo: 'Tabs',
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press Home to go back to home screen',
     },
     TrainOfThoughts: {
-      backgroundGradient: COLORS.trainOfThoughtsBGGradient,
+      backgroundGradient: COLORS.trainOfThoughtsBGColor,
       imageURL: BackgroundImage.TrainofThoughts,
-      navigateTo: currentLevel === totalLevels ? 'Home' : 'TrainOfThoughts',
-
-      navigateButtonText: currentLevel === totalLevels ? 'Home' : 'Next Level',
-      text:
-        currentLevel === totalLevels
-          ? 'You have completed the game. Press home to go back to home screen'
-          : `You have completed ${currentLevel}/${totalLevels} part of the game. Press next game to play further`,
+      navigateTo: 'Tabs',
+      navigateButtonText: 'Home',
+      text: 'You have completed the game. Press home to go back to home screen',
     },
     ColorMatch: {
-      backgroundGradient: COLORS.sharkBGGrandient,
-      imageURL: BackgroundImage.SHARK,
-      navigateTo: 'Home',
+      backgroundGradient: COLORS.colorMatchBGColor,
+      imageURL: BackgroundImage.ColorMatch,
+      navigateTo: 'Tabs',
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press home to go back to home screen',
     },
     FrogJump: {
-      backgroundGradient: COLORS.sharkBGGrandient,
-      imageURL: BackgroundImage.SHARK,
-      navigateTo: 'Home',
+      backgroundGradient: COLORS.followThatFrogBGColor,
+      imageURL: BackgroundImage.FrogJump,
+      navigateTo: 'Tabs',
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press home to go back to home screen',
     },
     FuseWire: {
-      backgroundGradient: COLORS.sharkBGGrandient,
+      backgroundGradient: COLORS.fuseWireBGColor,
       imageURL: BackgroundImage.FuseWire,
-      navigateTo: 'Home',
+      navigateTo: 'Tabs',
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press home to go back to home screen',
     },
     FishGame: {
-      backgroundGradient: COLORS.sharkBGGrandient,
+      backgroundGradient: COLORS.fishBGColor,
+      imageURL: BackgroundImage.FishGame,
+      navigateTo: 'Tabs',
+      navigateButtonText: 'Home',
+      text: 'You have completed the game. Press home to go back to home screen',
+    },
+    StarSearch: {
+      backgroundGradient: COLORS.starSearchBGColor,
       imageURL: BackgroundImage.SHARK,
-      navigateTo: 'Home',
+      navigateTo: 'Tabs',
+      navigateButtonText: 'Home',
+      text: 'You have completed the game. Press home to go back to home screen',
+    },
+    PiratePassage: {
+      backgroundGradient: COLORS.piratePassageBGColor,
+      imageURL: BackgroundImage.PiratePassage,
+      navigateTo: 'Tabs',
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press home to go back to home screen',
     },
@@ -99,25 +109,22 @@ const Transition = ({route, navigation}) => {
   return (
     <GameWrapper
       imageURL={values[cameFrom].imageURL}
+      showBackButton={false}
       backgroundGradient={values[cameFrom].backgroundGradient}
       controllerButtons={[
-        <Button
-          key="next_game"
-          title={values[cameFrom].navigateButtonText}
-          style={styles.button}
-          onPressIn={() => {
-            navigation.navigate(values[cameFrom].navigateTo);
-          }}
-        />,
+        {
+          title: values[cameFrom].navigateButtonText,
+          onPress: () => navigation.navigate(values[cameFrom].navigateTo),
+        },
       ]}>
-      <Text style={[FontStyle.h3, {color: COLORS.textSecondary}]}>
-        CONGRATULATIONS
+      <Text style={[FontStyle.H2_semibold, {color: COLORS.neutral_600}]}>
+        GREAT JOB!
       </Text>
       <Text
         style={[
           FontStyle.h4,
           {
-            color: COLORS.textSecondary,
+            color: COLORS.neutral_600,
             textAlign: 'center',
             marginTop: '5%',
           },
@@ -128,13 +135,4 @@ const Transition = ({route, navigation}) => {
   );
 };
 
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: COLORS.primary,
-    borderRadius: 10,
-    paddingHorizontal: '10%',
-    paddingVertical: '5%',
-    color: COLORS.textSecondary,
-  },
-});
 export default Transition;

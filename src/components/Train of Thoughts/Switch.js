@@ -1,4 +1,4 @@
-import {TouchableOpacity} from 'react-native';
+import {TouchableOpacity, Text} from 'react-native';
 import SwitchSvgVertical from './SVG/SwitchSvgVertical';
 import SwitchSvgTurn from './SVG/SwitchSvgTurn';
 import {useContext} from 'react';
