@@ -18,9 +18,13 @@ import {ACTIONS, reducer} from './reducer';
 import {constants, getRandomColor} from '../../utilities/Train of Thoughts';
 import {Train, Map} from '../../components/Train of Thoughts/';
 import initialState from './initialState';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Demo from './Demo';
 const {initialSpawnSpeed, scoreIncrement} = constants;
 const TrainOfThoughts = ({navigation}) => {
-  const {trainColors, TIME} = useContext(TrainOfThoughtsContext);
+  const {trainColors, TIME, setShowDemo, showDemo} = useContext(
+    TrainOfThoughtsContext,
+  );
   const {user} = useContext(AuthContext);
 
   const GameRef = db.ref(`/users/${user.uid}/TrainOfThoughts/`);
@@ -68,24 +72,42 @@ const TrainOfThoughts = ({navigation}) => {
     }
   }, [state.score]);
 
-  useEffect(() => {
-    GameRef.once('value', snapshot => {
-      const exists = snapshot.exists();
-      if (exists) {
-        const data = snapshot.val();
-        data.status === 'COMPLETED'
-          ? setCompletedPopup(true)
-          : GameRef.set({
-              status: 'IN_PROGRESS',
-            });
+  useEffect(() => {}, []);
+
+  const initGame = async () => {
+    try {
+      const value = await AsyncStorage.getItem('TOT_DEMO');
+      if (value === null) {
+        setShowDemo(true);
+        setLoading(false);
+      } else {
+        GameRef.once('value', snapshot => {
+          const exists = snapshot.exists();
+          if (exists) {
+            const data = snapshot.val();
+            data.status === 'COMPLETED'
+              ? setCompletedPopup(true)
+              : GameRef.set({
+                  status: 'IN_PROGRESS',
+                });
+          }
+        })
+          .then(() => setLoading(false))
+          .catch(err => console.log(err));
       }
-    })
-      .then(() => setLoading(false))
-      .catch(err => console.log(err));
-  }, []);
+    } catch (err) {
+      console.log(err);
+      setShowDemo(true);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!loading) {
+    initGame();
+  }, [showDemo]);
+
+  useEffect(() => {
+    if (!loading && !showDemo) {
       const intervalId = setInterval(() => {
         const departureTime = TIME;
         const newTrain = {
@@ -100,7 +122,7 @@ const TrainOfThoughts = ({navigation}) => {
         clearInterval(intervalId);
       };
     }
-  }, [trainCount.current, spawnSpeed.current, loading]);
+  }, [trainCount.current, spawnSpeed.current, loading, showDemo]);
 
   useEffect(() => {
     if (TIME === '00:00') {
@@ -116,6 +138,8 @@ const TrainOfThoughts = ({navigation}) => {
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
     <CompletedPopup gameName="TRAIN OF THOUGHS" />
+  ) : showDemo ? (
+    <Demo />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.TrainofThoughts}
