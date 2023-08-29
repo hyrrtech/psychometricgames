@@ -20,7 +20,7 @@ import {Train, Map} from '../../components/Train of Thoughts/';
 import initialState from './initialState';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Demo from './Demo';
-const {initialSpawnSpeed, scoreIncrement} = constants;
+const {initialSpawnSpeed} = constants;
 const TrainOfThoughts = ({navigation}) => {
   const {trainColors, TIME, setShowDemo, showDemo} = useContext(
     TrainOfThoughtsContext,
@@ -40,39 +40,19 @@ const TrainOfThoughts = ({navigation}) => {
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const scoreArray = useRef([]);
-  console.log(scoreArray.current);
-
   useEffect(() => {
-    if (scoreArray.current.length === 0) {
-      scoreArray.current = [{score: 0, spawnSpeed: spawnSpeed.current}];
-    } else {
-      const lastScore = scoreArray.current[scoreArray.current.length - 1].score;
-      const sign = Math.max(lastScore, state.score / 50) === lastScore ? 1 : -1;
+    if (state.scoreHistory.length > 3) {
+      const last4Scores = state.scoreHistory.slice(-4);
+      const negativeScores = last4Scores.filter(score => score < 0);
 
-      scoreArray.current = [
-        ...scoreArray.current,
-        {score: sign, spawnSpeed: spawnSpeed.current},
-      ];
-    }
-
-    if (scoreArray.current.length > 4) {
-      const negativeScores = scoreArray.current.filter(
-        score => score.score < 0,
-      );
-      if (
-        negativeScores.length / scoreArray.current.length > 0.6 &&
-        spawnSpeed.current < initialSpawnSpeed
-      ) {
-        spawnSpeed.current = spawnSpeed.current + initialSpawnSpeed * 0.07;
+      if (negativeScores.length > 2 && spawnSpeed.current < initialSpawnSpeed) {
+        spawnSpeed.current = spawnSpeed.current + 500;
       } else {
-        if (spawnSpeed.current > 2600)
-          spawnSpeed.current = spawnSpeed.current - initialSpawnSpeed * 0.07;
+        if (spawnSpeed.current > 2500)
+          spawnSpeed.current = spawnSpeed.current - 500;
       }
     }
   }, [state.score]);
-
-  useEffect(() => {}, []);
 
   const initGame = async () => {
     try {

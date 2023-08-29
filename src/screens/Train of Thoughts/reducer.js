@@ -45,9 +45,11 @@ export function reducer(state, action) {
       ) {
         newState.correctStations += 1;
         newState.score += scoreIncrement;
+        newState.scoreHistory.push(scoreIncrement);
       } else {
         newState.incorrectStations += 1;
         newState.score -= scoreIncrement;
+        newState.scoreHistory.push(-scoreIncrement);
       }
       updateTrain(
         {
