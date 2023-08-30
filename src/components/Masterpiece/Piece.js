@@ -1,4 +1,4 @@
-import {PanResponder, Animated} from 'react-native';
+import {PanResponder, Animated, LayoutAnimation} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
 import {constants} from '../../utilities/Masterpiece';
 import {useContext, useRef, useState, useEffect, useMemo} from 'react';
@@ -13,6 +13,8 @@ const Piece = ({pathD, viewBox, initialPosition, id, pieceCorrectPositon}) => {
     pickedPieceId,
     setPickedPieceId,
     isCorrect,
+    showDemo,
+    setDemoState,
   } = useContext(MasterpieceContext);
   const [strokeWidth, setStrokeWidth] = useState(pickedPieceId == id ? 3 : 2);
   const {x, y, width, height} = viewBox;
@@ -25,6 +27,7 @@ const Piece = ({pathD, viewBox, initialPosition, id, pieceCorrectPositon}) => {
   const currentPositionId = useRef(null);
   const pan = useRef(new Animated.ValueXY(calibratedInitialPosition)).current;
   const colorAnimation = useRef(new Animated.Value(0)).current;
+  const blinkAnimation = useRef(new Animated.Value(0)).current;
   const rotation = elementsData.find(
     element => element.id === id,
   ).pieceRotationAngle;
@@ -32,6 +35,16 @@ const Piece = ({pathD, viewBox, initialPosition, id, pieceCorrectPositon}) => {
   const whenPiecePicked = () => {
     setPickedPieceId(id);
   };
+
+  const colorInterpolate = colorAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#f9bc3c', '#1f2548'],
+  });
+
+  const colorBlink = blinkAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#f9bc3c', '#2ed0f6'],
+  });
 
   useEffect(() => {
     if (isCorrect) {
@@ -43,14 +56,35 @@ const Piece = ({pathD, viewBox, initialPosition, id, pieceCorrectPositon}) => {
           duration: 1000,
           useNativeDriver: false,
         }),
-      ]).start();
+      ]).start(({finished}) => {
+        if (showDemo && finished) {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+          currentPositionId.current = null;
+          colorAnimation.setValue(0);
+          blinkAnimation.setValue(0);
+          setDemoState(prev => ({...prev, demoStage: prev.demoStage + 1}));
+        }
+      });
     }
   }, [isCorrect]);
 
-  const colorInterpolate = colorAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['#f9bc3c', '#1f2548'],
-  });
+  useEffect(() => {
+    if (showDemo)
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(blinkAnimation, {
+            toValue: 1,
+            duration: 800,
+            useNativeDriver: false,
+          }),
+          Animated.timing(blinkAnimation, {
+            toValue: 0,
+            duration: 800,
+            useNativeDriver: false,
+          }),
+        ]),
+      ).start();
+  }, [showDemo]);
 
   const getColor = () => {
     if (isCorrect) {
@@ -209,7 +243,7 @@ const Piece = ({pathD, viewBox, initialPosition, id, pieceCorrectPositon}) => {
         viewBox={`${x} ${y} ${width} ${height}`}>
         <AnimatedPath
           d={pathD}
-          fill={color}
+          fill={showDemo && pickedPieceId !== id ? colorBlink : color}
           stroke={'white'}
           strokeWidth={strokeWidth}
         />

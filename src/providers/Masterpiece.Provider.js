@@ -1,4 +1,10 @@
-import React, {createContext, useContext, useMemo, useState} from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {AuthContext} from './AuthProvider';
 import db from '../firebase/database';
 import {
@@ -11,7 +17,7 @@ const {combinedPiecePosition} = constants;
 
 export const MasterpieceContext = createContext();
 
-const data = {
+const levelData = {
   fullSVGComponent: {
     paths: {
       0: 'M134 0L268 86V134H134V0Z',
@@ -40,33 +46,47 @@ export const MasterpieceProvider = ({children}) => {
   // const GameRef = db.ref(`/users/${user.uid}/Masterpiece/`);
 
   //   const [ifAnswerCorrect, setIfAnswerCorrect] = useState(null);
-  //   const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   //   const [completedPopup, setCompletedPopup] = useState(false);
-  const {combinedPieceDimensions, pathsData, piecesPosition} = useMemo(() => {
+  const [showDemo, setShowDemo] = useState(true);
+  const [demoState, setDemoState] = useState({demoStage: 1});
+
+  const [elementsData, setElementsData] = useState([]);
+  const [positionsState, setPositionsState] = useState([]);
+  const [pickedPieceId, setPickedPieceId] = useState(null);
+
+  const data = useMemo(() => {
+    return showDemo ? demoData : levelData;
+  }, [showDemo]);
+
+  const initLevel = data => {
+    // setLoading(true);
     const combinedPieceDimensions = viewBoxUtils.getDimFromViewBox(
       data.fullSVGComponent.viewBox,
     );
     const pathsData = viewBoxUtils.getPathsData(
       data.fullSVGComponent.paths,
-      combinedPiecePosition,
       combinedPieceDimensions,
     );
     const piecesPosition = getPiecesPosition(
       pathsData,
-      combinedPiecePosition,
       combinedPieceDimensions,
     );
+
+    setElementsData(pathsData);
+    setPositionsState(populatePositions(pathsData));
+    setPickedPieceId(null);
+    // setLoading(false);
     return {
       combinedPieceDimensions,
-      pathsData,
       piecesPosition,
     };
-  }, []);
-  const [elementsData, setElementsData] = useState(pathsData);
-  const [positionsState, setPositionsState] = useState(
-    populatePositions(elementsData),
+  };
+
+  const {combinedPieceDimensions, piecesPosition} = useMemo(
+    () => initLevel(data),
+    [data, showDemo],
   );
-  const [pickedPieceId, setPickedPieceId] = useState(null);
 
   const isCorrect = useMemo(() => {
     const isAtCorrectPosition = positionsState.every(
@@ -89,10 +109,13 @@ export const MasterpieceProvider = ({children}) => {
         positionsState,
         setPositionsState,
         data,
-        combinedPieceDimensions,
         pickedPieceId,
         setPickedPieceId,
         isCorrect,
+        showDemo,
+        setShowDemo,
+        demoState,
+        setDemoState,
       }}>
       {children}
     </MasterpieceContext.Provider>

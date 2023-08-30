@@ -1,6 +1,7 @@
 import Svg, {Path} from 'react-native-svg';
-import {viewBoxUtils, constants} from '../../utilities/Masterpiece';
+import {constants} from '../../utilities/Masterpiece';
 const {ratio} = constants;
+
 const CombinedPiece = ({
   viewBox,
   fill,
@@ -11,6 +12,7 @@ const CombinedPiece = ({
   dimensions,
 }) => {
   const {width, height} = dimensions;
+
   return (
     <Svg
       width={width * ratio}

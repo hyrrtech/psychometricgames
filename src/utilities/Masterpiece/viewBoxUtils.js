@@ -1,6 +1,6 @@
 import constants from './constants';
 import getBBoxFromD from '../getBBoxFromD';
-const {ratio, angles} = constants;
+const {ratio, angles, combinedPiecePosition} = constants;
 
 export const getDimFromViewBox = viewBox => {
   const [width, height] = viewBox.split(' ').filter(dim => {
@@ -9,11 +9,7 @@ export const getDimFromViewBox = viewBox => {
   return {height, width};
 };
 
-export const getPathsData = (
-  paths,
-  combinedPiecePosition,
-  combinedPieceDimensions,
-) => {
+export const getPathsData = (paths, combinedPieceDimensions) => {
   let data = [];
   const {x, y} = combinedPiecePosition;
   const {height: combinedPieceHeight, width: combinedPieceWidth} =
