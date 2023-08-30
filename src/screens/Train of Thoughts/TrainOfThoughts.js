@@ -20,7 +20,7 @@ import {Train, Map} from '../../components/Train of Thoughts/';
 import initialState from './initialState';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Demo from './Demo';
-const {initialSpawnSpeed} = constants;
+const {initialSpawnSpeed, minSpawnSpeed, spawnSpeedChange} = constants;
 const TrainOfThoughts = ({navigation}) => {
   const {trainColors, TIME, setShowDemo, showDemo} = useContext(
     TrainOfThoughtsContext,
@@ -39,20 +39,41 @@ const TrainOfThoughts = ({navigation}) => {
   const [loading, setLoading] = useState(true);
 
   const [state, dispatch] = useReducer(reducer, initialState);
+  const consecutivePositiveScores = useRef(0);
+  const consecutiveNegativeScores = useRef(0);
 
   useEffect(() => {
-    if (state.scoreHistory.length > 3) {
-      const last4Scores = state.scoreHistory.slice(-4);
-      const negativeScores = last4Scores.filter(score => score < 0);
+    if (state.scoreHistory.length === 0) return;
 
-      if (negativeScores.length > 2 && spawnSpeed.current < initialSpawnSpeed) {
-        spawnSpeed.current = spawnSpeed.current + 500;
-      } else {
-        if (spawnSpeed.current > 2500)
-          spawnSpeed.current = spawnSpeed.current - 500;
+    const lastScore = state.scoreHistory[state.scoreHistory.length - 1];
+
+    if (lastScore > 0) {
+      consecutivePositiveScores.current = consecutivePositiveScores.current + 1;
+      consecutiveNegativeScores.current = 0;
+
+      if (
+        consecutivePositiveScores.current % 3 === 0 &&
+        consecutivePositiveScores.current > 0
+      ) {
+        const newSpeed = spawnSpeed.current - spawnSpeedChange;
+        spawnSpeed.current = Math.max(newSpeed, minSpawnSpeed);
       }
+    } else if (lastScore < 0) {
+      consecutiveNegativeScores.current = consecutiveNegativeScores.current + 1;
+      consecutivePositiveScores.current = 0;
+
+      if (
+        consecutiveNegativeScores.current % 2 === 0 &&
+        consecutiveNegativeScores.current > 0
+      ) {
+        const newSpeed = spawnSpeed.current + spawnSpeedChange;
+        spawnSpeed.current = Math.min(newSpeed, initialSpawnSpeed);
+      }
+    } else {
+      consecutivePositiveScores.current = 0;
+      consecutiveNegativeScores.current = 0;
     }
-  }, [state.score]);
+  }, [state]);
 
   const initGame = async () => {
     try {

@@ -22,7 +22,7 @@ import FuseWire from '../screens/Fuse Wire/';
 import FrogJump from '../screens/Frog Jump/';
 import OrganicOrder from '../screens/Organic Order/';
 import Masterpiece from '../screens/Masterpiece/';
-import StarSearch from '../screens/Star Search/';
+import StarSearch from '../screens/Star Search/StarSearch';
 
 const Stack = createNativeStackNavigator();
 const screenOptions = {headerShown: false};
