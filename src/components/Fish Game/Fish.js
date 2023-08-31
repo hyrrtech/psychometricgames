@@ -30,6 +30,8 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps, level}) => {
     from: rotateFrom,
     to: rotateFrom,
   });
+  const fishStopTime = useRef(Date.now());
+  const segmentEndTime = useRef(Date.now());
 
   const showFedAnimation = () => {
     Animated.sequence([
@@ -95,18 +97,14 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps, level}) => {
       dispatch({type: ACTIONS.ON_FED});
       showFedAnimation();
       rotationAnimation.stopAnimation();
-      translateAnimation.stopAnimation(value => {
+      translateAnimation.stopAnimation(() => {
+        fishStopTime.current = Date.now();
         setTimeout(() => {
-          const distanceToCover = getDistance(
-            value,
-            currentTranslationValueRef.current.to,
-          );
-          const remainingDuration = (distanceToCover / speed) * 1000;
-
+          const newDuration = segmentEndTime.current - fishStopTime.current;
           animateFish(
-            value,
+            currentTranslationValueRef.current.from,
             currentTranslationValueRef.current.to,
-            remainingDuration,
+            newDuration,
           );
         }, 1000);
       });
@@ -117,9 +115,7 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps, level}) => {
 
     const newTo = newToValue(to);
 
-    // console.log('duration before change', duration);
     if (!duration) {
-      // console.log('changing duration');
       rotationAnimation.setValue(0);
       setRotationAngle(rotationAngle => ({
         from: rotationAngle.to,
@@ -129,8 +125,7 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps, level}) => {
       const distance = getDistance(from, to);
       duration = (distance / speed) * 1000;
     }
-    // console.log('duration after change', duration, '\n\n');
-    //  .start();
+    segmentEndTime.current = Date.now() + duration;
     Animated.parallel(
       [
         Animated.timing(rotationAnimation, {
