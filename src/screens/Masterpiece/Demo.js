@@ -66,7 +66,7 @@ const Demo = () => {
       case 1:
         return (
           <Modal
-            content="Tap on the piece to select it and rotate it the correct angle using the RROTATE LEFT and ROTATE RIGHT Buttons"
+            content="Tap on the piece to select it and rotate it to the correct angle using the ROTATE LEFT and ROTATE RIGHT Buttons"
             style={{top: '10%'}}
             showContinue={false}
           />
@@ -99,7 +99,9 @@ const Demo = () => {
         : {})}>
       {demoState.demoStage === 3 ? (
         <Modal
-          content={'Good job'}
+          content={
+            'Well Done! As you continue your artistic journey, be prepared for a delightful challenge. The shapes you encounter will become more intricate and complex with each level you conquer.'
+          }
           onPress={() => {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
             setShowDemo(false);

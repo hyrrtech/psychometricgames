@@ -1,7 +1,8 @@
 import {View, ActivityIndicator} from 'react-native';
 import {useState, useReducer, useContext, useEffect} from 'react';
-import db from '../../firebase/database';
+// import db from '../../firebase/database';
 import {AuthContext} from '../../providers/AuthProvider';
+import {FishGameContext} from '../../providers/FishGame.Provider';
 import {GameWrapper} from '../../components/GameWrapper';
 import CompletedPopup from '../../components/CompletedPopup';
 import {COLORS} from '../../values/Colors';
@@ -10,41 +11,16 @@ import {reducer, ACTIONS} from './reducer';
 import initialState from './initialState';
 import {Fish, Deck, RainDrop} from '../../components/Fish Game';
 import {constants, gameRoundData} from '../../utilities/Fish Game';
-import {interpolate} from 'flubber';
-import {frames} from '../../components/Fish Game/frames';
+import Demo from './Demo';
 
 const {poundAreaHeight, poundAreaWidth} = constants;
 
 const FishGame = ({navigation}) => {
-  const {user} = useContext(AuthContext);
-  const GameRef = db.ref(`/users/${user.uid}/ColorMatch/`);
-  const [loading, setLoading] = useState(true);
+  // const {user} = useContext(AuthContext);
+  const {interpolations, loading, showDemo} = useContext(FishGameContext);
+  // const GameRef = db.ref(`/users/${user.uid}/ColorMatch/`);
   const [completedPopup, setCompletedPopup] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [interpolations, setInterpolations] = useState({});
-
-  const calculateInterpolations = async () => {
-    const interpolations = await new Promise(resolve => {
-      setTimeout(() => {
-        const result = Object.keys(frames[0]).reduce((acc, key) => {
-          acc[key] = frames.map((frame, index) =>
-            interpolate(frame[key], frames[(index + 1) % frames.length][key], {
-              maxSegmentLength: 13,
-            }),
-          );
-
-          return acc;
-        }, {});
-
-        resolve(result);
-      }, 0);
-    });
-    setInterpolations(interpolations);
-    setLoading(false);
-  };
-  useEffect(() => {
-    calculateInterpolations();
-  }, []);
 
   useEffect(() => {
     const lastLevel = gameRoundData[gameRoundData.length - 1].level;
@@ -71,6 +47,8 @@ const FishGame = ({navigation}) => {
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
     <CompletedPopup gameName="FISH GAME" />
+  ) : showDemo ? (
+    <Demo />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}

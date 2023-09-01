@@ -82,7 +82,10 @@ const Demo = ({setShowDemo}) => {
         return (
           <Modal
             style={{position: 'absolute'}}
-            content={'instructions'}
+            content={`Instructions:\n
+-You'll see two boxes on the screen – one representing the meaning and the other representing the color.
+-Disregard the text inside the color box; focus only on the color itself.
+-Your task is to determine if the color matches the meaning.`}
             onPress={() => {
               LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
               setDemoState(prev => ({
@@ -100,7 +103,9 @@ const Demo = ({setShowDemo}) => {
       case 6:
         return (
           <PointerModal
-            content={'say why it is not the correct answer'}
+            content={
+              'Since, the meaning in the Meaning Box doesn’t match the text color in the Color Box, the answer is NO'
+            }
             relativeDim={noButtonProps}
             buttonNumber={1}
           />
@@ -108,7 +113,9 @@ const Demo = ({setShowDemo}) => {
       case 7:
         return (
           <PointerModal
-            content={'why it is the correct answer'}
+            content={
+              'Since, the meaning in the Meaning Box matches the text color in the Color Box, the answer is YES'
+            }
             relativeDim={yesButtonProps}
             buttonNumber={2}
           />
@@ -116,7 +123,7 @@ const Demo = ({setShowDemo}) => {
       case 8:
         return (
           <Modal
-            content={'well done, bla bla text'}
+            content={`"Congratulations!\n\nNow try guessing as many colors as you can in a short time.\n\nClick 'Continue' to jump into the game and challenge yourself further."`}
             onPress={async () => {
               try {
                 await AsyncStorage.setItem('COLORMATCH_DEMO', 'FINISHED');
@@ -256,7 +263,7 @@ const Demo = ({setShowDemo}) => {
                   {colorSet[demoState.colorStage].meaningColor}
                 </Animated.Text>
               </View>
-              <Text style={styles.helperText2}>meaning</Text>
+              <Text style={styles.helperText2}>Meaning</Text>
             </Animated.View>
 
             <Animated.View
@@ -276,13 +283,13 @@ const Demo = ({setShowDemo}) => {
                   {colorSet[demoState.colorStage].textColor}
                 </Animated.Text>
               </View>
-              <Text style={styles.helperText2}>text color</Text>
+              <Text style={styles.helperText2}>Color</Text>
             </Animated.View>
           </View>
           {demoState.demoStage === 2 && (
             <Modal
               style={{position: 'relative', marginTop: '5%'}}
-              content={'bla bla text1 for meaning box'}
+              content={'The Meaning Box represents the meaning of the text'}
               onPress={() => {
                 LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
                 setDemoState(prev => ({
@@ -297,7 +304,9 @@ const Demo = ({setShowDemo}) => {
           {demoState.demoStage === 3 && (
             <Modal
               style={{position: 'relative', marginTop: '5%'}}
-              content={'bla bla text 2 for color box'}
+              content={
+                'Take only the text color into account regardless of the text meaning in the Color Box'
+              }
               onPress={() => {
                 scaleTextColor(0);
                 LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);

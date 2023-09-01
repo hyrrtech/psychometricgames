@@ -2,23 +2,23 @@ const gameRoundData = [
   {
     level: 1,
     fishCount: 4,
-    baitCount: 3,
+    baitCount: 4,
     rainDropCount: 6,
-    lives: 3,
+    lives: 2,
   },
   {
     level: 2,
-    fishCount: 4,
-    baitCount: 3,
+    fishCount: 5,
+    baitCount: 5,
     rainDropCount: 6,
-    lives: 5,
+    lives: 2,
   },
   {
     level: 3,
     fishCount: 7,
-    baitCount: 6,
+    baitCount: 7,
     rainDropCount: 8,
-    lives: 6,
+    lives: 3,
   },
 ];
 export default gameRoundData;

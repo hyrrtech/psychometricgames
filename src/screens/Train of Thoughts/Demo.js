@@ -16,9 +16,7 @@ const Demo = () => {
       case 1:
         return (
           <Modal
-            content={
-              'start instructions, guide the train to the yellow station,tell user to tap on the valid switch'
-            }
+            content={`"Alright, let's begin! Your train is ready to depart. Observe the track layout and station colors carefully. Click on the junction points to switch tracks and guide the train to its matching color station."`}
             style={{zIndex: 99999}}
             showContinue={false}
           />
@@ -26,7 +24,7 @@ const Demo = () => {
       case 3:
         return (
           <Modal
-            content={'good job'}
+            content={`"Congratulations! You completed the Train of Thoughts game. Your track-switching skills are impressive! But the challenge doesn't stop here. Trains of different colors will continue departing, and it's up to you to guide as many as possible to their respective stations.\n\nKeep those trains running smoothly!"`}
             style={{zIndex: 99999}}
             onPress={async () => {
               try {

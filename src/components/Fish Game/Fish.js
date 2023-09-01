@@ -1,5 +1,10 @@
-import React, {useEffect, useState, useContext, useRef, memo} from 'react';
-import {TouchableOpacity, Animated, Easing} from 'react-native';
+import React, {useEffect, useState, useContext, useRef, useMemo} from 'react';
+import {
+  TouchableOpacity,
+  Animated,
+  Easing,
+  LayoutAnimation,
+} from 'react-native';
 import {FishGameContext} from '../../providers/FishGame.Provider';
 import {constants, getNewAngle, newToValue} from '../../utilities/Fish Game';
 import Svg, {Path} from 'react-native-svg';
@@ -11,8 +16,15 @@ const getDistance = (start, end) => {
   return Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2));
 };
 
-const Fish = ({ACTIONS, dispatch, interpolations, fishProps, level}) => {
-  const {disabled, setDisabled} = useContext(FishGameContext);
+const Fish = ({
+  ACTIONS,
+  dispatch,
+  interpolations,
+  fishProps,
+  level,
+  setDemoState,
+}) => {
+  const {disabled, setDisabled, showDemo} = useContext(FishGameContext);
   const {id, initialFromValue, initialToValue, rotateFrom} = fishProps;
   const [isFed, setIsFed] = useState(false);
   const currentTranslationValueRef = useRef({
@@ -20,6 +32,7 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps, level}) => {
     to: initialToValue,
   });
 
+  const highlightAnimation = useRef(new Animated.Value(1)).current;
   const fedAnimation = useRef(new Animated.Value(0)).current;
   const interpolateAnimation = useRef(new Animated.Value(0)).current;
   const translateAnimation = useRef(
@@ -32,6 +45,25 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps, level}) => {
   });
   const fishStopTime = useRef(Date.now());
   const segmentEndTime = useRef(Date.now());
+
+  useEffect(() => {
+    if (showDemo) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(highlightAnimation, {
+            toValue: 0.5,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(highlightAnimation, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ]),
+      ).start();
+    }
+  }, [showDemo]);
 
   const showFedAnimation = () => {
     Animated.sequence([
@@ -75,7 +107,7 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps, level}) => {
     Animated.loop(
       Animated.timing(interpolateAnimation, {
         toValue: 1,
-        duration: 700,
+        duration: 1000,
         useNativeDriver: true,
         easing: Easing.linear,
       }),
@@ -94,7 +126,16 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps, level}) => {
     } else {
       setIsFed(true);
       setDisabled(true);
-      dispatch({type: ACTIONS.ON_FED});
+      if (showDemo) {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setDemoState(prev => ({
+          ...prev,
+          demoStage: prev.demoStage + 1,
+          baitCount: prev.baitCount - 1,
+        }));
+      } else {
+        dispatch({type: ACTIONS.ON_FED});
+      }
       showFedAnimation();
       rotationAnimation.stopAnimation();
       translateAnimation.stopAnimation(() => {
@@ -144,7 +185,6 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps, level}) => {
       {stopTogether: false},
     ).start(({finished}) => {
       if (finished) {
-        // rotationAnimation.setValue(1);
         animateFish(to, newTo);
       }
     });
@@ -154,16 +194,20 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps, level}) => {
     animateFish(initialFromValue, initialToValue);
   }, []);
 
+  const disableTap = useMemo(() => {
+    if (!showDemo) return disabled;
+    return isFed;
+  }, [disabled, showDemo]);
+
   return (
     <TouchableOpacity
-      disabled={disabled}
+      disabled={disableTap}
       activeOpacity={1}
       onPress={handlePress}
       style={{
         position: 'absolute',
         height: fishSize,
         width: fishSize,
-
         transform: [
           {translateX: translateAnimation.x},
           {translateY: translateAnimation.y},
@@ -185,8 +229,11 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps, level}) => {
         pointerEvents="none"
         width={fishSize}
         height={fishSize}
+        // opacity={showDemo && !isFed ? highlightAnimation : 1}
         viewBox="0 0 224 340"
-        style={{transform: [{rotateZ: '-90deg'}]}}>
+        style={{
+          transform: [{rotateZ: '-90deg'}],
+        }}>
         {Object.keys(frames[0]).map(key => (
           <Path
             key={key}
@@ -201,4 +248,4 @@ const Fish = ({ACTIONS, dispatch, interpolations, fishProps, level}) => {
   );
 };
 
-export default memo(Fish);
+export default Fish;
