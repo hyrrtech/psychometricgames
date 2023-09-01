@@ -1,10 +1,16 @@
-import {View, Animated, Easing} from 'react-native';
+import {View, Animated, Easing, LayoutAnimation} from 'react-native';
 import {useRef, useEffect, useState, useContext} from 'react';
 import Svg, {Path, Rect} from 'react-native-svg';
 import {FuseWireContext} from '../../../providers/FuseWire.Provider';
 
 const Battery = ({height, width, styles}) => {
-  const {ifAnswerCorrect, setIfAnswerCorrect} = useContext(FuseWireContext);
+  const {
+    ifAnswerCorrect,
+    setIfAnswerCorrect,
+    showDemo,
+    setShowPattern,
+    setDemoState,
+  } = useContext(FuseWireContext);
   const batteryHeight = height * 0.7;
   const batteryWidth = width * 0.7;
   const [batteryFilled, setBatteryFilled] = useState(false);
@@ -59,7 +65,16 @@ const Battery = ({height, width, styles}) => {
             easing: Easing.linear,
             useNativeDriver: false,
           }).start(({finished}) => {
-            if (finished) setBatteryFilled(false);
+            if (finished) {
+              setBatteryFilled(false);
+
+              if (showDemo) {
+                LayoutAnimation.configureNext(
+                  LayoutAnimation.Presets.easeInEaseOut,
+                );
+                setDemoState({demoStage: true});
+              }
+            }
           });
         }
       });
@@ -96,7 +111,15 @@ const Battery = ({height, width, styles}) => {
           useNativeDriver: false,
         }),
       ]).start(({finished}) => {
-        if (finished) setIfAnswerCorrect(null);
+        if (finished) {
+          setIfAnswerCorrect(null);
+          if (showDemo) {
+            LayoutAnimation.configureNext(
+              LayoutAnimation.Presets.easeInEaseOut,
+            );
+            setShowPattern(true);
+          }
+        }
       });
     }
   }, [ifAnswerCorrect]);
