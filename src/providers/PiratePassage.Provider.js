@@ -19,6 +19,13 @@ export const PiratePassageProvider = ({children}) => {
   const [disableGo, setDisableGo] = useState(true);
   const [completedPopup, setCompletedPopup] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showDemo, setShowDemo] = useState(true);
+  const [demoState, setDemoState] = useState({
+    demoStage: 1,
+    highlightedTileIndex: [],
+    tapSequenceIndex: 0,
+  });
+  console.log(demoState);
 
   const checkPathToTreasure = () => {
     const {indexes} = state.shipPathIndexes;
@@ -32,10 +39,19 @@ export const PiratePassageProvider = ({children}) => {
     }
     return false;
   };
-  //mimic loading
+
   useEffect(() => {
-    setTimeout(() => setLoading(false), 1000);
-  }, []);
+    setLoading(true);
+
+    Promise.resolve(
+      dispatch({
+        type: ACTIONS.INIT_LEVEL,
+        payload: {level: 1, ifDemo: showDemo, lives: 1},
+      }),
+    ).then(() => {
+      setTimeout(() => setLoading(false), 1000); //mimic fetch
+    });
+  }, [showDemo]);
 
   useEffect(() => {
     if (checkPathToTreasure()) {
@@ -64,20 +80,17 @@ export const PiratePassageProvider = ({children}) => {
   return (
     <PiratePassageContext.Provider
       value={{
-        pathIndexes: state.pathIndexes,
-        pathComponents: state.pathComponents,
-        pathCoordinates: state.pathCoordinates,
-        matrix: state.matrix,
-        piratePathComponents: state.piratePathComponents,
-        piratePathCoordinates: state.piratePathCoordinates,
-        go: state.go,
+        ...state,
         disableGo,
-        treasureIndex: state.treasureIndex,
         dispatch,
         ACTIONS,
         showCollision,
         loading,
         completedPopup,
+        showDemo,
+        setShowDemo,
+        demoState,
+        setDemoState,
       }}>
       {children}
     </PiratePassageContext.Provider>

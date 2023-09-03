@@ -4,7 +4,7 @@ import {constants} from '../../utilities/Pirate Passage';
 import {PiratePassageContext} from '../../providers/PiratePassage.Provider';
 import TreasureMarkSvg from './SVG/TreasureMarkSvg';
 
-const {shipSize} = constants;
+const {treasureMarkSize} = constants;
 
 const Treasure = ({index}) => {
   const {matrix} = useContext(PiratePassageContext);
@@ -14,13 +14,13 @@ const Treasure = ({index}) => {
     <View
       pointerEvents={'none'}
       style={{
-        height: shipSize,
-        width: shipSize,
+        height: treasureMarkSize,
+        width: treasureMarkSize,
         position: 'absolute',
-        left: coordinates.x - shipSize / 2,
-        top: coordinates.y - shipSize / 2,
+        left: coordinates.x - treasureMarkSize / 2,
+        top: coordinates.y - treasureMarkSize / 2,
       }}>
-      <TreasureMarkSvg height={shipSize} width={shipSize} />
+      <TreasureMarkSvg height={treasureMarkSize} width={treasureMarkSize} />
     </View>
   );
 };

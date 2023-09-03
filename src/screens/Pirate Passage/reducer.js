@@ -15,11 +15,12 @@ export const ACTIONS = {
 export function reducer(state, action) {
   let newState = {...state};
   switch (action.type) {
-    // case ACTIONS.INIT_LEVEL:
-    //   return {
-    //     ...stateGenerator(action.payload.level),
-    //     lives: action.payload.lives,
-    //   };
+    case ACTIONS.INIT_LEVEL:
+      const {level, ifDemo, lives} = action.payload;
+      return {
+        ...stateGenerator(action.payload.level, ifDemo),
+        lives: action.payload.lives,
+      };
 
     case ACTIONS.ADD_PATH:
       const {tileIndex} = action.payload;
