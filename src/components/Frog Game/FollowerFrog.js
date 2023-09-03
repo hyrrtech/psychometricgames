@@ -9,11 +9,15 @@ const getNewAngle = (a, b) => {
   const angle = Math.atan2(b.y - a.y, b.x - a.x) * (180 / Math.PI);
   return `${angle}deg`;
 };
-const FollowerFrog = ({interpolations}) => {
+const FollowerFrog = () => {
   const {
     followerFrogPosition: currentPosition,
     initialFollowerFrogPosition: initialPosition,
     setDisabled,
+    showDemo,
+    setDemoState,
+    interpolations,
+    numberOfJumpsByFollowerFrog,
   } = useContext(FrogGameContext);
 
   const animation = useRef(
@@ -101,15 +105,19 @@ const FollowerFrog = ({interpolations}) => {
       ]),
     ]).start(({finished}) => {
       if (finished) {
-        animation.setValue({
-          x: currentPosition.position.x + (lillipadSize - followerFrogSize) / 2,
-          y: currentPosition.position.y + (lillipadSize - followerFrogSize) / 2,
-        });
-        interpolateAnimation.setValue(0);
-        rotationAnimation.setValue(0);
+        // animation.setValue({
+        //   x: currentPosition.position.x + (lillipadSize - followerFrogSize) / 2,
+        //   y: currentPosition.position.y + (lillipadSize - followerFrogSize) / 2,
+        // });
         previousPosition.current = currentPosition;
         rotationAngle.current.from = rotationAngle.current.to;
+        interpolateAnimation.setValue(0);
+        rotationAnimation.setValue(0); //make rotation work like fish
         setDisabled(false);
+
+        if (showDemo && numberOfJumpsByFollowerFrog.current === 3) {
+          setDemoState(prev => ({demoStage: prev.demoStage + 1}));
+        }
       }
     });
   }, [currentPosition]);

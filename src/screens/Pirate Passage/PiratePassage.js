@@ -73,6 +73,7 @@ const PiratePassage = ({navigation}) => {
                 key={`${rowIndex}-${colIndex}`}
                 index={tile.index}
                 position={tile.position}
+                disabled={tile.disabled}
               />
             );
           });

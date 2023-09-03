@@ -7,6 +7,7 @@ const stateGenerator = level => {
   const matrix = generateMatrix(
     mapData[level - 1].matrixSize.rows,
     mapData[level - 1].matrixSize.columns,
+    mapData[level - 1].disabledIndexes,
   );
   const shipPathIndexes = {
     indexes: [mapData[level - 1].initialShipIndex],
@@ -19,7 +20,6 @@ const stateGenerator = level => {
 
   const {pathComponents, pathCoordinates} =
     generateShipPathComponentsAndCoordinates(matrix, shipPathIndexes);
-
   return {
     matrix,
     initialShipIndex: mapData[level - 1].initialShipIndex,

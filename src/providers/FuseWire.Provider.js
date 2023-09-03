@@ -85,8 +85,9 @@ export const FuseWireProvider = ({children}) => {
   };
 
   const initGame = async () => {
+    setLoading(true);
     try {
-      const value = await AsyncStorage.getItem('COLORMATCH_DEMO');
+      const value = await AsyncStorage.getItem('FUSEWIRE_DEMO');
       if (value === null) {
         initDemo();
       } else {
@@ -94,6 +95,7 @@ export const FuseWireProvider = ({children}) => {
       }
     } catch (err) {
       console.log(err);
+      setLoading(false);
     }
   };
 

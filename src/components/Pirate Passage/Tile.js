@@ -4,7 +4,7 @@ import {PiratePassageContext} from '../../providers/PiratePassage.Provider';
 import {constants, getShortestPath} from '../../utilities/Pirate Passage';
 const {tileSize} = constants;
 
-const Tile = ({position, index}) => {
+const Tile = ({position, index, disabled}) => {
   const {dispatch, ACTIONS} = useContext(PiratePassageContext);
 
   const handlePress = () => {
@@ -14,6 +14,7 @@ const Tile = ({position, index}) => {
   return (
     // <>
     <TouchableOpacity
+      disabled={disabled}
       activeOpacity={0.5}
       onPressIn={handlePress}
       style={{
@@ -21,7 +22,7 @@ const Tile = ({position, index}) => {
         width: tileSize,
 
         position: 'absolute',
-        backgroundColor: 'rgba(100, 215, 220,0.8)',
+        backgroundColor: disabled ? 'transparent' : 'rgba(100, 215, 220,0.8)',
         left: position.x - tileSize / 2,
         top: position.y - tileSize / 2,
       }}>

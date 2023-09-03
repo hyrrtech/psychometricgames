@@ -1,63 +1,36 @@
-import {useContext, useEffect, useState, useMemo} from 'react';
-import {View, ActivityIndicator} from 'react-native';
+import {useContext, useEffect} from 'react';
+import {View, ActivityIndicator, LayoutAnimation} from 'react-native';
 import CompletedPopup from '../../components/CompletedPopup';
 import {GameWrapper} from '../../components/GameWrapper';
-import db from '../../firebase/database';
 import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
-import {AuthContext} from '../../providers/AuthProvider';
-import {FollowerFrog, Lillipad, LeaderFrog} from '../../components/Frog Game';
+import {
+  FollowerFrog,
+  Lillipad,
+  LeaderFrog,
+  Modal,
+} from '../../components/Frog Game';
 import {FrogGameContext} from '../../providers/FrogGame.Provider';
 import {constants} from '../../utilities/Frog Jump';
-import {interpolate} from 'flubber';
-import {frames} from '../../components/Frog Game/frames';
+import db from '../../firebase/database';
+import {AuthContext} from '../../providers/AuthProvider';
 
-const {spawnAreaHeight, spawnAreaWidth} = constants;
+const {spawnAreaHeight, spawnAreaWidth, MAX_NUM_OF_JUMPS} = constants;
 
 const FrogJump = ({navigation}) => {
-  const {user} = useContext(AuthContext);
-  const GameRef = db.ref(`/users/${user.uid}/FollowThatFrog/`);
   const {
     lillipadPositions,
-    gameOver,
-    MAX_NUM_OF_JUMPS,
     numberOfJumpsByFollowerFrog,
+    loading,
+    showDemo,
+    completedPopup,
+    gameOver,
+    setShowDemo,
+    setDemoState,
+    demoState,
   } = useContext(FrogGameContext);
-  const [loading, setLoading] = useState(true);
-  const [completedPopup, setCompletedPopup] = useState(false);
-  const [interpolations, setInterpolations] = useState({});
-
-  const calculateInterpolations = async () => {
-    const interpolations = await new Promise(resolve => {
-      setTimeout(() => {
-        const result = Object.keys(frames[0]).reduce((acc, key) => {
-          acc[key] = frames.map((frame, index) =>
-            interpolate(frame[key], frames[(index + 1) % frames.length][key], {
-              maxSegmentLength: 7,
-            }),
-          );
-
-          return acc;
-        }, {});
-
-        resolve(result);
-      }, 0);
-    });
-    setInterpolations(interpolations);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    GameRef.once('value', snapshot => {
-      const exists = snapshot.exists();
-      if (exists) {
-        setCompletedPopup(true);
-        setLoading(false);
-      } else {
-        calculateInterpolations();
-      }
-    }).catch(err => console.log(err));
-  }, []);
+  const {user} = useContext(AuthContext);
+  const GameRef = db.ref(`/users/${user.uid}/FollowThatFrog/`);
 
   useEffect(() => {
     if (gameOver) {
@@ -79,31 +52,56 @@ const FrogJump = ({navigation}) => {
     <GameWrapper
       imageURL={BackgroundImage.FrogJump}
       backgroundGradient={COLORS.followThatFrogBGColor}
-      scoreboard={[
-        {
-          title: 'Jumps',
-          value: `${numberOfJumpsByFollowerFrog.current} of ${MAX_NUM_OF_JUMPS}`,
-        },
-      ]}>
-      <View
-        style={{
-          height: spawnAreaHeight,
-          width: spawnAreaWidth,
-          // backgroundColor: '#1b5256',
-        }}>
-        {lillipadPositions.map((lillipad, index) => {
-          return (
-            <Lillipad
-              key={index}
-              position={lillipad.position}
-              id={lillipad.id}
-              rotation={lillipad.rotation}
-            />
-          );
-        })}
-        <FollowerFrog interpolations={interpolations} />
-        <LeaderFrog interpolations={interpolations} />
-      </View>
+      {...(!showDemo
+        ? {
+            scoreboard: [
+              {
+                title: 'Jumps',
+                value: `${numberOfJumpsByFollowerFrog.current} of ${MAX_NUM_OF_JUMPS}`,
+              },
+            ],
+          }
+        : {})}>
+      {showDemo && demoState.demoStage !== 2 ? (
+        <Modal
+          content={demoState.demoStage === 1 ? `intro` : `final`}
+          onPress={() => {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
+            if (demoState.demoStage === 1) {
+              setDemoState(prev => ({demoStage: prev.demoStage + 1}));
+              return;
+            }
+            setShowDemo(false);
+          }}
+        />
+      ) : (
+        <View
+          style={{
+            height: spawnAreaHeight,
+            width: spawnAreaWidth,
+            // backgroundColor: '#1b5256',
+          }}>
+          {lillipadPositions.map((lillipad, index) => {
+            return (
+              <Lillipad
+                key={index}
+                position={lillipad.position}
+                id={lillipad.id}
+                rotation={lillipad.rotation}
+              />
+            );
+          })}
+          <FollowerFrog />
+          <LeaderFrog />
+        </View>
+      )}
+      {showDemo && demoState.demoStage === 2 ? (
+        <Modal
+          content={'tap on the highlighted lillipad'}
+          showContinue={false}
+          style={{bottom: '5%'}}
+        />
+      ) : null}
     </GameWrapper>
   );
 };

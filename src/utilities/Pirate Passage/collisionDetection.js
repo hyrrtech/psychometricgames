@@ -3,7 +3,7 @@ const collisionDetection = (shipPathIndexes, piratePathsIndexes, time) => {
   const shipPosition = getShipPosition(shipPathIndexes, steps);
   for (const piratePath of piratePathsIndexes) {
     const piratePosition = getPirateShipPosition(piratePath, steps);
-    console.log(shipPosition, piratePosition);
+    // console.log(shipPosition, piratePosition);
     if (positionsOverlap(shipPosition, piratePosition)) {
       return {collided: true, shipPosition};
     }

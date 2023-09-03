@@ -98,7 +98,7 @@ const Demo = ({navigation}) => {
         return (
           <Modal
             style={{top: '10%'}}
-            content={'oh no you suck, lets try again'}
+            content={'lets try again'}
             showContinue={false}
           />
         );
