@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useReducer,
-  useState,
-  useRef,
-  useEffect,
-} from 'react';
+import React, {createContext, useReducer, useState, useEffect} from 'react';
 import initialState from '../screens/Pirate Passage/initialState';
 import {reducer, ACTIONS} from '../screens/Pirate Passage/reducer';
 import {
@@ -33,6 +27,7 @@ export const PiratePassageProvider = ({children}) => {
     tapSequenceIndex: 0,
     level: 1,
   });
+  const [reachedTreasure, setReachedTreasure] = useState(false); //remove later
 
   const checkPathToTreasure = () => {
     const {indexes} = state.shipPathIndexes;
@@ -100,7 +95,10 @@ export const PiratePassageProvider = ({children}) => {
               ...prev,
               demoStage: prev.demoStage + 1,
             }));
+          } else {
+            setReachedTreasure(true);
           }
+
           clearInterval(interval);
         }
       }, time_to_cover_each_tile);
@@ -122,6 +120,7 @@ export const PiratePassageProvider = ({children}) => {
         setShowDemo,
         demoState,
         setDemoState,
+        reachedTreasure,
       }}>
       {children}
     </PiratePassageContext.Provider>

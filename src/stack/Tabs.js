@@ -51,7 +51,7 @@ export default function Tabs() {
           fontWeight: '400',
         },
       }}>
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Home"
         component={Home}
         options={{
@@ -66,7 +66,7 @@ export default function Tabs() {
           headerShown: false,
           tabBarIcon: ({focused}) => <Icon iconName="jobs" focused={focused} />,
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Games"
         component={Games}
@@ -77,7 +77,7 @@ export default function Tabs() {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Inbox"
         component={Inbox}
         options={{
@@ -96,7 +96,7 @@ export default function Tabs() {
             <Icon iconName="profile" focused={focused} />
           ),
         }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 }

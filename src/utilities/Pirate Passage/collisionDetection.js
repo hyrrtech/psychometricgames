@@ -16,18 +16,19 @@ function getShipPosition(path, steps) {
 }
 
 function getPirateShipPosition(path, steps) {
+  const {pathIndexes, moveDirection, initialShipLocation} = path;
+
+  const PathIndexes =
+    moveDirection === -1 ? [...pathIndexes].reverse() : [...pathIndexes];
   if (checkIfLoop(path)) {
-    const {pathIndexes} = path;
-    const PathIndexes = [...pathIndexes];
     PathIndexes.pop();
     let index = steps % PathIndexes.length;
     return PathIndexes[index];
   } else {
     let index = -1;
-    let {pathIndexes, moveDirection, initialShipLocation} = path;
 
-    for (let i = 0; i < pathIndexes.length; i++) {
-      if (positionsOverlap(pathIndexes[i], initialShipLocation)) {
+    for (let i = 0; i < PathIndexes.length; i++) {
+      if (positionsOverlap(PathIndexes[i], initialShipLocation)) {
         index = i;
         break;
       }
@@ -35,7 +36,7 @@ function getPirateShipPosition(path, steps) {
     let direction = 1;
 
     for (let i = 0; i < steps; i++) {
-      if (index === pathIndexes.length - 1) {
+      if (index === PathIndexes.length - 1) {
         direction *= -1;
       }
       if (index === 0) {
@@ -45,7 +46,7 @@ function getPirateShipPosition(path, steps) {
       index += direction;
     }
 
-    return pathIndexes[index];
+    return PathIndexes[index];
   }
 }
 

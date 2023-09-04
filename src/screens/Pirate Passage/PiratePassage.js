@@ -36,6 +36,7 @@ const PiratePassage = ({navigation}) => {
     setDemoState,
     tapSequence,
     setShowDemo,
+    reachedTreasure,
   } = useContext(PiratePassageContext);
 
   const [buttonProps, setButtonProps] = useState({
@@ -56,13 +57,13 @@ const PiratePassage = ({navigation}) => {
   };
 
   useEffect(() => {
-    if (showCollision.collided)
+    if (showCollision.collided || reachedTreasure)
       setTimeout(() => {
         navigation.navigate('Transition', {
           cameFrom: 'PiratePassage',
         });
       }, 500);
-  }, [showCollision]);
+  }, [showCollision, reachedTreasure]);
 
   const ModalFlow = useMemo(() => {
     if (!showDemo) return null;
@@ -71,7 +72,7 @@ const PiratePassage = ({navigation}) => {
         return (
           <Modal
             showContinue={false}
-            content="intro 2"
+            content="Tap on the highlighted tile to create a path for your ship."
             style={{top: '10%'}}
             onPress={() => {
               LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
@@ -87,7 +88,7 @@ const PiratePassage = ({navigation}) => {
       case 3:
         return (
           <PointerModal
-            content="tap here to check"
+            content="Tap on the 'Go' button to begin your journey."
             buttonNumber={2}
             relativeDim={buttonProps}
           />
@@ -131,10 +132,10 @@ const PiratePassage = ({navigation}) => {
         <Modal
           content={
             demoState.demoStage === 1
-              ? 'intro'
+              ? `Instructions:\n\nNavigate your ship through treacherous seas while avoiding encounters with Pirate's dangerous ships.`
               : demoState.level < demoData.length
-              ? 'next demo level'
-              : 'demo finsihsed'
+              ? 'Tap to begin next demo'
+              : 'Great job! You have completed the demo.'
           }
           onPress={async () => {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);

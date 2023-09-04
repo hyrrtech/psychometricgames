@@ -31,7 +31,7 @@ const Demo = ({navigation}) => {
       case 2:
         return (
           <Modal
-            content="tap one fish,remember the fish that has been fed"
+            content="tap one fish, remember the fish that has been fed"
             style={{top: '10%'}}
             showContinue={false}
           />
@@ -39,7 +39,7 @@ const Demo = ({navigation}) => {
       case 3:
         return (
           <Modal
-            content="feed the remaining fish"
+            content="feed the remaining fish but wait for the signal to turn green"
             style={{top: '10%'}}
             showContinue={false}
           />
@@ -48,14 +48,17 @@ const Demo = ({navigation}) => {
         return null;
     }
   });
-
   return (
     <GameWrapper
       imageURL={BackgroundImage.SHARK}
       backgroundGradient={COLORS.fishBGColor}>
       {demoState.demoStage === 1 || demoState.demoStage === 4 ? (
         <Modal
-          content={demoState.demoStage === 1 ? 'instructions' : 'final'}
+          content={
+            demoState.demoStage === 1
+              ? 'Feed all the fishes once. Feeding the same fish multiple times would lead to decrease in lives.'
+              : 'Great! You have completed the demo. You can now play the game.'
+          }
           onPress={() => {
             if (demoState.demoStage === 4) {
               LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);

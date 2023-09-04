@@ -1,5 +1,5 @@
 import {View, Animated, Easing} from 'react-native';
-import {useRef, useState, useContext, useEffect} from 'react';
+import {useRef, useState, useContext, useEffect, useMemo} from 'react';
 import {constants, getInitialRotation} from '../../utilities/Pirate Passage';
 import {PiratePassageContext} from '../../providers/PiratePassage.Provider';
 import PirateShipSvg from './SVG/PirateShipSvg';
@@ -14,11 +14,13 @@ const PirateShip = ({
   moveDirection,
 }) => {
   const path = useRef(shipPath);
+
   const initialRotation = getInitialRotation(
     moveDirection,
     initialPosition,
     initialPositionIndex,
-    shipPath,
+    path.current,
+    isLoop,
   );
 
   const [rotation, setRotation] = useState(initialRotation);

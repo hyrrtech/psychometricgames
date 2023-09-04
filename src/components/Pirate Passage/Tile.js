@@ -1,4 +1,4 @@
-import {Text, TouchableOpacity, Animated} from 'react-native';
+import {Text, TouchableOpacity, Animated, LayoutAnimation} from 'react-native';
 import React, {useContext, useEffect, useRef, useMemo} from 'react';
 import {PiratePassageContext} from '../../providers/PiratePassage.Provider';
 import {constants} from '../../utilities/Pirate Passage';
@@ -17,6 +17,7 @@ const Tile = ({position, index, disabled}) => {
   const handlePress = () => {
     dispatch({type: ACTIONS.ADD_PATH, payload: {tileIndex: index}});
     if (showDemo) {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
       setDemoState(prev => {
         let {tapSequenceIndex, demoStage, highlightedTileIndex} = prev;
 
@@ -45,8 +46,8 @@ const Tile = ({position, index, disabled}) => {
       return false;
     if (
       showDemo &&
-      demoState.highlightedTileIndex[0] !== index[0] &&
-      demoState.highlightedTileIndex[1] !== index[1]
+      (demoState.highlightedTileIndex[0] !== index[0] ||
+        demoState.highlightedTileIndex[1] !== index[1])
     )
       return true;
     return disabled;

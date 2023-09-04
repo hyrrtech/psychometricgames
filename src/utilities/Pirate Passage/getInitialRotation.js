@@ -11,11 +11,21 @@ const getInitialRotation = (
     ? shipPath[initialPositionIndex + 1]
     : shipPath[initialPositionIndex - 1];
   const deltaX = positionNextToInitialPosition.x - initialPosition.x;
-  if (deltaX === 0) {
-    return `${180 * moveDirection}deg`;
-  } else {
-    return `${90 * moveDirection}deg`;
-  }
+  const deltaY = positionNextToInitialPosition.y - initialPosition.y;
+
+  const angleInRadians = Math.atan2(deltaY, deltaX);
+
+  const angleInDegrees = (angleInRadians * 180) / Math.PI;
+
+  let finalAngle = angleInDegrees + 90;
+
+  // if (finalAngle < 0) {
+  //   finalAngle += 360;
+  // } else if (finalAngle >= 360) {
+  //   finalAngle -= 360;
+  // }
+
+  return `${finalAngle}deg`;
 };
 
 export default getInitialRotation;

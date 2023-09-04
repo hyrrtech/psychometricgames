@@ -2,7 +2,7 @@ import {gameRoundData, generateMatrix, generateEmptyMatrix} from '.';
 
 const stateGenerator = level => {
   return {
-    lives: 5,
+    lives: 3,
     score: 0,
     status: 'IN_PROGRESS',
     level: gameRoundData[level - 1].level,

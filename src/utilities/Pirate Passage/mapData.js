@@ -45,8 +45,8 @@ const mapData = [
           [5, 2],
         ],
         color: '#962f53',
-        initialShipLocation: [5, 1],
-        moveDirection: -1,
+        initialShipLocation: [4, 1],
+        moveDirection: 1,
       },
       {
         pathIndexes: [

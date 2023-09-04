@@ -18,7 +18,7 @@ const gameRoundData = [
     fishCount: 7,
     baitCount: 7,
     rainDropCount: 8,
-    lives: 3,
+    lives: 2,
   },
 ];
 export default gameRoundData;

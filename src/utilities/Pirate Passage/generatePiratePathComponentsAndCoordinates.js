@@ -34,8 +34,9 @@ const generatePiratePathComponentsAndCoordiantes = (
   for (let i = 0; i < piratePathsIndexes.length; i++) {
     const pathIndexes =
       piratePathsIndexes[i].moveDirection === -1
-        ? piratePathsIndexes[i].pathIndexes.reverse()
-        : piratePathsIndexes[i].pathIndexes;
+        ? [...piratePathsIndexes[i].pathIndexes].reverse()
+        : [...piratePathsIndexes[i].pathIndexes];
+
     const pivotPoint = piratePathsIndexes.length / 2;
     const offset =
       i < pivotPoint

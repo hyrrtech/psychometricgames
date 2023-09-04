@@ -142,7 +142,11 @@ const Demo = ({navigation}) => {
         : {})}>
       {demoState.demoStage === 1 || demoState.demoStage === true ? (
         <Modal
-          content={demoState.demoStage === 1 ? 'introductions' : 'final modal'}
+          content={
+            demoState.demoStage === 1
+              ? `You'll see a pattern in numbers. Identify the pattern and then place the fuse in the correct holder creating an uninterrrupted path for the current.`
+              : 'Great Job! Now you can play the game.'
+          }
           onPress={async () => {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
             if (demoState.demoStage === true) {

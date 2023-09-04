@@ -42,8 +42,8 @@ const Demo = ({setShowDemo}) => {
         return (
           <Modal
             content={`Instructions:\n
--You'll see a matrix of sharks on the screen, each pointing toward different directions.\n
--Your task is to predict the direction in which the middle shark is pointing: left or right.`}
+-You'll see sharks on your screen.\n
+-Your task is to identify the direction in which the middle shark is facing.`}
             style={{position: 'absolute'}}
             onPress={() => {
               LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);

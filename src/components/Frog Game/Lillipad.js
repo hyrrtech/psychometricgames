@@ -146,7 +146,7 @@ const Lillipad = ({position, id, rotation}) => {
           fill="#103134"
         />
       </Svg>
-      <Text style={{position: 'absolute'}}>{id}</Text>
+      {/* <Text style={{position: 'absolute'}}>{id}</Text> */}
     </TouchableOpacity>
   );
 };

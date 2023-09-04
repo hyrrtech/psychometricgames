@@ -64,7 +64,11 @@ const FrogJump = ({navigation}) => {
         : {})}>
       {showDemo && demoState.demoStage !== 2 ? (
         <Modal
-          content={demoState.demoStage === 1 ? `intro` : `final`}
+          content={
+            demoState.demoStage === 1
+              ? `Instructions:\n\nHelp the 'Green Frog' follow the 'Orange Frog'.`
+              : `Great Job! You've completed the demo.`
+          }
           onPress={() => {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
             if (demoState.demoStage === 1) {
@@ -97,7 +101,7 @@ const FrogJump = ({navigation}) => {
       )}
       {showDemo && demoState.demoStage === 2 ? (
         <Modal
-          content={'tap on the highlighted lillipad'}
+          content={'Tap on the highlighted lillipad to make the frog jump.'}
           showContinue={false}
           style={{bottom: '5%'}}
         />
