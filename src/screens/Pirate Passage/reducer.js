@@ -1,7 +1,5 @@
-import db from '../../firebase/database';
 import {
   stateGenerator,
-  mapData,
   getShortestPath,
   generateShipPathComponentsAndCoordinates,
 } from '../../utilities/Pirate Passage';
@@ -18,8 +16,8 @@ export function reducer(state, action) {
     case ACTIONS.INIT_LEVEL:
       const {level, ifDemo, lives} = action.payload;
       return {
-        ...stateGenerator(action.payload.level, ifDemo),
-        lives: action.payload.lives,
+        ...stateGenerator(level, ifDemo),
+        lives: lives,
       };
 
     case ACTIONS.ADD_PATH:

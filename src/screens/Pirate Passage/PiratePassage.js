@@ -96,7 +96,6 @@ const PiratePassage = ({navigation}) => {
         return null;
     }
   }, [showDemo, demoState]);
-  console.log(demoData.length, demoState.level);
 
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />

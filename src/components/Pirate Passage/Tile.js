@@ -37,14 +37,19 @@ const Tile = ({position, index, disabled}) => {
   };
 
   const disableTap = useMemo(() => {
-    if (disabled) return disabled;
     if (
       showDemo &&
       demoState.highlightedTileIndex[0] === index[0] &&
       demoState.highlightedTileIndex[1] === index[1]
     )
       return false;
-    return true;
+    if (
+      showDemo &&
+      demoState.highlightedTileIndex[0] !== index[0] &&
+      demoState.highlightedTileIndex[1] !== index[1]
+    )
+      return true;
+    return disabled;
   }, [disabled, demoState, showDemo]);
 
   useEffect(() => {

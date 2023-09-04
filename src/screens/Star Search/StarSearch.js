@@ -108,7 +108,7 @@ const StarSearch = ({navigation}) => {
       {showModal ? (
         <Modal
           content={
-            'Instructions:\n\nYour task is to find the unique shape among a group of shapes. Prepare to put your visual skills to the test.'
+            'Instructions:\n\nYour task is to find the unique object among a group of objects. Prepare to put your visual skills to the test.'
           }
           onPress={() => {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
