@@ -23,7 +23,7 @@ const stateGenerator = (level = 1, ifDemo = false) => {
   const {pathComponents, pathCoordinates} =
     generateShipPathComponentsAndCoordinates(matrix, shipPathIndexes);
   return {
-    tapSequence: ifDemo ? map[level - 1].tapSequence : [],
+    tapSequence: ifDemo ? map[level - 1].tapSequence : [[-1, -1]],
     matrix,
     initialShipIndex: map[level - 1].initialShipIndex,
     shipPathIndexes,

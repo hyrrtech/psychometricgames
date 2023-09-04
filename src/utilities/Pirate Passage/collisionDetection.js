@@ -58,4 +58,5 @@ function checkIfLoop(path) {
   return first[0] === last[0] && first[1] === last[1];
 }
 
+export {getShipPosition, getPirateShipPosition, positionsOverlap, checkIfLoop};
 export default collisionDetection;

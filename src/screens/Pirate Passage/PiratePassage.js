@@ -14,6 +14,8 @@ import BackgroundImage from '../../values/BackgroundImage';
 import {COLORS} from '../../values/Colors';
 import {PiratePassageContext} from '../../providers/PiratePassage.Provider';
 import PirateShip from '../../components/Pirate Passage/PirateShip';
+import {demoData} from '../../utilities/Pirate Passage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PiratePassage = ({navigation}) => {
   const {
@@ -33,6 +35,7 @@ const PiratePassage = ({navigation}) => {
     demoState,
     setDemoState,
     tapSequence,
+    setShowDemo,
   } = useContext(PiratePassageContext);
 
   const [buttonProps, setButtonProps] = useState({
@@ -48,6 +51,7 @@ const PiratePassage = ({navigation}) => {
   };
 
   const handle_undo = () => {
+    if (showDemo) return;
     dispatch({type: ACTIONS.UNDO});
   };
 
@@ -92,6 +96,7 @@ const PiratePassage = ({navigation}) => {
         return null;
     }
   }, [showDemo, demoState]);
+  console.log(demoData.length, demoState.level);
 
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
@@ -123,16 +128,45 @@ const PiratePassage = ({navigation}) => {
               },
             ],
           })}>
-      {showDemo && demoState.demoStage === 1 ? (
+      {showDemo && (demoState.demoStage === 1 || demoState.demoStage === 4) ? (
         <Modal
-          content="intro"
-          onPress={() => {
+          content={
+            demoState.demoStage === 1
+              ? 'intro'
+              : demoState.level < demoData.length
+              ? 'next demo level'
+              : 'demo finsihsed'
+          }
+          onPress={async () => {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
-            setDemoState(prev => ({
-              demoStage: prev.demoStage + 1,
-              highlightedTileIndex: tapSequence[prev.tapSequenceIndex],
-              tapSequenceIndex: prev.tapSequenceIndex + 1,
-            }));
+            if (demoState.demoStage === 1) {
+              setDemoState(prev => ({
+                ...prev,
+                demoStage: prev.demoStage + 1,
+                highlightedTileIndex: tapSequence[0],
+                tapSequenceIndex: prev.tapSequenceIndex + 1,
+              }));
+              return;
+            }
+            if (demoState.demoStage === 4) {
+              if (demoState.level < demoData.length) {
+                setDemoState(prev => ({
+                  ...prev,
+                  demoStage: 2,
+                  level: prev.level + 1,
+                  tapSequenceIndex: 1,
+                  highlightedTileIndex: demoData[prev.level].tapSequence[0],
+                }));
+              } else {
+                try {
+                  await AsyncStorage.setItem('PIRATEPASSAGE_DEMO', 'FINISHED');
+                  setShowDemo(false);
+                } catch (err) {
+                  console.log(err);
+                  navigation.navigate('Tabs');
+                }
+              }
+            }
           }}
         />
       ) : (

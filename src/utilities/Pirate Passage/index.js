@@ -4,9 +4,10 @@ import getShortestPath from './getShortestPath';
 import generatePiratePathComponentsAndCoordiantes from './generatePiratePathComponentsAndCoordinates';
 import generateShipPathComponentsAndCoordinates from './generateShipPathComponentsAndCoordinates';
 import stateGenerator from './stateGenerator';
-import collisionDetection from './collisionDetection';
+import collisionDetection, {positionsOverlap} from './collisionDetection';
 import getInitialRotation from './getInitialRotation';
 import mapData from './mapData';
+import demoData from './demoData';
 export {
   constants,
   generateMatrix,
@@ -15,6 +16,8 @@ export {
   generateShipPathComponentsAndCoordinates,
   collisionDetection,
   mapData,
+  demoData,
   stateGenerator,
   getInitialRotation,
+  positionsOverlap,
 };

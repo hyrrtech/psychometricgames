@@ -11,7 +11,7 @@ const Tile = ({position, index, disabled}) => {
   const highlightAnimation = useRef(new Animated.Value(0)).current;
   const colorInterpolate = highlightAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: ['rgba(100, 215, 220,0.8)', 'rgba(100, 215, 220,0.2)'],
+    outputRange: ['rgba(100, 215, 220,0.8)', 'rgba(100, 215, 220,0.1)'],
   });
 
   const handlePress = () => {
