@@ -12,7 +12,7 @@ import {interpolate} from 'flubber';
 import {frames} from '../components/Frog Game/frames';
 import {constants, stateGenerator} from '../utilities/Frog Jump';
 
-const {NUM_OF_LILLIPADS, MAX_NUM_OF_JUMPS} = constants;
+const {NUM_OF_LILLIPADS, MAX_NUM_OF_JUMPS, LIVES} = constants;
 
 export const FrogGameContext = createContext();
 
@@ -29,6 +29,7 @@ export const FrogGameProvider = ({children}) => {
 
   const [followerFrogPosition, setFollowerFrogPosition] = useState([]);
   const [leaderFrogPosition, setLeaderFrogPosition] = useState([]);
+  const [lives, setLives] = useState(LIVES);
 
   const numberOfJumpsByFollowerFrog = useRef(0);
   const currentAndFutureFollowerFrogPositions = useRef([]);
@@ -113,6 +114,8 @@ export const FrogGameProvider = ({children}) => {
         completedPopup,
         demoState,
         setDemoState,
+        lives,
+        setLives,
       }}>
       {children}
     </FrogGameContext.Provider>

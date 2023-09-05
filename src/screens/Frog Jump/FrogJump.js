@@ -28,6 +28,7 @@ const FrogJump = ({navigation}) => {
     setShowDemo,
     setDemoState,
     demoState,
+    lives,
   } = useContext(FrogGameContext);
   const {user} = useContext(AuthContext);
   const GameRef = db.ref(`/users/${user.uid}/FollowThatFrog/`);
@@ -59,6 +60,7 @@ const FrogJump = ({navigation}) => {
                 title: 'Jumps',
                 value: `${numberOfJumpsByFollowerFrog.current} of ${MAX_NUM_OF_JUMPS}`,
               },
+              {title: 'Lives', value: lives},
             ],
           }
         : {})}>

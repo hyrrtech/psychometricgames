@@ -9,6 +9,7 @@ const leaderFrogSize = lillipadSize * 1.4;
 const speed = 250;
 const MAX_NUM_OF_JUMPS = 40;
 const NUM_OF_LILLIPADS = 10;
+const LIVES = 3;
 
 export default {
   spawnAreaHeight,
@@ -19,4 +20,5 @@ export default {
   speed,
   MAX_NUM_OF_JUMPS,
   NUM_OF_LILLIPADS,
+  LIVES,
 };

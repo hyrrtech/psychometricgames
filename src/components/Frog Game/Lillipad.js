@@ -10,6 +10,7 @@ import {FrogGameContext} from '../../providers/FrogGame.Provider';
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 const {lillipadSize} = constants;
+const shakeOffset = lillipadSize / 10;
 const Lillipad = ({position, id, rotation}) => {
   const {
     disabled,
@@ -22,9 +23,17 @@ const Lillipad = ({position, id, rotation}) => {
     numberOfJumpsByFollowerFrog,
     followerFrogPosition,
     setGameOver,
+    lives,
+    setLives,
     showDemo,
   } = useContext(FrogGameContext);
   const highlightAnimation = useRef(new Animated.Value(0)).current;
+  const shakeAnimation = useRef(new Animated.Value(0)).current;
+
+  const shakeInterpolate = shakeAnimation.interpolate({
+    inputRange: [0, 0.25, 0.5, 0.75, 1],
+    outputRange: [0, -shakeOffset, 0, shakeOffset, 0],
+  });
 
   const disableTap = useMemo(() => {
     if (!showDemo) return disabled;
@@ -45,7 +54,21 @@ const Lillipad = ({position, id, rotation}) => {
       indexOfLillipad !==
       leaderFrogPositionHistory.current[numberOfJumpsByFollowerFrog.current]
     ) {
-      setGameOver(true);
+      Animated.timing(shakeAnimation, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(({finished}) => {
+        if (finished) {
+          shakeAnimation.setValue(0);
+          if (lives === 1) {
+            setGameOver(true);
+          } else {
+            setLives(lives - 1);
+          }
+        }
+      });
+
       return;
     }
     setFollowerFrogPosition({
@@ -91,7 +114,7 @@ const Lillipad = ({position, id, rotation}) => {
       id ===
         leaderFrogPositionHistory.current[numberOfJumpsByFollowerFrog.current]
     ) {
-      console.log(id);
+      // console.log(id);
       Animated.loop(
         Animated.sequence([
           Animated.timing(highlightAnimation, {
@@ -125,7 +148,10 @@ const Lillipad = ({position, id, rotation}) => {
         position: 'absolute',
         top: position.y,
         left: position.x,
-        transform: [{rotateZ: rotation + 'deg'}],
+        transform: [
+          {rotateZ: rotation + 'deg'},
+          {translateX: shakeInterpolate},
+        ],
       }}>
       <Svg
         width={lillipadSize}

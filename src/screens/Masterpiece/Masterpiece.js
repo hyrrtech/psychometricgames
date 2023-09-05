@@ -1,4 +1,4 @@
-import {useContext} from 'react';
+import {useContext, useMemo} from 'react';
 import {View, ActivityIndicator} from 'react-native';
 import Piece from '../../components/Masterpiece/Piece';
 import CombinedPiece from '../../components/Masterpiece/CombinedPiece';
@@ -29,6 +29,7 @@ const Masterpiece = () => {
     positionsState,
     combinedPieceDimensions,
     showDemo,
+    state,
   } = useContext(MasterpieceContext);
 
   const loading = false;
@@ -50,6 +51,22 @@ const Masterpiece = () => {
     setElementsData(newElementsData);
   };
 
+  const renderPieces = useMemo(
+    () =>
+      elementsData.map(element => (
+        <Piece
+          id={element.id}
+          key={element.id}
+          pathD={element.path}
+          viewBox={element.viewBox}
+          initialPosition={piecesPosition[element.id].position}
+          pieceCorrectPositon={element.pieceCorrectPositon}
+          rotation={element.pieceRotationAngle}
+        />
+      )),
+    [elementsData, piecesPosition],
+  );
+
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
@@ -63,7 +80,7 @@ const Masterpiece = () => {
       scoreboard={[
         {
           title: 'Level',
-          value: 1,
+          value: state.level,
         },
       ]}
       controllerButtons={[
@@ -89,7 +106,7 @@ const Masterpiece = () => {
           }}
         />
 
-        {elementsData.map(element => (
+        {/* {elementsData.map(element => (
           <Piece
             id={element.id}
             key={element.id}
@@ -99,7 +116,8 @@ const Masterpiece = () => {
             pieceCorrectPositon={element.pieceCorrectPositon}
             rotation={element.pieceRotationAngle}
           />
-        ))}
+        ))} */}
+        {renderPieces}
         {/* {positionsState.map((element, index) => (
           <View
             key={element.id}

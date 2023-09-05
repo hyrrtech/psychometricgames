@@ -19,12 +19,6 @@ const getInitialRotation = (
 
   let finalAngle = angleInDegrees + 90;
 
-  // if (finalAngle < 0) {
-  //   finalAngle += 360;
-  // } else if (finalAngle >= 360) {
-  //   finalAngle -= 360;
-  // }
-
   return `${finalAngle}deg`;
 };
 

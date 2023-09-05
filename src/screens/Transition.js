@@ -93,6 +93,13 @@ const Transition = ({route, navigation}) => {
       navigateButtonText: 'Home',
       text: 'You have completed the game. Press home to go back to home screen',
     },
+    Masterpiece: {
+      backgroundGradient: COLORS.masterPieceBGColor,
+      imageURL: BackgroundImage.Masterpiece,
+      navigateTo: 'Tabs',
+      navigateButtonText: 'Home',
+      text: 'You have completed the game. Press home to go back to home screen',
+    },
   };
   //prevent navigation to gamescreen when back button is pressed if the game is over
   useEffect(() => {
