@@ -20,5 +20,19 @@ const gameRoundData = [
     rainDropCount: 8,
     lives: 2,
   },
+  {
+    level: 4,
+    fishCount: 9,
+    baitCount: 9,
+    rainDropCount: 8,
+    lives: 2,
+  },
+  {
+    level: 5,
+    fishCount: 11,
+    baitCount: 11,
+    rainDropCount: 8,
+    lives: 2,
+  },
 ];
 export default gameRoundData;
