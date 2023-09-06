@@ -1,4 +1,4 @@
-import {useEffect, useState, useRef, useContext} from 'react';
+import {useEffect, useState, useRef, useContext, memo} from 'react';
 import {Animated, Easing} from 'react-native';
 import TrainVerticalSvg from './SVG/TrainVerticalSvg';
 import TrainHorizontalSvg from './SVG/TrainHorizontalSvg';
@@ -124,10 +124,18 @@ const DemoTrain = ({color, id}) => {
           }
 
           if (PATH[index]?.color) {
-            setDemoState(prev => ({
-              ...prev,
-              demoStage: prev.demoStage + 1,
-            }));
+            if (PATH[index].color === demoState.trainColor) {
+              setDemoState(prev => ({
+                ...prev,
+                demoStage: true,
+              }));
+            } else {
+              setDemoState(prev => ({
+                ...prev,
+                demoStage: false,
+                disableSwitches: true,
+              }));
+            }
           }
 
           ++currentIndex.current;
@@ -139,23 +147,32 @@ const DemoTrain = ({color, id}) => {
   };
 
   useEffect(() => {
-    if (demoState.stopTrain) {
-      trainPosition.stopAnimation(() => {
-        stopTime.current = Date.now();
-      });
+    switchesPassed.current = [];
+    changedSwitches.current = [];
+    pathFollowed.current = [];
+    currentIndex.current = 1;
+    segmentStartTime.current = Date.now();
+    trainPosition.setValue({x: PATH[0].x, y: PATH[0].y});
+  }, [id]);
 
-      return;
+  useEffect(() => {
+    if (id === 0) {
+      if (demoState.stopTrain) {
+        trainPosition.stopAnimation(() => {
+          stopTime.current = Date.now();
+        });
+      }
+      if (demoState.demoStage === 2 && !demoState.stopTrain) {
+        const newDuration = segmentEndTime.current - stopTime.current;
+        moveTrain(PATH, newDuration);
+        return;
+      }
     }
   }, [demoState]);
 
   useEffect(() => {
-    if (demoState.demoStage === 2) {
-      const newDuration = segmentEndTime.current - stopTime.current;
-      moveTrain(PATH, newDuration);
-      return;
-    }
-    moveTrain(PATH);
-  }, [PATH]);
+    if (demoState.demoStage !== 2 && !demoState.stopTrain) moveTrain(PATH);
+  }, [PATH, id]);
 
   return (
     <Animated.View

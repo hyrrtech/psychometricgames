@@ -13,6 +13,7 @@ export const TrainOfThoughtsProvider = ({children}) => {
     demoStage: 0,
     stopTrain: false,
     disableSwitch: true,
+    trainColor: '#5bc0f8',
   });
   const {TIME, togglePause} = useCountdown(
     constants.time.minutes,

@@ -18,22 +18,11 @@ const Switch = (point, id, directions) => {
 
   const disableSwitch = useMemo(() => {
     if (showDemo) {
-      if (id !== 5) {
-        return true;
-      }
       return demoState.disableSwitch;
     }
   }, [demoState]);
 
   const handlePress = () => {
-    if (showDemo) {
-      setDemoState(prev => ({
-        ...prev,
-        disableSwitch: true,
-        stopTrain: false,
-        demoStage: prev.demoStage + 1,
-      }));
-    }
     const newSwitchDirections = [...switchDirections];
     direction === directions[0]
       ? (newSwitchDirections[id - 1] = directions[1])
