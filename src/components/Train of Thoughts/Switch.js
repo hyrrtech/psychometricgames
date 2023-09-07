@@ -1,10 +1,16 @@
-import {TouchableOpacity, Text} from 'react-native';
+import {TouchableOpacity, Text, Animated} from 'react-native';
 import SwitchSvgVertical from './SVG/SwitchSvgVertical';
 import SwitchSvgTurn from './SVG/SwitchSvgTurn';
-import {useContext, useMemo} from 'react';
+import {useContext, useEffect, useMemo, useRef} from 'react';
 import {TrainOfThoughtsContext} from '../../providers/TrainOfThoughts.Provider';
-import {adjustCoordinates, constants} from '../../utilities/Train of Thoughts';
+import {
+  adjustCoordinates,
+  constants,
+  getCorrectPath,
+} from '../../utilities/Train of Thoughts';
 const {switchSize} = constants;
+const AnimatedTouchableOpacity =
+  Animated.createAnimatedComponent(TouchableOpacity);
 const Switch = (point, id, directions) => {
   const {
     switchDirections,
@@ -13,6 +19,7 @@ const Switch = (point, id, directions) => {
     showDemo,
     setDemoState,
   } = useContext(TrainOfThoughtsContext);
+  const opacityAnimation = useRef(new Animated.Value(1)).current;
 
   const direction = switchDirections[id - 1];
 
@@ -35,8 +42,32 @@ const Switch = (point, id, directions) => {
   const stepX = point.x;
   const stepY = point.y;
 
+  useEffect(() => {
+    if (showDemo) {
+      const SwitchIds = getCorrectPath(demoState.trainColor);
+      if (SwitchIds.includes(id)) {
+        Animated.loop(
+          Animated.sequence([
+            Animated.timing(opacityAnimation, {
+              toValue: 0.5,
+              duration: 700,
+              useNativeDriver: false,
+            }),
+            Animated.timing(opacityAnimation, {
+              toValue: 1,
+              duration: 700,
+              useNativeDriver: false,
+            }),
+          ]),
+        ).start();
+      }
+    } else {
+      opacityAnimation.setValue(1);
+    }
+  }, [showDemo]);
+
   return (
-    <TouchableOpacity
+    <AnimatedTouchableOpacity
       disabled={directions.length === 1 || disableSwitch}
       onPress={handlePress}
       activeOpacity={0.8}
@@ -48,6 +79,7 @@ const Switch = (point, id, directions) => {
         top: stepY,
         height: switchSize,
         width: switchSize,
+        opacity: disableSwitch ? 1 : opacityAnimation,
       }}>
       {direction === 'vertical' && (
         <SwitchSvgVertical
@@ -122,7 +154,8 @@ const Switch = (point, id, directions) => {
           backgroundColor={disableSwitch ? '#cf372b' : '#4AA653'}
         />
       )}
-    </TouchableOpacity>
+      <Text style={{position: 'absolute', zIndex: 99999}}>{id}</Text>
+    </AnimatedTouchableOpacity>
   );
 };
 

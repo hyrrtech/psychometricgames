@@ -16,11 +16,9 @@ const PirateShip = ({
   const path = useRef(shipPath);
 
   const initialRotation = getInitialRotation(
-    moveDirection,
     initialPosition,
     initialPositionIndex,
     path.current,
-    isLoop,
   );
 
   const [rotation, setRotation] = useState(initialRotation);

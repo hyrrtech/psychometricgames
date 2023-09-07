@@ -140,6 +140,12 @@ const DemoTrain = ({color, id}) => {
 
           ++currentIndex.current;
           segmentStartTime.current = Date.now();
+          if (demoState.demoStage === 2) {
+            setDemoState(prev => ({
+              ...prev,
+              demoStage: 3,
+            }));
+          }
           moveTrain(PATH);
         }
       });
@@ -171,7 +177,11 @@ const DemoTrain = ({color, id}) => {
   }, [demoState]);
 
   useEffect(() => {
-    if (demoState.demoStage !== 2 && !demoState.stopTrain) moveTrain(PATH);
+    if (
+      (demoState.demoStage === 3 || demoState.demoStage <= 1) &&
+      !demoState.stopTrain
+    )
+      moveTrain(PATH);
   }, [PATH, id]);
 
   return (

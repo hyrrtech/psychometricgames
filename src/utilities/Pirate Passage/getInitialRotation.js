@@ -1,5 +1,4 @@
 const getInitialRotation = (
-  moveDirection,
   initialPosition,
   initialPositionIndex,
   shipPath,
