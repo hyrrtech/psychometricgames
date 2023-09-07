@@ -77,6 +77,7 @@ const BART = ({navigation}) => {
                 status,
                 score_range,
                 number_of_weights,
+                data: DATA,
               } = data;
 
               if (status === 'COMPLETED') {
@@ -91,6 +92,7 @@ const BART = ({navigation}) => {
                       number_of_weights: number_of_weights,
                       totalScore: totalScore,
                       score_range: score_range,
+                      data: DATA,
                       uid: user.uid,
                     },
                   });
@@ -107,6 +109,7 @@ const BART = ({navigation}) => {
                 max_score_per_level: state.max_score_per_level,
                 attempts: {},
                 status: 'IN_PROGRESS',
+                data: state.data,
               });
             }
           })
