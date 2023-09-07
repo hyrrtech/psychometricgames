@@ -64,7 +64,7 @@ export function reducer(state, action) {
           newState1 = {
             ...newState1,
             ...action.payload,
-            ...DATA[action.payload.level],
+            ...DATA[action.payload.level - 1],
           };
         } else {
           updateBartData(

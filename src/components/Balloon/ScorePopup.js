@@ -1,11 +1,11 @@
 import {useRef, useEffect, useState} from 'react';
 import {Animated, Text, StyleSheet} from 'react-native';
-const ScorePopup = ({scoreIncrement, pumpCount, POP_POINT}) => {
+const ScorePopup = ({scoreIncrement, pumpCount, pop_point}) => {
   const [visible, setVisible] = useState(false);
   const animation = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    if (!(pumpCount === POP_POINT) && pumpCount !== 0) {
+    if (!(pumpCount === pop_point) && pumpCount !== 0) {
       setVisible(true);
       Animated.timing(animation, {
         toValue: 0,
