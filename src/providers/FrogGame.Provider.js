@@ -30,6 +30,7 @@ export const FrogGameProvider = ({children}) => {
   const [followerFrogPosition, setFollowerFrogPosition] = useState([]);
   const [leaderFrogPosition, setLeaderFrogPosition] = useState([]);
   const [lives, setLives] = useState(LIVES);
+  const [correctLillipadId, setCorrectLillipadId] = useState(null);
 
   const numberOfJumpsByFollowerFrog = useRef(0);
   const currentAndFutureFollowerFrogPositions = useRef([]);
@@ -116,6 +117,8 @@ export const FrogGameProvider = ({children}) => {
         setDemoState,
         lives,
         setLives,
+        correctLillipadId,
+        setCorrectLillipadId,
       }}>
       {children}
     </FrogGameContext.Provider>

@@ -154,7 +154,7 @@ const Switch = (point, id, directions) => {
           backgroundColor={disableSwitch ? '#cf372b' : '#4AA653'}
         />
       )}
-      <Text style={{position: 'absolute', zIndex: 99999}}>{id}</Text>
+      {/* <Text style={{position: 'absolute', zIndex: 99999}}>{id}</Text> */}
     </AnimatedTouchableOpacity>
   );
 };

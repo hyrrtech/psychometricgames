@@ -26,6 +26,8 @@ const Lillipad = ({position, id, rotation}) => {
     lives,
     setLives,
     showDemo,
+    correctLillipadId,
+    setCorrectLillipadId,
   } = useContext(FrogGameContext);
   const highlightAnimation = useRef(new Animated.Value(0)).current;
   const shakeAnimation = useRef(new Animated.Value(0)).current;
@@ -54,20 +56,9 @@ const Lillipad = ({position, id, rotation}) => {
       indexOfLillipad !==
       leaderFrogPositionHistory.current[numberOfJumpsByFollowerFrog.current]
     ) {
-      Animated.timing(shakeAnimation, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }).start(({finished}) => {
-        if (finished) {
-          shakeAnimation.setValue(0);
-          if (lives === 1) {
-            setGameOver(true);
-          } else {
-            setLives(lives - 1);
-          }
-        }
-      });
+      setCorrectLillipadId(
+        leaderFrogPositionHistory.current[numberOfJumpsByFollowerFrog.current],
+      );
 
       return;
     }
@@ -107,6 +98,26 @@ const Lillipad = ({position, id, rotation}) => {
       });
     }
   };
+
+  useEffect(() => {
+    if (correctLillipadId === id) {
+      Animated.timing(shakeAnimation, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(({finished}) => {
+        if (finished) {
+          shakeAnimation.setValue(0);
+          setCorrectLillipadId(null);
+          if (lives === 1) {
+            setGameOver(true);
+          } else {
+            setLives(lives - 1);
+          }
+        }
+      });
+    }
+  }, [correctLillipadId]);
 
   useEffect(() => {
     if (
