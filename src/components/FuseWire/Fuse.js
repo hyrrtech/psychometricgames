@@ -3,6 +3,7 @@ import {PanResponder, Animated, StyleSheet, Text} from 'react-native';
 import {FuseWireContext} from '../../providers/FuseWire.Provider';
 import {constants} from '../../utilities/FuseWire';
 import FuseSvg from './SVG/FuseSVG';
+import {FontStyle} from '../../values/Font';
 const {FuseHeight, FuseWidth, FuseHolderHeight, FuseHolderWidth} = constants;
 
 const Fuse = ({position, value}) => {
@@ -126,8 +127,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
+    ...FontStyle.H3_bold,
     color: '#fff',
-    fontSize: 25,
     position: 'absolute',
     textAlign: 'center',
   },

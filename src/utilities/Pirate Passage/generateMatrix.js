@@ -1,7 +1,7 @@
 import constants from './constants';
 const {WINDOW_HEIGHT, WINDOW_WIDTH, tileSize} = constants;
 
-const generateMatrix = (row, col) => {
+const generateMatrix = (row, col, disabledIndexes) => {
   const gap = (WINDOW_HEIGHT / WINDOW_WIDTH) * 2;
   const totalWidth = tileSize * col + gap * (col - 1);
   const totalHeight = tileSize * row + gap * (row - 1);
@@ -18,6 +18,9 @@ const generateMatrix = (row, col) => {
           y: intialY + i * (tileSize + gap),
         },
         index: [i, j],
+        disabled: disabledIndexes.some(
+          index => index[0] === i && index[1] === j,
+        ),
       });
     }
     matrix.push(row);

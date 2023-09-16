@@ -1,8 +1,9 @@
-import {PanResponder, Animated} from 'react-native';
+import {PanResponder, Animated, LayoutAnimation} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
-import {constants} from '../../utilities/Masterpiece';
+import {constants, levelData} from '../../utilities/Masterpiece';
 import {useContext, useRef, useState, useEffect, useMemo} from 'react';
 import {MasterpieceContext} from '../../providers/Masterpiece.Provider';
+import {useNavigation} from '@react-navigation/native';
 const {ratio} = constants;
 
 const Piece = ({pathD, viewBox, initialPosition, id, pieceCorrectPositon}) => {
@@ -13,18 +14,27 @@ const Piece = ({pathD, viewBox, initialPosition, id, pieceCorrectPositon}) => {
     pickedPieceId,
     setPickedPieceId,
     isCorrect,
+    showDemo,
+    setDemoState,
+    setState,
+    state,
   } = useContext(MasterpieceContext);
+  const navigation = useNavigation();
   const [strokeWidth, setStrokeWidth] = useState(pickedPieceId == id ? 3 : 2);
   const {x, y, width, height} = viewBox;
   const [pieceHeight, pieceWidth] = [height * ratio, width * ratio];
   const [isAtCorrectPosition, setIsAtCorrectPosition] = useState(false);
-  const calibratedInitialPosition = {
-    x: initialPosition.x - pieceWidth / 2,
-    y: initialPosition.y - pieceHeight / 2,
-  };
+  const calibratedInitialPosition = useMemo(() => {
+    return {
+      x: initialPosition.x - pieceWidth / 2,
+      y: initialPosition.y - pieceHeight / 2,
+    };
+  }, [initialPosition]);
+
   const currentPositionId = useRef(null);
   const pan = useRef(new Animated.ValueXY(calibratedInitialPosition)).current;
   const colorAnimation = useRef(new Animated.Value(0)).current;
+  const blinkAnimation = useRef(new Animated.Value(0)).current;
   const rotation = elementsData.find(
     element => element.id === id,
   ).pieceRotationAngle;
@@ -32,6 +42,16 @@ const Piece = ({pathD, viewBox, initialPosition, id, pieceCorrectPositon}) => {
   const whenPiecePicked = () => {
     setPickedPieceId(id);
   };
+
+  const colorInterpolate = colorAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#f9bc3c', '#1f2548'],
+  });
+
+  const colorBlink = blinkAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#f9bc3c', '#2ed0f6'],
+  });
 
   useEffect(() => {
     if (isCorrect) {
@@ -43,14 +63,42 @@ const Piece = ({pathD, viewBox, initialPosition, id, pieceCorrectPositon}) => {
           duration: 1000,
           useNativeDriver: false,
         }),
-      ]).start();
+      ]).start(({finished}) => {
+        if (finished) {
+          if (showDemo) {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
+            setDemoState(prev => ({...prev, demoStage: prev.demoStage + 1}));
+          } else {
+            if (state.level < levelData.length) {
+              setState(prev => ({...prev, level: prev.level + 1}));
+            } else {
+              navigation.navigate('Transition', {
+                cameFrom: 'Masterpiece',
+              });
+            }
+          }
+        }
+      });
     }
   }, [isCorrect]);
 
-  const colorInterpolate = colorAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['#f9bc3c', '#1f2548'],
-  });
+  useEffect(() => {
+    if (showDemo)
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(blinkAnimation, {
+            toValue: 1,
+            duration: 800,
+            useNativeDriver: false,
+          }),
+          Animated.timing(blinkAnimation, {
+            toValue: 0,
+            duration: 800,
+            useNativeDriver: false,
+          }),
+        ]),
+      ).start();
+  }, [showDemo]);
 
   const getColor = () => {
     if (isCorrect) {
@@ -179,11 +227,15 @@ const Piece = ({pathD, viewBox, initialPosition, id, pieceCorrectPositon}) => {
 
   useEffect(() => {
     pan.flattenOffset();
+    currentPositionId.current = null;
+    colorAnimation.setValue(0);
+    blinkAnimation.setValue(0);
     Animated.spring(pan, {
       toValue: calibratedInitialPosition,
       useNativeDriver: false,
     }).start();
-  }, []);
+  }, [calibratedInitialPosition]);
+
   const AnimatedPath = Animated.createAnimatedComponent(Path);
 
   return (
@@ -209,7 +261,7 @@ const Piece = ({pathD, viewBox, initialPosition, id, pieceCorrectPositon}) => {
         viewBox={`${x} ${y} ${width} ${height}`}>
         <AnimatedPath
           d={pathD}
-          fill={color}
+          fill={showDemo && pickedPieceId !== id ? colorBlink : color}
           stroke={'white'}
           strokeWidth={strokeWidth}
         />

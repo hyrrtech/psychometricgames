@@ -2,32 +2,35 @@ import generateMatrix from './generateMatrix';
 import generatePiratePathComponentsAndCoordiantes from './generatePiratePathComponentsAndCoordinates';
 import generateShipPathComponentsAndCoordinates from './generateShipPathComponentsAndCoordinates';
 import mapData from './mapData';
+import demoData from './demoData';
 
-const stateGenerator = level => {
+const stateGenerator = (level = 1, ifDemo = false) => {
+  const map = ifDemo ? demoData : mapData;
   const matrix = generateMatrix(
-    mapData[level - 1].matrixSize.rows,
-    mapData[level - 1].matrixSize.columns,
+    map[level - 1].matrixSize.rows,
+    map[level - 1].matrixSize.columns,
+    map[level - 1].disabledIndexes,
   );
   const shipPathIndexes = {
-    indexes: [mapData[level - 1].initialShipIndex],
+    indexes: [map[level - 1].initialShipIndex],
     number_of_indexes_added: [1],
   };
-  const piratePathsIndexes = mapData[level - 1].piratePathsIndexes;
+  const piratePathsIndexes = map[level - 1].piratePathsIndexes;
 
   const {piratePathComponents, piratePathCoordinates} =
     generatePiratePathComponentsAndCoordiantes(matrix, piratePathsIndexes);
 
   const {pathComponents, pathCoordinates} =
     generateShipPathComponentsAndCoordinates(matrix, shipPathIndexes);
-
   return {
+    tapSequence: ifDemo ? map[level - 1].tapSequence : [[-1, -1]],
     matrix,
-    initialShipIndex: mapData[level - 1].initialShipIndex,
+    initialShipIndex: map[level - 1].initialShipIndex,
     shipPathIndexes,
-    treasureIndex: mapData[level - 1].treasureIndex,
+    treasureIndex: map[level - 1].treasureIndex,
     piratePathsIndexes,
     level,
-    piratePathIndexes: mapData[level - 1].piratePathsIndexes,
+    piratePathIndexes: map[level - 1].piratePathsIndexes,
     piratePathComponents,
     piratePathCoordinates,
     pathComponents,

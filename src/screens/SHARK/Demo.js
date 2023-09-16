@@ -41,7 +41,9 @@ const Demo = ({setShowDemo}) => {
       case 1:
         return (
           <Modal
-            content="instructions"
+            content={`Instructions:\n
+-You'll see sharks on your screen.\n
+-Your task is to identify the direction in which the middle shark is facing.`}
             style={{position: 'absolute'}}
             onPress={() => {
               LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
@@ -52,7 +54,7 @@ const Demo = ({setShowDemo}) => {
       case totalStages:
         return (
           <Modal
-            content="final modal"
+            content={`"Excellent! You've got a knack for this. Keep testing your skills in the next level."`}
             style={{position: 'absolute'}}
             onPress={async () => {
               try {
@@ -161,7 +163,11 @@ const Demo = ({setShowDemo}) => {
                 ? leftButtonProps
                 : rightButtonProps
             }
-            content={middleSharkDirection === 'LEFT' ? 'LEFT' : 'RIGHT'}
+            content={
+              middleSharkDirection === 'LEFT'
+                ? `The middle shark is pointing toward the Left`
+                : `The middle shark is pointing toward the Right`
+            }
           />
         </>
       )}

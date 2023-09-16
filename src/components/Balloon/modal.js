@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FED7D7',
     padding: 20,
     borderRadius: 5,
-    maxWidth: windowWidth * 0.7,
+    maxWidth: windowWidth * 0.8,
   },
   text: {
     color: COLORS.neutral_500,

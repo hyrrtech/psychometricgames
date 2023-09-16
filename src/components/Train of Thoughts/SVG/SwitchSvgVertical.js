@@ -1,6 +1,12 @@
 import * as React from 'react';
 import Svg, {Path} from 'react-native-svg';
-const SwitchSvgVertical = ({height, width, rotation, showOnlyTrack}) => (
+const SwitchSvgVertical = ({
+  height,
+  width,
+  rotation,
+  showOnlyTrack,
+  backgroundColor,
+}) => (
   <Svg
     width={height}
     height={width}
@@ -10,7 +16,7 @@ const SwitchSvgVertical = ({height, width, rotation, showOnlyTrack}) => (
     {!showOnlyTrack && (
       <Path
         d="M32.5 63C49.3447 63 63 49.3447 63 32.5C63 15.6553 49.3447 2 32.5 2C15.6553 2 2 15.6553 2 32.5C2 49.3447 15.6553 63 32.5 63Z"
-        fill="#4AA653"
+        fill={backgroundColor}
         stroke="#1A3520"
         strokeWidth={4}
         strokeMiterlimit={10}

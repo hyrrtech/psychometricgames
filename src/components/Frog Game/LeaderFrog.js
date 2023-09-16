@@ -10,13 +10,14 @@ const getNewAngle = (a, b) => {
   const angle = Math.atan2(b.y - a.y, b.x - a.x) * (180 / Math.PI);
   return `${angle}deg`;
 };
-const LeaderFrog = ({interpolations}) => {
+const LeaderFrog = () => {
   const {
     setDisabled,
     leaderFrogPosition,
     initialLeaderFrogPosition,
     currentLeaderFrogPosition,
     followerFrogPosition,
+    interpolations,
   } = useContext(FrogGameContext);
 
   const [rotationAngle, setRotationAngle] = useState({

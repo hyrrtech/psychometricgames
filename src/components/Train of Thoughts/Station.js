@@ -1,11 +1,15 @@
-import {View} from 'react-native';
+import {View, Animated} from 'react-native';
 import {adjustCoordinates, constants} from '../../utilities/Train of Thoughts/';
 import StationBackSvg from './SVG/StationBackSvg';
 import StationFrontSvg from './SVG/StationFrontSvg';
 import StationLeftSvg from './SVG/StationLeftSvg';
+import {useContext, useEffect, useRef} from 'react';
+import {TrainOfThoughtsContext} from '../../providers/TrainOfThoughts.Provider';
 
 const {pathSize, stationSize} = constants;
 const Station = (point, prevPoint) => {
+  const {demoState, showDemo} = useContext(TrainOfThoughtsContext);
+  const scaleAnimation = useRef(new Animated.Value(1)).current;
   point = adjustCoordinates(point);
   prevPoint = adjustCoordinates(prevPoint);
   const deltaX = point.x - prevPoint.x;
@@ -13,18 +17,7 @@ const Station = (point, prevPoint) => {
   let direction = Math.ceil((Math.atan2(deltaY, deltaX) * 180) / Math.PI);
   let stepX = point.x;
   let stepY = point.y;
-  // adjust offset here too
-  // if (direction === 0) {
-  //   direction = 90;
-  // } else if (direction === -90) {
-  //   direction = 0;
-  // } else if (direction === 90) {
-  //   direction = 0;
-  // } else if (direction === -177) {
-  //   direction = -90;
-  // } else if (direction === 180) {
-  //   direction = -90;
-  // }
+
   if (direction === -90) {
     stepX = stepX - pathSize / 2;
   }
@@ -37,14 +30,28 @@ const Station = (point, prevPoint) => {
     stepY = stepY - pathSize;
   }
 
+  useEffect(() => {
+    if (showDemo && demoState.trainColor === point.color) {
+      Animated.loop(
+        Animated.spring(scaleAnimation, {
+          toValue: 1.05,
+          useNativeDriver: true,
+        }),
+      ).start();
+    } else {
+      scaleAnimation.setValue(1);
+    }
+  }, [showDemo]);
+
   return (
-    <View
+    <Animated.View
       key={`${stepX}-${stepY}-destination`}
       style={{
         position: 'absolute',
         zIndex: 999,
         left: stepX,
         top: stepY,
+        transform: [{scale: scaleAnimation}],
       }}>
       {direction === -90 && (
         <StationFrontSvg
@@ -67,7 +74,7 @@ const Station = (point, prevPoint) => {
           color={point.color}
         />
       )}
-    </View>
+    </Animated.View>
   );
 };
 export default Station;

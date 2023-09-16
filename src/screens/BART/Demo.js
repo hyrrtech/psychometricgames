@@ -60,7 +60,12 @@ const Demo = ({setShowDemo}) => {
       case 1:
         return (
           <Modal
-            content={'show instructions, clarify the task'}
+            content={`Instructions:\n
+1. You'll see a balloon on the screen.
+2. Click the 'Pump' button to inflate the balloon and earn points.
+3. But be cautious! The balloon might burst at any time, and if it does, you'll lose all your points for that balloon.
+4. You can choose to stop pumping and 'collect' your points by clicking the 'Collect' button.
+5. Your goal is to decide when to stop and collect your points to avoid the balloon bursting.`}
             onPress={() => {
               setDemoState(prev => ({...prev, demoStage: prev.demoStage + 1}));
               setDemoState(prev => ({...prev, pumpDisabled: false}));
@@ -70,7 +75,7 @@ const Demo = ({setShowDemo}) => {
       case 2:
         return (
           <PointerModal
-            content={'Tap here to pump the balloon'}
+            content={`Great! Now it's time to start. Click here to inflate the balloon.`}
             relativeDim={pumpButtonProps}
             buttonNumber={1}
           />
@@ -79,7 +84,7 @@ const Demo = ({setShowDemo}) => {
       case 4:
         return (
           <PointerModal
-            content={'keep telling them to pump the balloon until it pops'}
+            content={`Keep clicking to inflate the balloon`}
             relativeDim={pumpButtonProps}
             buttonNumber={1}
           />
@@ -88,9 +93,7 @@ const Demo = ({setShowDemo}) => {
       case 5:
         return (
           <Modal
-            content={
-              'show instructions, clarify the task,tell why it popped, ask them to pump once more'
-            }
+            content={`"Oh no! The balloon burst. That means you lost all the points for that balloon.\n\nDon't worry, though. You can always try again. Just keep in mind to click 'COLLECT' before the balloon bursts to protect your points. Let's give it another shot!"`}
             onPress={() => {
               setDemoState(prev => ({...prev, demoStage: prev.demoStage + 1}));
               setDemoState(prev => ({
@@ -104,7 +107,7 @@ const Demo = ({setShowDemo}) => {
       case 6:
         return (
           <PointerModal
-            content={'Tap here to pump the balloon'}
+            content={`Click here to inflate the balloon.`}
             relativeDim={pumpButtonProps}
             buttonNumber={1}
           />
@@ -113,7 +116,7 @@ const Demo = ({setShowDemo}) => {
       case 7:
         return (
           <PointerModal
-            content={'Tap here to collect the balloon'}
+            content={`Great! Now click here to collect your points.`}
             relativeDim={collectButtonProps}
             buttonNumber={2}
           />
@@ -121,7 +124,10 @@ const Demo = ({setShowDemo}) => {
       case 8:
         return (
           <Modal
-            content={'final modal (contains the meaning of balloon color)'}
+            content={`Congratulations! You're doing great. Remember, each balloon color behaves differently:\n
+-Black balloons tend to burst quicker.
+-Red balloons have a moderate burst rate.
+-Yellow balloons take longer to burst.`}
             onPress={async () => {
               try {
                 await AsyncStorage.setItem('BART_DEMO', 'FINISHED');

@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, ActivityIndicator, View} from 'react-native';
+import {ActivityIndicator, View} from 'react-native';
 
 import {AuthContext} from '../../providers/AuthProvider';
 import CompletedPopup from '../../components/CompletedPopup';
@@ -15,6 +15,8 @@ import HolderBoard from '../../components/FuseWire/HolderBoard';
 import FuseBoard from '../../components/FuseWire/FuseBoard';
 import BatteryContainer from '../../components/FuseWire/BatteryContainer';
 
+import Demo from './Demo';
+
 const FuseWire = ({navigation}) => {
   const {
     state,
@@ -27,6 +29,7 @@ const FuseWire = ({navigation}) => {
     dispatch,
     ACTIONS,
     setIfAnswerCorrect,
+    showDemo,
   } = useContext(FuseWireContext);
   const {user} = useContext(AuthContext);
   // console.log(fuseHolders);
@@ -94,6 +97,8 @@ const FuseWire = ({navigation}) => {
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
     <CompletedPopup gameName="FUSE WIRE" />
+  ) : showDemo ? (
+    <Demo />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.FuseWire}
@@ -106,7 +111,7 @@ const FuseWire = ({navigation}) => {
         {title: 'Level', value: state.level},
       ]}
       controllerButtons={[{title: 'Check', onPress: handleCheck}]}>
-      <View style={stylest.mainContainer}>
+      <View style={{width: '100%', flex: 1}}>
         <HolderBoard />
         <FuseBoard />
         <BatteryContainer />
@@ -131,23 +136,5 @@ const FuseWire = ({navigation}) => {
     </GameWrapper>
   );
 };
-
-const stylest = StyleSheet.create({
-  mainContainer: {
-    width: '100%',
-    flex: 1,
-  },
-  button: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: '#2c3e50',
-    padding: 10,
-  },
-  text: {
-    color: '#fff',
-    fontSize: 50,
-  },
-});
 
 export default FuseWire;

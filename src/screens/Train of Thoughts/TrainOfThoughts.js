@@ -18,9 +18,13 @@ import {ACTIONS, reducer} from './reducer';
 import {constants, getRandomColor} from '../../utilities/Train of Thoughts';
 import {Train, Map} from '../../components/Train of Thoughts/';
 import initialState from './initialState';
-const {initialSpawnSpeed, scoreIncrement} = constants;
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Demo from './Demo';
+const {initialSpawnSpeed, minSpawnSpeed, spawnSpeedChange} = constants;
 const TrainOfThoughts = ({navigation}) => {
-  const {trainColors, TIME} = useContext(TrainOfThoughtsContext);
+  const {trainColors, TIME, setShowDemo, showDemo} = useContext(
+    TrainOfThoughtsContext,
+  );
   const {user} = useContext(AuthContext);
 
   const GameRef = db.ref(`/users/${user.uid}/TrainOfThoughts/`);
@@ -35,57 +39,76 @@ const TrainOfThoughts = ({navigation}) => {
   const [loading, setLoading] = useState(true);
 
   const [state, dispatch] = useReducer(reducer, initialState);
-
-  const scoreArray = useRef([]);
-  console.log(scoreArray.current);
+  const consecutivePositiveScores = useRef(0);
+  const consecutiveNegativeScores = useRef(0);
 
   useEffect(() => {
-    if (scoreArray.current.length === 0) {
-      scoreArray.current = [{score: 0, spawnSpeed: spawnSpeed.current}];
-    } else {
-      const lastScore = scoreArray.current[scoreArray.current.length - 1].score;
-      const sign = Math.max(lastScore, state.score / 50) === lastScore ? 1 : -1;
+    if (state.scoreHistory.length === 0) return;
 
-      scoreArray.current = [
-        ...scoreArray.current,
-        {score: sign, spawnSpeed: spawnSpeed.current},
-      ];
-    }
+    const lastScore = state.scoreHistory[state.scoreHistory.length - 1];
 
-    if (scoreArray.current.length > 4) {
-      const negativeScores = scoreArray.current.filter(
-        score => score.score < 0,
-      );
+    if (lastScore > 0) {
+      consecutivePositiveScores.current = consecutivePositiveScores.current + 1;
+      consecutiveNegativeScores.current = 0;
+
       if (
-        negativeScores.length / scoreArray.current.length > 0.6 &&
-        spawnSpeed.current < initialSpawnSpeed
+        consecutivePositiveScores.current % 3 === 0 &&
+        consecutivePositiveScores.current > 0
       ) {
-        spawnSpeed.current = spawnSpeed.current + initialSpawnSpeed * 0.07;
-      } else {
-        if (spawnSpeed.current > 2600)
-          spawnSpeed.current = spawnSpeed.current - initialSpawnSpeed * 0.07;
+        const newSpeed = spawnSpeed.current - spawnSpeedChange;
+        spawnSpeed.current = Math.max(newSpeed, minSpawnSpeed);
       }
+    } else if (lastScore < 0) {
+      consecutiveNegativeScores.current = consecutiveNegativeScores.current + 1;
+      consecutivePositiveScores.current = 0;
+
+      if (
+        consecutiveNegativeScores.current % 2 === 0 &&
+        consecutiveNegativeScores.current > 0
+      ) {
+        const newSpeed = spawnSpeed.current + spawnSpeedChange;
+        spawnSpeed.current = Math.min(newSpeed, initialSpawnSpeed);
+      }
+    } else {
+      consecutivePositiveScores.current = 0;
+      consecutiveNegativeScores.current = 0;
     }
-  }, [state.score]);
+  }, [state]);
 
-  useEffect(() => {
-    GameRef.once('value', snapshot => {
-      const exists = snapshot.exists();
-      if (exists) {
-        const data = snapshot.val();
-        data.status === 'COMPLETED'
-          ? setCompletedPopup(true)
-          : GameRef.set({
-              status: 'IN_PROGRESS',
-            });
+  const initGame = async () => {
+    try {
+      const value = await AsyncStorage.getItem('TOT_DEMO');
+      if (value === null) {
+        setShowDemo(true);
+        setLoading(false);
+      } else {
+        GameRef.once('value', snapshot => {
+          const exists = snapshot.exists();
+          if (exists) {
+            const data = snapshot.val();
+            data.status === 'COMPLETED'
+              ? setCompletedPopup(true)
+              : GameRef.set({
+                  status: 'IN_PROGRESS',
+                });
+          }
+        })
+          .then(() => setLoading(false))
+          .catch(err => console.log(err));
       }
-    })
-      .then(() => setLoading(false))
-      .catch(err => console.log(err));
-  }, []);
+    } catch (err) {
+      console.log(err);
+      setShowDemo(true);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!loading) {
+    initGame();
+  }, [showDemo]);
+
+  useEffect(() => {
+    if (!loading && !showDemo) {
       const intervalId = setInterval(() => {
         const departureTime = TIME;
         const newTrain = {
@@ -100,7 +123,7 @@ const TrainOfThoughts = ({navigation}) => {
         clearInterval(intervalId);
       };
     }
-  }, [trainCount.current, spawnSpeed.current, loading]);
+  }, [trainCount.current, spawnSpeed.current, loading, showDemo]);
 
   useEffect(() => {
     if (TIME === '00:00') {
@@ -116,6 +139,8 @@ const TrainOfThoughts = ({navigation}) => {
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
     <CompletedPopup gameName="TRAIN OF THOUGHS" />
+  ) : showDemo ? (
+    <Demo />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.TrainofThoughts}

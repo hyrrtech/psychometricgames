@@ -24,17 +24,6 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
   let segmentStartTime = useRef(Date.now());
   const pathFollowed = useRef([]);
   const [trainDirection, setTrainDirection] = useState('0rad');
-  // console.log(SwitchDirections.current);
-
-  // const switchesPassedExclusive = id => {
-  //   //might not be needed
-  //   if (id === 1 && switchDirections[id] === 'horizontal') return [3];
-  //   if (id === 7 && switchDirections[id] === 'horizontal') return [8, 9];
-  //   if (id === 8 && switchDirections[id] === 'vertical_right') return [9];
-  //   if (id === 12 && switchDirections[id] === 'vertical_left') return [13];
-  //   if (id === 4 && switchDirections[id] === 'horizontal') return [5];
-  //   return [];
-  // };
 
   const generatePath = switchObj => {
     let path = [];
@@ -75,6 +64,7 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
       SwitchDirections.current,
       switchDirections,
     );
+
     if (switchesPassed.current.includes(changedSwitchIndex))
       changedSwitches.current.push(changedSwitchIndex);
 
@@ -106,23 +96,14 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
       const directionInDegrees = Math.ceil((direction * 180) / Math.PI);
 
       let trainDirectionProps = `${directionInDegrees}deg`;
-
-      // if (directionInDegrees === 180) {
-      //   trainDirectionProps = [{rotate: `${0}deg`}, {scaleX: -1}];
-      // } else if (directionInDegrees === -90) {
-      //   trainDirectionProps = [{rotate: `${90}deg`}, {scaleX: -1}];
-      // } else if (directionInDegrees <= 0) {
-      //   trainDirectionProps = [{rotate: `${0}deg`}, {scaleX: -1}];
-      // } else {
-      //   trainDirectionProps = [{rotate: `${directionInDegrees}deg`}];
-      // }
       setTrainDirection(trainDirectionProps);
       if (PATH[index]?.id) {
-        switchesPassed.current = [
-          ...switchesPassed.current,
-          ...fillSwitchesPassed(PATH[index].id),
-          // ...switchesPassedExclusive(PATH[index].id),
-        ];
+        switchesPassed.current = Array.from(
+          new Set([
+            ...switchesPassed.current,
+            ...fillSwitchesPassed(PATH[index].id),
+          ]),
+        );
       }
 
       Animated.timing(trainPosition, {
@@ -166,7 +147,7 @@ const Train = ({color, id, setTrains, dispatch, ACTIONS, departureTime}) => {
 
           ++currentIndex.current;
           segmentStartTime.current = Date.now();
-          moveTrain(PATH);
+          moveTrain(PATH, TIME);
         }
       });
     }

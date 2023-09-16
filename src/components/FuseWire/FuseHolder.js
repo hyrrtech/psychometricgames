@@ -2,6 +2,7 @@ import {View, StyleSheet, Text} from 'react-native';
 import {constants} from '../../utilities/FuseWire';
 import HolderSvg from './SVG/Holder';
 import FuseFitSvg from './SVG/FuseFitSvg';
+import {FontStyle} from '../../values/Font';
 const {FuseHolderHeight, FuseHolderWidth} = constants;
 const FuseHolder = ({position, value, initiallyBlank}) => {
   return (
@@ -36,8 +37,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
+    ...FontStyle.H3_bold,
     color: '#fff',
-    fontSize: 25,
     position: 'absolute',
     textAlign: 'center',
   },

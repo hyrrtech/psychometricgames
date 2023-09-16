@@ -1,9 +1,4 @@
-import {
-  HIGH_RISK_END_POINT,
-  COLORS,
-  HIGH_RISK_START_POINT,
-} from './initialState';
-import {getColor, randomPoint} from '../../utilities/BART';
+import {DATA} from './initialState';
 import db from '../../firebase/database';
 
 export const ACTIONS = {
@@ -42,40 +37,20 @@ export function reducer(state, action) {
       return {...state, showPopped: true, curr_score: 0};
 
     case ACTIONS.NEXT_LEVEL:
-      const HIGH_RISK_POINT = randomPoint(
-        HIGH_RISK_START_POINT,
-        HIGH_RISK_END_POINT,
-      );
-
-      const POP_POINT = randomPoint(HIGH_RISK_POINT, state.number_of_weights);
-      // console.log(
-      //   'POP_POINT',
-      //   POP_POINT,
-      //   'number_of_weights',
-      //   state.number_of_weights,
-      // );
-      const BALLOON_COLOR = getColor(
-        COLORS,
-        HIGH_RISK_START_POINT,
-        POP_POINT,
-        state.number_of_weights,
-      );
-
       const newState = {
         ...state,
         level: state.level + 1,
         curr_score: 0,
         pumpCount: 0,
-        pop_point: POP_POINT,
         showPopped: false,
-        balloon_color: BALLOON_COLOR,
+        ...DATA[state.level],
       };
       if (state.level >= state.totalLevels) {
         newState.status = 'COMPLETED';
       }
 
       if (state.pop_point > state.pumpCount) {
-        const newState1 = {
+        let newState1 = {
           ...newState,
           totalScore: state.totalScore + state.curr_score,
         };
@@ -83,12 +58,14 @@ export function reducer(state, action) {
           action.payload.level &&
           action.payload.totalScore &&
           action.payload.score_range &&
-          action.payload.number_of_weights
+          action.payload.number_of_weights &&
+          action.payload.data
         ) {
-          newState1.score_range = action.payload.score_range;
-          newState1.totalScore = action.payload.totalScore;
-          newState1.level = action.payload.level;
-          newState1.number_of_weights = action.payload.number_of_weights;
+          newState1 = {
+            ...newState1,
+            ...action.payload,
+            ...DATA[action.payload.level - 1],
+          };
         } else {
           updateBartData(
             {

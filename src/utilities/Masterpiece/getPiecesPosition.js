@@ -1,12 +1,15 @@
 import constants from './constants';
 
-const {ratio, barrierWidth, barrierHeight, barrierX, barrierY} = constants;
-
-const getPiecesPosition = (
-  elementsData,
+const {
+  ratio,
+  barrierWidth,
+  barrierHeight,
+  barrierX,
+  barrierY,
   combinedPiecePosition,
-  combinedPieceDimensions,
-) => {
+} = constants;
+
+const getPiecesPosition = (elementsData, combinedPieceDimensions) => {
   const piecesPosition = [];
   let {x: combinedPieceX, y: combinedPieceY} = combinedPiecePosition;
   let {width: combinedPieceWidth, height: combinedPieceHeight} =

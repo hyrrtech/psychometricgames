@@ -72,7 +72,11 @@ const Demo = ({setShowDemo}) => {
       backgroundGradient={COLORS.memoryMatrixBGColor}>
       {demoState.demoStage !== 2 ? (
         <Modal
-          content={demoState.demoStage === 1 ? 'instructions' : 'Good Job'}
+          content={
+            demoState.demoStage === 1
+              ? `Instructions:\n\nYour goal is to memorize the pattern displayed in the matrix within a limited timeframe.\n\n"Get ready to observe the tiles as they are revealed on the screen. Your task is to remember their positions. Pay attention!"`
+              : `"Nice job! You successfully recreated the pattern. You're advancing to the next round. Get ready for more challenging patterns!"`
+          }
           onPress={async () => {
             LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
             if (demoState.demoStage === 3) {
@@ -90,7 +94,7 @@ const Demo = ({setShowDemo}) => {
       ) : (
         <>
           <Modal
-            content="tell the user to tap the tiles which are highlighted"
+            content={`"Alright, now it's your turn. Click on the tiles in the same positions as they were shown earlier to recreate the pattern. Good luck!"`}
             showContinue={false}
             style={{position: 'relative', marginBottom: '5%'}}
           />

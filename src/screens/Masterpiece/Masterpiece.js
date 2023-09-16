@@ -1,5 +1,5 @@
-import {useContext, useEffect} from 'react';
-import {View, StyleSheet, Button, ActivityIndicator} from 'react-native';
+import {useContext, useMemo} from 'react';
+import {View, ActivityIndicator} from 'react-native';
 import Piece from '../../components/Masterpiece/Piece';
 import CombinedPiece from '../../components/Masterpiece/CombinedPiece';
 import {MasterpieceContext} from '../../providers/Masterpiece.Provider';
@@ -8,6 +8,7 @@ import {GameWrapper} from '../../components/GameWrapper';
 import CompletedPopup from '../../components/CompletedPopup';
 import {COLORS} from '../../values';
 import BackgroundImage from '../../values/BackgroundImage';
+import Demo from './Demo';
 
 const {
   ratio,
@@ -27,6 +28,8 @@ const Masterpiece = () => {
     pickedPieceId,
     positionsState,
     combinedPieceDimensions,
+    showDemo,
+    state,
   } = useContext(MasterpieceContext);
 
   const loading = false;
@@ -48,10 +51,28 @@ const Masterpiece = () => {
     setElementsData(newElementsData);
   };
 
+  const renderPieces = useMemo(
+    () =>
+      elementsData.map(element => (
+        <Piece
+          id={element.id}
+          key={element.id}
+          pathD={element.path}
+          viewBox={element.viewBox}
+          initialPosition={piecesPosition[element.id].position}
+          pieceCorrectPositon={element.pieceCorrectPositon}
+          rotation={element.pieceRotationAngle}
+        />
+      )),
+    [elementsData, piecesPosition],
+  );
+
   return loading ? (
     <ActivityIndicator size="large" color="#0000ff" />
   ) : completedPopup ? (
-    <CompletedPopup gameName="FOLLOW THAT FROG" />
+    <CompletedPopup gameName="MasterPiece" />
+  ) : showDemo ? (
+    <Demo />
   ) : (
     <GameWrapper
       imageURL={BackgroundImage.Masterpiece}
@@ -59,7 +80,7 @@ const Masterpiece = () => {
       scoreboard={[
         {
           title: 'Level',
-          value: 1,
+          value: state.level,
         },
       ]}
       controllerButtons={[
@@ -81,12 +102,11 @@ const Masterpiece = () => {
             left: barrierX,
             height: barrierHeight,
             width: barrierWidth,
-            // backgroundColor: 'rgba(0,0,0,0.4)',
             zIndex: -1,
           }}
         />
 
-        {elementsData.map(element => (
+        {/* {elementsData.map(element => (
           <Piece
             id={element.id}
             key={element.id}
@@ -96,20 +116,21 @@ const Masterpiece = () => {
             pieceCorrectPositon={element.pieceCorrectPositon}
             rotation={element.pieceRotationAngle}
           />
-        ))}
+        ))} */}
+        {renderPieces}
         {/* {positionsState.map((element, index) => (
-        <View
-          key={element.id}
-          style={{
-            position: 'absolute',
-            height: ratio * 3,
-            width: ratio * 3,
-            backgroundColor: 'white',
-            left: element.position.x - (ratio * 3) / 2,
-            top: element.position.y - (ratio * 3) / 2,
-          }}
-        />
-      ))} */}
+          <View
+            key={element.id}
+            style={{
+              position: 'absolute',
+              height: ratio * 3,
+              width: ratio * 3,
+              backgroundColor: 'white',
+              left: element.position.x - (ratio * 3) / 2,
+              top: element.position.y - (ratio * 3) / 2,
+            }}
+          />
+        ))} */}
       </View>
     </GameWrapper>
   );

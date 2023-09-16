@@ -5,8 +5,9 @@ const lineWidth = tileSize * 0.33;
 const lineHeight = tileSize * 0.1;
 const pirateLineWidth = tileSize * 0.07;
 const pirateLineHeight = tileSize * 0.07;
-const shipSize = tileSize * 0.9;
-const collisionMarkSize = tileSize * 0.9;
+const shipSize = tileSize * 0.8;
+const treasureMarkSize = tileSize * 0.7;
+const collisionMarkSize = tileSize * 0.8;
 const time_to_cover_each_tile = 650;
 
 export default {
@@ -19,5 +20,6 @@ export default {
   pirateLineHeight,
   shipSize,
   collisionMarkSize,
+  treasureMarkSize,
   time_to_cover_each_tile,
 };

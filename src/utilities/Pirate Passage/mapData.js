@@ -4,6 +4,7 @@ const mapData = [
     matrixSize: {rows: 7, columns: 5},
     initialShipIndex: [0, 0],
     treasureIndex: [6, 4],
+    disabledIndexes: [[0, 1]],
     piratePathsIndexes: [
       {
         pathIndexes: [
@@ -44,8 +45,8 @@ const mapData = [
           [5, 2],
         ],
         color: '#962f53',
-        initialShipLocation: [5, 1],
-        moveDirection: -1,
+        initialShipLocation: [4, 1],
+        moveDirection: 1,
       },
       {
         pathIndexes: [

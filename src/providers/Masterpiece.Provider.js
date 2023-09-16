@@ -1,37 +1,22 @@
-import React, {createContext, useContext, useMemo, useState} from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {AuthContext} from './AuthProvider';
 import db from '../firebase/database';
 import {
-  constants,
   getPiecesPosition,
   viewBoxUtils,
   populatePositions,
+  levelData,
+  demoData,
 } from '../utilities/Masterpiece';
-const {combinedPiecePosition} = constants;
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const MasterpieceContext = createContext();
-
-const data = {
-  fullSVGComponent: {
-    paths: {
-      0: 'M134 0L268 86V134H134V0Z',
-      1: 'M268 134C268 141.617 266.267 149.159 262.9 156.196C259.533 163.233 254.598 169.627 248.376 175.012C242.155 180.398 234.769 184.67 226.64 187.585C218.511 190.5 209.799 192 201 192C192.201 192 183.489 190.5 175.36 187.585C167.231 184.67 159.845 180.398 153.624 175.012C147.402 169.626 142.467 163.233 139.1 156.196C135.733 149.159 134 141.617 134 134L268 134Z',
-      2: 'M0 71.8351L134 3.57628e-06L134 134L0 71.8351Z',
-    },
-    viewBox: '0 0 268 192',
-  },
-  fillColor: '#1e2448',
-};
-
-const demoData = {
-  fullSVGComponent: {
-    paths: {
-      0: 'M0.5 0H106V90.5H0.5V0Z',
-    },
-    viewBox: '0 0 106 99',
-  },
-  fillColor: '#1e2448',
-};
 
 //
 
@@ -40,33 +25,48 @@ export const MasterpieceProvider = ({children}) => {
   // const GameRef = db.ref(`/users/${user.uid}/Masterpiece/`);
 
   //   const [ifAnswerCorrect, setIfAnswerCorrect] = useState(null);
-  //   const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   //   const [completedPopup, setCompletedPopup] = useState(false);
-  const {combinedPieceDimensions, pathsData, piecesPosition} = useMemo(() => {
+  const [state, setState] = useState({level: 1});
+  const [showDemo, setShowDemo] = useState(true);
+  const [demoState, setDemoState] = useState({demoStage: 1});
+
+  const [elementsData, setElementsData] = useState([]);
+  const [positionsState, setPositionsState] = useState([]);
+  const [pickedPieceId, setPickedPieceId] = useState(null);
+
+  const data = useMemo(() => {
+    return showDemo ? demoData : {...levelData[state.level - 1]};
+  }, [showDemo, state]);
+
+  const initLevel = data => {
+    // setLoading(true);
     const combinedPieceDimensions = viewBoxUtils.getDimFromViewBox(
       data.fullSVGComponent.viewBox,
     );
     const pathsData = viewBoxUtils.getPathsData(
       data.fullSVGComponent.paths,
-      combinedPiecePosition,
       combinedPieceDimensions,
     );
     const piecesPosition = getPiecesPosition(
       pathsData,
-      combinedPiecePosition,
       combinedPieceDimensions,
     );
+
+    setElementsData(pathsData);
+    setPositionsState(populatePositions(pathsData));
+    setPickedPieceId(null);
+    // setLoading(false);
     return {
       combinedPieceDimensions,
-      pathsData,
       piecesPosition,
     };
-  }, []);
-  const [elementsData, setElementsData] = useState(pathsData);
-  const [positionsState, setPositionsState] = useState(
-    populatePositions(elementsData),
+  };
+
+  const {combinedPieceDimensions, piecesPosition} = useMemo(
+    () => initLevel(data),
+    [data, showDemo],
   );
-  const [pickedPieceId, setPickedPieceId] = useState(null);
 
   const isCorrect = useMemo(() => {
     const isAtCorrectPosition = positionsState.every(
@@ -76,7 +76,7 @@ export const MasterpieceProvider = ({children}) => {
       element => element.pieceRotationAngle % 360 === 0,
     );
     return isAt0deg && isAtCorrectPosition;
-  }, [elementsData, positionsState]);
+  }, [elementsData, positionsState, state]);
 
   return (
     <MasterpieceContext.Provider
@@ -89,10 +89,15 @@ export const MasterpieceProvider = ({children}) => {
         positionsState,
         setPositionsState,
         data,
-        combinedPieceDimensions,
         pickedPieceId,
         setPickedPieceId,
         isCorrect,
+        showDemo,
+        setShowDemo,
+        demoState,
+        setDemoState,
+        state,
+        setState,
       }}>
       {children}
     </MasterpieceContext.Provider>
